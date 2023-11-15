@@ -1,0 +1,101 @@
+<header>
+  <nav
+    class="bg-primary-600 border-gray-200 px-4 lg:px-20 py-2.5 dark:bg-gray-800"
+  >
+    <div
+      class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl"
+    >
+      <!-- Logo -->
+      <a routerLink="/" class="flex items-center">
+        <img
+          src="https://flowbite.com/docs/images/logo.svg"
+          class="mr-3 h-6 sm:h-9"
+          alt="Rental Hub logo"
+        />
+        <span
+          class="self-center text-xl font-semibold whitespace-nowrap text-white sm:hidden md:block"
+          >Rental Hub</span
+        >
+      </a>
+
+      <!-- Search input -->
+      <div class="w-1/2">
+        <form>
+          <label
+            for="default-search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            >Search</label
+          >
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+            >
+              <svg
+                class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </div>
+            <input
+              type="search"
+              id="default-search"
+              class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search Mockups, Logos..."
+              required
+            />
+            <button
+              type="submit"
+              class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Login/Signup/Account -->
+      <div class="flex items-center lg:order-2">
+        <a
+          *ngIf="!isAuthenticatedUser"
+          [routerLink]="['/auth/login']"
+          class="text-white-text-color text-800 dark:text-white hover:bg-gray-50 hover:text-black focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 lg:px-4 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+          >Đăng nhập</a
+        >
+        <a
+          *ngIf="!isAuthenticatedUser"
+          [routerLink]="['/auth/signup']"
+          class="text-white-text-color text-800 dark:text-white hover:bg-gray-50 hover:text-black focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 lg:px-4 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+          >Đăng ký</a
+        >
+        <a
+          [routerLink]="['/profile/post-new']"
+          class="text-white-text-color text-800 dark:text-white hover:bg-gray-50 hover:text-black focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 lg:px-4 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+          >Đăng bài</a
+        >
+        <div *ngIf="isAuthenticatedUser" class="flex flex-row gap-1">
+          <img
+            routerLink="/profile/user/1"
+            class="w-10 h-10 rounded-full relative bottom-1"
+            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+            alt="Rounded avatar"
+          />
+          <a
+            routerLink="/profile/user/1"
+            class="text-white-text-color text-800 dark:text-white focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm lg:py-2.5 ml-1 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+            >Châu Anh</a
+          >
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,27 @@
+<div
+  class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2"
+>
+  <a (click)="goToPost()">
+    <img class="rounded-t-lg" src="{{ post._images[0] }}" alt="room's images" />
+  </a>
+  <div class="p-2">
+    <a (click)="goToPost()">
+      <p
+        class="text-md font-medium tracking-tight text-black-color dark:text-white hover:text-primary-600 line-clamp-2"
+      >
+        {{ post._title }}
+      </p>
+    </a>
+    <div
+      class="row flex flex-row gap-2 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color relative bottom-2"
+    >
+      <span class="text-text-price-color font-normal">3,5tr</span>
+
+      <span class="font-normal">23m2</span>
+
+      <span class="font-normal line-clamp-1"
+        >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+      >
+    </div>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+<div class="grid grid-cols-12 gap-1">
+  <!-- Post content -->
+  <div
+    *ngIf="post"
+    class="grid col-span-9 bg-white-background py-4 px-8 mt-8 mb-8 rounded-lg"
+  >
+    <div class="flex flex-col">
+      <!-- General Information -->
+      <div class="mb-8">
+        <!-- Title -->
+        <div class="row flex flex-row items-center mb-0">
+          <p class="text-lg font-medium mb-0">
+            {{ post._title }}
+          </p>
+        </div>
+        <!-- Price, Area, Assress -->
+        <div
+          class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+        >
+          <p>
+            Giá:
+            <span class="text-text-price-color font-medium"
+              >{{ post.roomPrice }}đ</span
+            >
+          </p>
+          <p>
+            Diện tích:
+            <span class="font-medium">{{ post.roomArea }}m2</span>
+          </p>
+          <p>
+            Địa chỉ phòng trọ:
+            <span class="font-medium">{{ post.roomAddress }}</span>
+          </p>
+        </div>
+
+        <!-- Thông tin liên hệ -->
+        <div>
+          <p class="text-base font-medium">Thông tin liên hệ</p>
+          <p>
+            Chủ trọ: <span>{{ post.authorFName }} {{ post.authorLName }}</span>
+          </p>
+          <p>
+            Địa chỉ chủ trọ:
+            <span>{{ post.addressAuthor }}</span>
+          </p>
+          <p>
+            Số điện thoại: <span>{{ post.phoneNumber }}</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Image slider -->
+      <app-slider [sliderItems]="post._images"></app-slider>
+
+      <!-- Main content -->
+      <div class="mt-4">
+        <p class="text-base font-medium">Mô tả chi tiết</p>
+        <p>
+          {{ post._content }}
+        </p>
+      </div>
+
+      <!-- Map -->
+      <div>
+        <p class="text-base font-medium">Bản đồ</p>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.928014601422!2d105.74156997484822!3d20.99552248892015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345372d45d2c17%3A0x9900fd1f7d348af4!2zSOG7r3UgSMawbmcsIETGsMahbmcgTuG7mWksIEjDoCDEkMO0bmcsIEjDoCBO4buZaSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1697966067208!5m2!1svi!2s"
+          width="600"
+          height="450"
+          style="border: 0; width: 100%"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Side Content -->
+  <div class="grid col-span-3 rounded-lg px-5 mt-8 mb-12 bg-light-blue-color">
+    <div class="flex flex-col gap-4">
+      <!-- Host's Card -->
+      <app-host-card [host]="host"></app-host-card>
+
+      <!-- Related rooms -->
+      <div flex flex-col gap-4>
+        <p class="font-medium text-lg text-center">Tìm kiếm liên quan</p>
+        <!-- Room n -->
+        <div *ngFor="let post of relatedPosts">
+          <app-post-card [post]="post"></app-post-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

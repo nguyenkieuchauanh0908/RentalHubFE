@@ -1,0 +1,50 @@
+<div
+  *ngIf="item"
+  class="grid grid-rows-1 bg-white-background p-4 rounded-lg mb-2"
+>
+  <div class="grid gap-4 grid-cols-12">
+    <!-- Image -->
+    <div class="grid col-span-3 w-full h-900px">
+      <img
+        class="hover:cursor-pointer"
+        src="{{ item._images[0] }}"
+        alt="hình nhà trọ"
+      />
+    </div>
+    <!-- Info -->
+    <div class="grid col-span-9">
+      <!-- Title -->
+      <div (click)="goToPost()" class="row flex flex-row items-center mb-0">
+        <a
+          class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+        >
+          {{ item._title }}
+        </a>
+      </div>
+      <!-- Price, Area, Assress -->
+      <div
+        class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+      >
+        <p>
+          Giá:
+          <span class="text-text-price-color font-medium">
+            {{ item.roomPrice }}đ</span
+          >
+        </p>
+        <p>
+          Diện tích: <span class="font-medium"> {{ item.roomArea }}m2</span>
+        </p>
+        <p>
+          Địa chỉ:
+          <span class="font-medium">{{ item.roomAddress }}</span>
+        </p>
+      </div>
+      <!-- Description -->
+      <div class="row">
+        <p class="hover:cursor-pointer text-sub-text-color line-clamp-3">
+          {{ item._content }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

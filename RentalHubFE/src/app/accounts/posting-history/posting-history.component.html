@@ -1,0 +1,414 @@
+<!-- Container -->
+<div class="flex flex-col flex-nowrap bg-white-background p-6 rounded-lg">
+  <!-- Title -->
+  <div class="flex flex-row gap-4 align-middle text-justify">
+    <h2 class="text-base font-semibold leading-7 text-gray-900 mb-0">
+      Lịch sử bài viết
+    </h2>
+    <!-- <p>Filter theo thời gian</p> -->
+  </div>
+  <!-- Active tabs -->
+  <div class="mb-4 relative bottom-4">
+    <!-- All/Chờ duyệt/Đang đăng/Đã gỡ/ Bị báo cáo -->
+    <div
+      class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700"
+    >
+      <ul class="flex flex-wrap -mb-px">
+        <li class="mr-2">
+          <a
+            href="#"
+            class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Tất cả</a
+          >
+        </li>
+        <li class="mr-2">
+          <a
+            href="#"
+            class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+            aria-current="page"
+            >Chờ duyệt</a
+          >
+        </li>
+        <li class="mr-2">
+          <a
+            href="#"
+            class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Đang đăng</a
+          >
+        </li>
+        <li class="mr-2">
+          <a
+            href="#"
+            class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Bị báo cáo</a
+          >
+        </li>
+        <li class="mr-2">
+          <a
+            href="#"
+            class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Đã gỡ</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- Main content-->
+  <div class="flex flex-col">
+    <!-- Lists of products -->
+    <!-- Item -->
+    <div class="grid grid-rows bg-white-background">
+      <div class="grid gap-4 grid-cols-12">
+        <!-- Image -->
+        <div class="grid col-span-2 w-full h-700px">
+          <img
+            class="hover:cursor-pointer"
+            src="https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg"
+            alt="hình nhà trọ"
+          />
+        </div>
+        <!-- Info -->
+        <div class="grid col-span-7">
+          <!-- Title -->
+          <div class="row flex flex-row items-center mb-0">
+            <a
+              [routerLink]="['/posts/1']"
+              class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+            >
+              Cho thuê biệt thự dương nội làm văn phòng, nhà hàng, nhà ở giá từ
+              12 - 35tr/tháng. - đường tố hữu, phường dương nội, quận hà đông,
+              hà nội
+            </a>
+          </div>
+          <!-- Price, Area, Assress -->
+          <div
+            class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          >
+            <p>
+              Giá:
+              <span class="text-text-price-color font-medium">3,5tr</span>
+            </p>
+            <p>Diện tích: <span class="font-medium">23m2</span></p>
+            <p>
+              Địa chỉ:
+              <span class="font-medium"
+                >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Edit button -->
+        <div class="grid col-span-3 p-8">
+          <button
+            type="button"
+            class="px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400" />
+    </div>
+
+    <!-- Item -->
+    <div class="grid grid-rows bg-white-background">
+      <div class="grid gap-4 grid-cols-12">
+        <!-- Image -->
+        <div class="grid col-span-2 w-full h-700px">
+          <img
+            class="hover:cursor-pointer"
+            src="https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg"
+            alt="hình nhà trọ"
+          />
+        </div>
+        <!-- Info -->
+        <div class="grid col-span-7">
+          <!-- Title -->
+          <div class="row flex flex-row items-center mb-0">
+            <a
+              [routerLink]="['/posts/1']"
+              class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+            >
+              Cho thuê biệt thự dương nội làm văn phòng, nhà hàng, nhà ở giá từ
+              12 - 35tr/tháng. - đường tố hữu, phường dương nội, quận hà đông,
+              hà nội
+            </a>
+          </div>
+          <!-- Price, Area, Assress -->
+          <div
+            class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          >
+            <p>
+              Giá:
+              <span class="text-text-price-color font-medium">3,5tr</span>
+            </p>
+            <p>Diện tích: <span class="font-medium">23m2</span></p>
+            <p>
+              Địa chỉ:
+              <span class="font-medium"
+                >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Edit button -->
+        <div class="grid col-span-3 p-8">
+          <button
+            type="button"
+            class="px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400" />
+    </div>
+
+    <!-- Item -->
+    <div class="grid grid-rows bg-white-background">
+      <div class="grid gap-4 grid-cols-12">
+        <!-- Image -->
+        <div class="grid col-span-2 w-full h-700px">
+          <img
+            class="hover:cursor-pointer"
+            src="https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg"
+            alt="hình nhà trọ"
+          />
+        </div>
+        <!-- Info -->
+        <div class="grid col-span-7">
+          <!-- Title -->
+          <div class="row flex flex-row items-center mb-0">
+            <a
+              [routerLink]="['/posts/1']"
+              class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+            >
+              Cho thuê biệt thự dương nội làm văn phòng, nhà hàng, nhà ở giá từ
+              12 - 35tr/tháng. - đường tố hữu, phường dương nội, quận hà đông,
+              hà nội
+            </a>
+          </div>
+          <!-- Price, Area, Assress -->
+          <div
+            class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          >
+            <p>
+              Giá:
+              <span class="text-text-price-color font-medium">3,5tr</span>
+            </p>
+            <p>Diện tích: <span class="font-medium">23m2</span></p>
+            <p>
+              Địa chỉ:
+              <span class="font-medium"
+                >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Edit button -->
+        <div class="grid col-span-3 p-8">
+          <button
+            type="button"
+            class="px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400" />
+    </div>
+
+    <!-- Item -->
+    <div class="grid grid-rows bg-white-background">
+      <div class="grid gap-4 grid-cols-12">
+        <!-- Image -->
+        <div class="grid col-span-2 w-full h-700px">
+          <img
+            class="hover:cursor-pointer"
+            src="https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg"
+            alt="hình nhà trọ"
+          />
+        </div>
+        <!-- Info -->
+        <div class="grid col-span-7">
+          <!-- Title -->
+          <div class="row flex flex-row items-center mb-0">
+            <a
+              [routerLink]="['/posts/1']"
+              class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+            >
+              Cho thuê biệt thự dương nội làm văn phòng, nhà hàng, nhà ở giá từ
+              12 - 35tr/tháng. - đường tố hữu, phường dương nội, quận hà đông,
+              hà nội
+            </a>
+          </div>
+          <!-- Price, Area, Assress -->
+          <div
+            class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          >
+            <p>
+              Giá:
+              <span class="text-text-price-color font-medium">3,5tr</span>
+            </p>
+            <p>Diện tích: <span class="font-medium">23m2</span></p>
+            <p>
+              Địa chỉ:
+              <span class="font-medium"
+                >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Edit button -->
+        <div class="grid col-span-3 p-8">
+          <button
+            type="button"
+            class="px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400" />
+    </div>
+
+    <!-- Item -->
+    <div class="grid grid-rows bg-white-background">
+      <div class="grid gap-4 grid-cols-12">
+        <!-- Image -->
+        <div class="grid col-span-2 w-full h-700px">
+          <img
+            class="hover:cursor-pointer"
+            src="https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg"
+            alt="hình nhà trọ"
+          />
+        </div>
+        <!-- Info -->
+        <div class="grid col-span-7">
+          <!-- Title -->
+          <div class="row flex flex-row items-center mb-0">
+            <a
+              [routerLink]="['/posts/1']"
+              class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+            >
+              Cho thuê biệt thự dương nội làm văn phòng, nhà hàng, nhà ở giá từ
+              12 - 35tr/tháng. - đường tố hữu, phường dương nội, quận hà đông,
+              hà nội
+            </a>
+          </div>
+          <!-- Price, Area, Assress -->
+          <div
+            class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          >
+            <p>
+              Giá:
+              <span class="text-text-price-color font-medium">3,5tr</span>
+            </p>
+            <p>Diện tích: <span class="font-medium">23m2</span></p>
+            <p>
+              Địa chỉ:
+              <span class="font-medium"
+                >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Edit button -->
+        <div class="grid col-span-3 p-8">
+          <button
+            type="button"
+            class="px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400" />
+    </div>
+
+    <!-- Item -->
+    <div class="grid grid-rows bg-white-background">
+      <div class="grid gap-4 grid-cols-12">
+        <!-- Image -->
+        <div class="grid col-span-2 w-full h-700px">
+          <img
+            class="hover:cursor-pointer"
+            src="https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg"
+            alt="hình nhà trọ"
+          />
+        </div>
+        <!-- Info -->
+        <div class="grid col-span-7">
+          <!-- Title -->
+          <div class="row flex flex-row items-center mb-0">
+            <a
+              [routerLink]="['/posts/1']"
+              class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+            >
+              Cho thuê biệt thự dương nội làm văn phòng, nhà hàng, nhà ở giá từ
+              12 - 35tr/tháng. - đường tố hữu, phường dương nội, quận hà đông,
+              hà nội
+            </a>
+          </div>
+          <!-- Price, Area, Assress -->
+          <div
+            class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          >
+            <p>
+              Giá:
+              <span class="text-text-price-color font-medium">3,5tr</span>
+            </p>
+            <p>Diện tích: <span class="font-medium">23m2</span></p>
+            <p>
+              Địa chỉ:
+              <span class="font-medium"
+                >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Edit button -->
+        <div class="grid col-span-3 p-8">
+          <button
+            type="button"
+            class="px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+
+      <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400" />
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex flex-row-reverse gap-2 mt-4">
+      <!-- Previous Button -->
+      <a
+        href="#"
+        class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        Previous
+      </a>
+
+      <!-- Next Button -->
+      <a
+        href="#"
+        class="flex items-center justify-center px-3 h-8 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        Next
+      </a>
+    </div>
+  </div>
+</div>
