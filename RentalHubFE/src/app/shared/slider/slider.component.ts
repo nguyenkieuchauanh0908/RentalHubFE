@@ -9,6 +9,6 @@ export class SliderComponent implements OnInit {
   @Input() sliderItems: any[] = [];
 
   ngOnInit() {
-    console.log(this.sliderItems);
+    // console.log(this.sliderItems);
   }
 }

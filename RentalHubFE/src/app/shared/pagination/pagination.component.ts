@@ -30,7 +30,8 @@ export class PaginationComponent implements OnInit, OnDestroy {
   constructor(private paginationService: PaginationService) {}
 
   ngOnInit() {
-    this.currentPage = this.paginationService.getCurrentPageIndex();
+    console.log('On getting current page index from param...');
+    this.currentPage = this.paginationService.getCurrentPageIndexFromParam();
     console.log('Current page: ' + this.currentPage);
   }
 
@@ -39,6 +40,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   prevPage() {
+    this.currentPage = this.paginationService.currentPage;
     this.reachPrevPaginationLimit = false;
     if (this.totalPages && this.currentPage === 1) {
       this.reachPrevPaginationLimit = true;
@@ -56,6 +58,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   nextPage() {
+    this.currentPage = this.paginationService.currentPage;
     this.reachNextPaginationLimit = false;
     if (this.totalPages && this.currentPage === this.totalPages) {
       this.reachNextPaginationLimit = true;

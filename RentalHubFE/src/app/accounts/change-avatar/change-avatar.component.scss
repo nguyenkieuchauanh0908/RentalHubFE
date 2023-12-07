@@ -46,7 +46,6 @@
 .preview {
   max-width: 200px;
   vertical-align: middle;
-  padding: 2px;
 }
 
 .list-card {
@@ -55,23 +54,4 @@
 
 .list-item {
   margin-bottom: 20px;
-}
-
-.chosenTag {
-  border-radius: 10;
-  background-color: #e5edff;
-}
-
-::ng-deep .mat-icon {
-  display: flex !important;
-  align-items: center !important;
-  position: relative;
-  bottom: 8%;
-  left: 10%;
-  font-size: 18px;
-}
-
-.tag {
-  display: flex !important;
-  align-items: center !important;
 }

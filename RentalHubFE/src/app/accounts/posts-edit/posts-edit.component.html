@@ -1,1 +1,278 @@
-<p>posts-edit works!</p>
+<div *ngIf="!isHost" class="flex justify-center align-middle">
+  <div
+    class="w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+  >
+    <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 bold">
+      Bạn cần phải xác thực tài khoản để được đăng bài!
+    </p>
+    <div class="flex justify-center">
+      <a
+        (click)="onVerifyAccount()"
+        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Đồng ý
+      </a>
+    </div>
+  </div>
+</div>
+<div *ngIf="isHost" class="bg-white-background rounded-lg p-6">
+  <h2 class="text-base font-semibold leading-7 text-gray-900">
+    Tạo bài viết mới
+  </h2>
+  <form
+    #createPostForm="ngForm"
+    (ngSubmit)="onSubmitPost(createPostForm.value)"
+  >
+    <!-- Title -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Tiêu đề</label
+      >
+      <input
+        type="text"
+        id="title-input"
+        name="title"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+    <!-- Description -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Mô tả ngắn</label
+      >
+      <textarea
+        type="text"
+        rows="4"
+        id="desc-input"
+        name="desc"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        placeholder="Viết mô tả ngắn về phòng trọ ở đây..."
+      ></textarea>
+    </div>
+    <!-- Content  -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Nội dung chính</label
+      >
+      <textarea
+        rows="8"
+        type="text"
+        id="content-input"
+        name="content"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        placeholder="Viết mô tả chi tiết về phòng trọ ở đây..."
+      ></textarea>
+    </div>
+    <!-- Street -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Đường</label
+      >
+      <input
+        type="text"
+        id="street-input"
+        name="street"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+    <!-- District -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Quận</label
+      >
+      <input
+        type="text"
+        id="district-input"
+        name="district"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Area -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Diện tích (m2)</label
+      >
+      <input
+        type="text"
+        id="area-input"
+        name="area"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+    <!-- Renting price -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Gía thuê nhà theo tháng (VNĐ)</label
+      >
+      <input
+        type="text"
+        id="renting_price-input"
+        name="renting_price"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+    <!-- Electric price -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Gía điện (ký)</label
+      >
+      <input
+        type="text"
+        id="electric_input"
+        name="electric"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+    <!-- Water price -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Gía nước (khối)</label
+      >
+      <input
+        type="text"
+        id="water_price_input"
+        name="water_price"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Services -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Dịch vụ</label
+      >
+      <input
+        type="text"
+        id="services_input"
+        name="services"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Utilities -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Tiện ích</label
+      >
+      <input
+        type="text"
+        id="utilities_input"
+        name="utilities"
+        ngModel
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Tags -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Thêm tag</label
+      >
+      <!-- Your chosen tags -->
+      <div
+        class="flex flex-row flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >
+        <span
+          class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
+          >+</span
+        >
+        <div
+          class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
+          *ngFor="let tag of selectedTags"
+        >
+          <span class="tag" (click)="addTag(tag)">
+            {{ tag._tag }}
+          </span>
+          <span (click)="addTag(tag)" *ngIf="selectedTags.has(tag)">
+            <mat-icon>clear</mat-icon></span
+          >
+        </div>
+      </div>
+
+      <!-- Tags to choose from -->
+      <div class="mt-4 flex flex-wrap h-max-52 overflow-y-auto">
+        <div
+          *ngFor="let tag of sourceTags"
+          class="flex flex-row h-6 align-middle no-wrap bg-grey-background text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:bg-indigo-100"
+          [class.chosenTag]="selectedTags.has(tag)"
+        >
+          <span class="tag" (click)="addTag(tag)">{{ tag._tag }}</span>
+          <span (click)="addTag(tag)" *ngIf="!selectedTags.has(tag)">
+            <mat-icon>add</mat-icon></span
+          >
+          <span (click)="addTag(tag)" *ngIf="selectedTags.has(tag)">
+            <mat-icon>clear</mat-icon></span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Images -->
+    <div class="mb-6">
+      <label
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        for="multiple_files"
+        >Chọn tối đa 10 ảnh</label
+      >
+      <div class="bg-white-background rounded-lg">
+        <input
+          (change)="selectFiles($event)"
+          class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+          id="multiple_files"
+          type="file"
+          multiple
+        />
+        <div class="flex flex-wrap justify-around mt-4">
+          <div *ngFor="let preview of previews" class="basis-[20%]">
+            <img [src]="preview" class="preview" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save btn -->
+    <div class="mt-6 flex items-center justify-end gap-x-6">
+      <button
+        type="submit"
+        class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+      >
+        Tạo bài viết
+      </button>
+    </div>
+  </form>
+</div>

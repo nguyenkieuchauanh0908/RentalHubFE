@@ -26,6 +26,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     });
     this.relatedPosts = this.postService.posts;
     this.host = {
+      hostId: this.post?.authorId,
       fname: this.post?.authorFName,
       lname: this.post?.authorLName,
       address: this.post?.addressAuthor,

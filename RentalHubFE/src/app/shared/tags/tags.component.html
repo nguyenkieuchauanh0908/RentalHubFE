@@ -3,65 +3,18 @@
     <p>Tra cứu theo tag nổi bật</p>
   </div>
   <div class="flex flex-row flex-wrap gap-1">
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
+    <div
+      *ngFor="let tag of sourceTags"
+      class="flex flex-row h-6 align-middle no-wrap bg-grey-background text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:bg-indigo-100"
+      [class.chosenTag]="selectedTags.has(tag)"
+    >
+      <span class="tag" (click)="addTag(tag)">{{ tag._tag }}</span>
+      <span (click)="addTag(tag)" *ngIf="!selectedTags.has(tag)">
+        <mat-icon>add</mat-icon></span
       >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
+      <span (click)="addTag(tag)" *ngIf="selectedTags.has(tag)">
+        <mat-icon>clear</mat-icon></span
       >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
-    <p>
-      <a href="#" class="hover:cursor-pointer hover:text-text-price-color"
-        >#nấu ăn</a
-      >
-    </p>
+    </div>
   </div>
 </div>
