@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PostItemComponent } from './post-item/post-item.component';
 import { PostItem } from './post-item/post-item.model';
@@ -38,6 +32,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   totalPages: number = this.paginationService.pagination?.total;
 
   ngOnInit() {
+    this.paginationService.currentPage = 1;
     this.postList = this.postService.posts;
     if (this.postList.length === 0) {
       this.postService.getPostList(this.currentPage, this.pageItemLimit);
@@ -49,6 +44,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
     this.paginationService.paginationChanged.subscribe(
       (pagination: Pagination) => {
         this.totalPages = pagination.total;
+        // console.log('Total pages: ' + this.totalPages);
       }
     );
   }

@@ -31,7 +31,6 @@ export class SignUpComponent {
       this.isLoading = true;
       signupObs.subscribe(
         (res) => {
-          // console.log(res);
           this.isLoading = false;
           this.router.navigate(['/auth/login']);
         },

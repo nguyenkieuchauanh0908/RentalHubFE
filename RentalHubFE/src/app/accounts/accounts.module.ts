@@ -8,6 +8,10 @@ import { PostingHistoryComponent } from './posting-history/posting-history.compo
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { PostsEditComponent } from './posts-edit/posts-edit.component';
+import { VerifyAccountComponent } from './verify-account/verify-account.component';
+import { FormsModule } from '@angular/forms';
+import { VerifyOtpComponent } from './verify-otp/verify-otp.component';
+import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 
 @NgModule({
   declarations: [
@@ -15,8 +19,13 @@ import { PostsEditComponent } from './posts-edit/posts-edit.component';
     SidebarComponent,
     AccountsEditComponent,
     PostsEditComponent,
+    VerifyAccountComponent,
+    VerifyOtpComponent,
+    ChangeAvatarComponent,
   ],
   imports: [
+    CommonModule,
+    FormsModule,
     RouterModule,
     AccountRoutingModule,
     SharedModule,

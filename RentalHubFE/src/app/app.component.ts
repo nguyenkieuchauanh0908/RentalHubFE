@@ -11,15 +11,12 @@ export class AppComponent implements OnInit {
   title = 'Rental Hub';
   isUser = false;
   isHost = false;
-  isAdmin = false;
-  isInspector = false;
+
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.isUser = this.authService.isUser;
-    this.isAdmin = this.authService.isAdmin;
     this.isHost = this.authService.isHost;
-    this.isInspector = this.authService.isInspector;
     this.authService.autoLogin();
     initFlowbite();
   }

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContentComponent } from './content.component';
+import { VerifyOtpComponent } from './verify-otp.component';
 
-describe('ContentComponent', () => {
-  let component: ContentComponent;
-  let fixture: ComponentFixture<ContentComponent>;
+describe('VerifyOtpComponent', () => {
+  let component: VerifyOtpComponent;
+  let fixture: ComponentFixture<VerifyOtpComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ContentComponent]
+      declarations: [VerifyOtpComponent]
     });
-    fixture = TestBed.createComponent(ContentComponent);
+    fixture = TestBed.createComponent(VerifyOtpComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

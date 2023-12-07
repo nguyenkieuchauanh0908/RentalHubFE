@@ -20,7 +20,10 @@
 
       <!-- Search input -->
       <div class="w-1/2">
-        <form>
+        <form
+          #searchForm="ngForm"
+          (ngSubmit)="onSearchByKeyword(searchForm.value)"
+        >
           <label
             for="default-search"
             class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -47,10 +50,12 @@
               </svg>
             </div>
             <input
+              ngModel
               type="search"
               id="default-search"
+              name="search"
               class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search Mockups, Logos..."
+              placeholder="Nhà trọ..."
               required
             />
             <button
@@ -78,21 +83,23 @@
           >Đăng ký</a
         >
         <a
-          [routerLink]="['/profile/post-new']"
+          *ngIf="isAuthenticatedUser"
+          (click)="toPostNew()"
           class="text-white-text-color text-800 dark:text-white hover:bg-gray-50 hover:text-black focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 lg:px-4 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
           >Đăng bài</a
         >
         <div *ngIf="isAuthenticatedUser" class="flex flex-row gap-1">
           <img
-            routerLink="/profile/user/1"
+            *ngIf="user?._avatar"
+            src="{{ user?._avatar }}"
+            (click)="toMyProfile()"
             class="w-10 h-10 rounded-full relative bottom-1"
-            src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
             alt="Rounded avatar"
           />
           <a
-            routerLink="/profile/user/1"
+            (click)="toMyProfile()"
             class="text-white-text-color text-800 dark:text-white focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm lg:py-2.5 ml-1 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
-            >Châu Anh</a
+            >{{ fullName }}</a
           >
         </div>
       </div>

@@ -1,23 +1,46 @@
-import { Component, Input } from '@angular/core';
-import { User } from '../models/user.model';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { User } from 'src/app/auth/user.model';
+import { Router } from '@angular/router';
+import { AccountService } from 'src/app/accounts/accounts.service';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-host-card',
   templateUrl: './host-card.component.html',
   styleUrls: ['./host-card.component.scss'],
 })
-export class HostCardComponent {
+export class HostCardComponent implements OnInit, OnDestroy {
   @Input()
-  host: {
+  host!: {
+    hostId: string;
     fname: string;
     lname: string;
     phone: string;
     avatar: string;
-  } = {
-    fname: 'Nguyễn Kiều',
-    lname: 'Châu Anh',
-    phone: '0913935810',
-    avatar:
-      'https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg',
   };
+
+  private userSub!: Subscription;
+  isAuthenticatedUser: boolean = false;
+
+  constructor(
+    private router: Router,
+    private accountService: AccountService,
+    private authService: AuthService
+  ) {}
+  ngOnInit(): void {
+    this.userSub = this.authService.user.subscribe((user) => {
+      this.isAuthenticatedUser = !!user;
+      console.log('User is authenticated: ', this.isAuthenticatedUser);
+    });
+  }
+  ngOnDestroy(): void {}
+
+  seeHostProfile() {
+    if (this.isAuthenticatedUser) {
+      this.router.navigate(['/profile/posting-history/', this.host.hostId]);
+    } else {
+      console.log('You first need to login to perform this action...');
+    }
+  }
 }

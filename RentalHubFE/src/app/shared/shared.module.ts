@@ -13,6 +13,8 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { SliderComponent } from './slider/slider.component';
 import { HostCardComponent } from './host-card/host-card.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
@@ -24,9 +26,16 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
     HostCardComponent,
     MainLayoutComponent,
   ],
-  imports: [CommonModule, NgMaterialsModule, RouterModule],
+  imports: [
+    CommonModule,
+    NgMaterialsModule,
+    RouterModule,
+    FormsModule,
+    ScrollingModule,
+  ],
   exports: [
     CommonModule,
+    ScrollingModule,
     NgMaterialsModule,
     TagsComponent,
     HeaderComponent,

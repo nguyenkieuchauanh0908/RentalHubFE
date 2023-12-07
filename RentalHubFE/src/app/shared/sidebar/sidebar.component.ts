@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SharedModule } from '../shared.module';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Observable, Subscription } from 'rxjs';
 import { resDataDTO } from '../resDataDTO';
 import { User } from 'src/app/auth/user.model';
+import { AccountService } from 'src/app/accounts/accounts.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,42 +13,39 @@ import { User } from 'src/app/auth/user.model';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  private userSub!: Subscription;
-  private rftoken: string | null | undefined;
-  isHost: boolean = false;
-  user!: User | null;
-  uId = 0;
+  @Input() profile!: User | null;
+  @Input() myProfile!: User | null;
+  @Input() seeMyProfile!: boolean;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private curentRoute: ActivatedRoute
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.userSub = this.authService.user.subscribe((user) => {
-      this.user = user;
-      // this.isHost = !!user;
-      this.isHost = false; //tạm thời
-      this.rftoken = user?.RFToken;
-    });
+    console.log('Am I seeing my profile from sidebar: ', this.seeMyProfile);
   }
 
-  ngOnDestroy() {
-    this.userSub.unsubscribe();
-  }
+  ngOnDestroy() {}
 
   showAccount() {
-    this.router.navigate(['/profile/user', this.uId], {
-      relativeTo: this.curentRoute,
-    });
+    this.router.navigate(['/profile/user', this.myProfile?._id]);
   }
 
   logout() {
+    console.log('On logging out...');
     let logoutObs: Observable<resDataDTO>;
-    logoutObs = this.authService.logout(this.rftoken);
-    logoutObs.subscribe((res) => {
-      // console.log(res);
-    });
+    logoutObs = this.authService.logout(this.myProfile?.RFToken);
+    logoutObs.subscribe();
+    this.router.navigate(['/posts']);
+  }
+
+  toPostingHistory() {
+    this.router.navigate(['/profile/posting-history', this.profile?._id]);
+  }
+
+  toPostNew() {
+    this.router.navigate(['/profile/post-new', this.myProfile?._id]);
+  }
+
+  editAvatar() {
+    this.router.navigate(['/profile/user/edit-avatar', this.myProfile?._id]);
   }
 }

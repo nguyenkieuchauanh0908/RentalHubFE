@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { resDataDTO } from 'src/app/shared/resDataDTO';
@@ -28,7 +28,6 @@ export class LoginComponent {
     this.isLoading = true;
     loginObs.subscribe(
       (res) => {
-        // console.log(res);
         this.isLoading = false;
         this.router.navigate(['/posts']);
       },

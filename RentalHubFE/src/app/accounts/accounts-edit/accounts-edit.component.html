@@ -1,5 +1,9 @@
-<div class="bg-white-background rounded-lg p-6">
-  <form>
+<div *ngIf="seeMyProfile" class="bg-white-background rounded-lg p-6">
+  <form
+    *ngIf="profile"
+    #profileForm="ngForm"
+    (ngSubmit)="onSubmitProfile(profileForm.value)"
+  >
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-12">
         <!-- Title -->
@@ -12,16 +16,16 @@
           <!-- First name -->
           <div class="sm:col-span-2">
             <label
-              for="first-name"
+              for="first_name"
               class="block text-sm font-medium leading-6 text-gray-900"
               >Họ</label
             >
             <div class="mt-2">
               <input
                 type="text"
-                name="first-name"
-                id="first-name"
-                value="{{ user?._fname }}"
+                name="first_name"
+                id="first_name"
+                [(ngModel)]="profile._fname"
                 autocomplete="given-name"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -31,23 +35,23 @@
           <!-- Last name -->
           <div class="sm:col-span-2">
             <label
-              for="last-name"
+              for="last_name"
               class="block text-sm font-medium leading-6 text-gray-900"
               >Tên</label
             >
             <div class="mt-2">
               <input
                 type="text"
-                name="last-name"
-                id="last-name"
-                value="{{ user?._lname }}"
+                name="last_name"
+                id="last_name"
+                [(ngModel)]="profile._lname"
                 autocomplete="family-name"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
           <!-- Date of birth -->
-          <div class="sm:col-span-2">
+          <!-- <div class="sm:col-span-2">
             <label
               for="dob"
               class="block text-sm font-medium leading-6 text-gray-900"
@@ -58,12 +62,12 @@
                 type="text"
                 name="dob"
                 id="dob"
-                value="{{ user?._dob }}"
+                [(ngModel)]="profile._dob"
                 autocomplete="family-name"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
-          </div>
+          </div> -->
 
           <!-- Email -->
           <div class="sm:col-span-3">
@@ -76,8 +80,9 @@
               <input
                 id="email"
                 name="email"
-                value="{{ user?._email }}"
+                [(ngModel)]="profile._email"
                 type="email"
+                ngModel
                 autocomplete="email"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -95,62 +100,8 @@
               <input
                 id="phone"
                 name="phone"
-                value="{{ user?._phone }}"
+                [(ngModel)]="profile._phone"
                 type="string"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <!-- Street -->
-          <div class="sm:col-span-2">
-            <label
-              for="street"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Đường</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="street"
-                id="street"
-                autocomplete="address-level1"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <!-- District -->
-          <div class="sm:col-span-2">
-            <label
-              for="region"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Quận/huyện</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="region"
-                id="region"
-                autocomplete="address-level1"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <!-- City -->
-          <div class="sm:col-span-2">
-            <label
-              for="city"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Tỉnh/thành phố</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="city"
-                id="city"
-                autocomplete="address-level1"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>

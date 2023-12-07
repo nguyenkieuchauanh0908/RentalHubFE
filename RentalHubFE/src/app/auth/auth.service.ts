@@ -12,9 +12,7 @@ import { User } from './user.model';
 })
 export class AuthService {
   isUser = false;
-  isHost = false;
-  isAdmin = false;
-  isInspector = false;
+  isHost = true;
 
   user = new BehaviorSubject<User | null>(null);
   private tokenExpirationTimer: any;
@@ -36,12 +34,13 @@ export class AuthService {
   }
 
   autoLogin() {
+    console.log('On auto login ...');
     const userData = localStorage.getItem('userData');
-    console.log('CA');
     if (userData) {
+      let expirationDuration = 0;
       const user: any = JSON.parse(userData);
-      console.log(user);
       const loadedUserData = new User(
+        user?._id,
         user?._fname,
         user?._lname,
         user?._dob,
@@ -58,17 +57,15 @@ export class AuthService {
         user?._ACToken,
         user?._ACExpiredTime
       );
-      console.log('loadedUserData: ', loadedUserData);
-      if (!loadedUserData.ACToken && loadedUserData.RFToken) {
-        console.log('on reseting token!');
-        this.resetACToken(loadedUserData.RFToken);
-        // console.log('CA: ', loadedUserData.ACToken, loadedUserData.RFToken);
-        this.user.next(loadedUserData);
-      }
       if (loadedUserData.ACToken && loadedUserData.RFToken) {
         this.user.next(loadedUserData);
+        expirationDuration = loadedUserData._RFExpiredTime - Date.now();
       }
-      const expirationDuration = loadedUserData._RFExpiredTime - Date.now();
+      if (!loadedUserData.ACToken && loadedUserData.RFToken) {
+        this.resetACToken(loadedUserData.RFToken);
+        expirationDuration = loadedUserData._RFExpiredTime - Date.now();
+      }
+      console.log('expiration duration:', expirationDuration);
       this.autoLogout(expirationDuration, loadedUserData.RFToken);
     } else {
       return;
@@ -86,6 +83,8 @@ export class AuthService {
   }
 
   logout(refreshToken: any) {
+    console.log('On loging out ...');
+    // console.log('RFToken: ', refreshToken);
     this.router.navigate(['/']);
     localStorage.removeItem('userData');
     if (this.tokenExpirationTimer) {
@@ -99,42 +98,79 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          // console.log(res);
+          console.log(res);
           this.user.next(null);
         })
       );
   }
 
   autoLogout(expirationDuration: number, refreshToken: any) {
+    console.log('auto loggin out...');
     this.tokenExpirationTimer = setTimeout(() => {
       this.logout(refreshToken);
+      this.isUser = false;
       if (localStorage.getItem('userData')) {
         localStorage.removeItem('userData');
       }
     }, expirationDuration);
   }
 
-  resetACToken(RFToken: string) {
+  resetACToken(refreshToken: string) {
+    console.log('On reseting token ...');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/reset-token', {
-        refreshToken: RFToken,
+        refreshToken: refreshToken,
       })
       .pipe(
-        catchError(handleError),
         tap((res) => {
+          console.log('on reset AC token function');
           console.log(res);
-          // cập nhật lại user
-          // cập nhật lại local storage
+          // cập nhật lại user với AC token mới
+          this.user.subscribe((currentUser) => {
+            if (currentUser) {
+              let resetUser = new User(
+                currentUser._id,
+                currentUser._fname,
+                currentUser._lname,
+                currentUser._phone,
+                currentUser._dob,
+                currentUser._active,
+                currentUser._rating,
+                currentUser._email,
+                currentUser._address,
+                currentUser._avatar,
+                currentUser._role,
+                currentUser._isHost,
+                res.data.refreshToken,
+                res.data.expiredRefresh,
+                res.data.accessToken,
+                res.data.expiredAccess
+              );
+              this.isHost = currentUser._isHost;
+              console.log('After reset token, isHost: ', this.isHost);
+              localStorage.setItem('userData', JSON.stringify(resetUser));
+              this.user.next(resetUser);
+            }
+          });
         })
-      );
+      )
+      .subscribe();
+  }
+
+  verifyAccount(phone: string) {
+    console.log('On verifying account ...');
+    return this.http.post(environment.baseUrl + 'users/accounts/verify-host', {
+      _phone: phone,
+    });
   }
 
   private handleAuthentication(data: any) {
     const user = new User(
+      data._id,
       data._fname,
       data._lname,
-      data._dob,
       data._phone,
+      data._dob,
       data._active,
       data._rating,
       data._email,
@@ -148,10 +184,11 @@ export class AuthService {
       data.expiredAccess
     );
     this.user.next(user);
+    this.isUser = true;
+    this.isHost = user._isHost;
+    console.log('After login, isHost: ', this.isHost);
     localStorage.setItem('userData', JSON.stringify(user));
-    console.log(user._RFExpiredTime, user.RFToken);
     const expirationDuration = user._RFExpiredTime - Date.now();
     this.autoLogout(expirationDuration, user.RFToken);
-    this.isUser = true;
   }
 }

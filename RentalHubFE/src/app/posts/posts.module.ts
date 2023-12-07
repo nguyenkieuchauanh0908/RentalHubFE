@@ -7,14 +7,21 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthRoutingModule } from '../auth/auth-routing.module';
 import { PostItemComponent } from './posts-list/post-item/post-item.component';
 import { PostCardComponent } from './post-card/post-card.component';
+import { PostsSearchResultComponent } from './posts-search-result/posts-search-result.component';
 
 @NgModule({
-  declarations: [PostsComponent, PostDetailComponent, PostCardComponent],
+  declarations: [
+    PostsComponent,
+    PostDetailComponent,
+    PostCardComponent,
+    PostsSearchResultComponent,
+  ],
   imports: [
     PostsRoutingModule,
     AuthRoutingModule,
     SharedModule,
     PostsListComponent,
+    PostItemComponent,
   ],
 })
 export class PostsModule {}
