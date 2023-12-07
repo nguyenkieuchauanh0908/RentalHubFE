@@ -57,6 +57,7 @@ export class AccountService {
       'content-type',
       'multipart/form-data'
     );
+    let currentUser : User;
     return this.http
       .patch<resDataDTO>(environment.baseUrl + 'users/update-avatar', body, {
         headers: headers,
@@ -65,8 +66,7 @@ export class AccountService {
         tap((res) => {
           this.authService.user.subscribe((currentUser) => {
             if (currentUser) {
-              currentUser._avatar =
-                'https://firebasestorage.googleapis.com/v0/b/rentalhub-a8ebf.appspot.com/o/userImg%2F393375730_1734640233675701_6965748919099651426_n.jpg%20%20%20%20%20%20%202023-11-26%2017%3A30%3A11?alt=media&token=a3b47493-9053-4a78-92aa-d4c3b4dbefb4';
+              currentUser._avatar = res.data._avatar;
               this.authService.user.next(currentUser);
             }
           });

@@ -62,8 +62,8 @@ export class ChangeAvatarComponent {
         this.accountService
           .updateAvatar(this.selectedFiles[i])
           .subscribe((res) => {
-            if (res.data.message === 'Update avatar sucessfully!') {
-              console.log(res.data.message);
+            if (res.data) {
+              console.log(res.data);
             }
           });
       }

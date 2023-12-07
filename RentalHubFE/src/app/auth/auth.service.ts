@@ -15,9 +15,18 @@ export class AuthService {
   isHost = true;
 
   user = new BehaviorSubject<User | null>(null);
+  resetToken: User | undefined;
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  resetUser: User | undefined;
+
+  constructor(private http: HttpClient, private router: Router) {
+    this.user.subscribe((user) => {
+      if (user) {
+        this.resetUser = user;
+      }
+    });
+  }
 
   login(email: string, pw: string) {
     return this.http
@@ -57,6 +66,7 @@ export class AuthService {
         user?._ACToken,
         user?._ACExpiredTime
       );
+      this.user.next(loadedUserData);
       if (loadedUserData.ACToken && loadedUserData.RFToken) {
         this.user.next(loadedUserData);
         expirationDuration = loadedUserData._RFExpiredTime - Date.now();
@@ -64,7 +74,7 @@ export class AuthService {
       if (!loadedUserData.ACToken && loadedUserData.RFToken) {
         this.resetACToken(loadedUserData.RFToken);
         expirationDuration = loadedUserData._RFExpiredTime - Date.now();
-      }
+      } 
       console.log('expiration duration:', expirationDuration);
       this.autoLogout(expirationDuration, loadedUserData.RFToken);
     } else {
@@ -127,8 +137,10 @@ export class AuthService {
           console.log(res);
           // cập nhật lại user với AC token mới
           this.user.subscribe((currentUser) => {
+            console.log('Current user: ', currentUser);
             if (currentUser) {
-              let resetUser = new User(
+              console.log('On updating user with reseting AC token...');
+              this.resetUser = new User(
                 currentUser._id,
                 currentUser._fname,
                 currentUser._lname,
@@ -148,10 +160,12 @@ export class AuthService {
               );
               this.isHost = currentUser._isHost;
               console.log('After reset token, isHost: ', this.isHost);
-              localStorage.setItem('userData', JSON.stringify(resetUser));
-              this.user.next(resetUser);
+              localStorage.setItem('userData', JSON.stringify(this.resetUser));
             }
           });
+          if (this.resetUser) {
+            this.user.next(this.resetUser);
+          }
         })
       )
       .subscribe();
@@ -189,6 +203,7 @@ export class AuthService {
     console.log('After login, isHost: ', this.isHost);
     localStorage.setItem('userData', JSON.stringify(user));
     const expirationDuration = user._RFExpiredTime - Date.now();
+    console.log('expiration duration:', expirationDuration);
     this.autoLogout(expirationDuration, user.RFToken);
   }
 }

@@ -19,6 +19,7 @@ export class User {
   ) {}
 
   get ACToken() {
+    console.log('Token in model: ', this._ACExpiredTime, Date.now());
     if (!this._ACExpiredTime || Date.now() > this._ACExpiredTime) {
       return null;
     }

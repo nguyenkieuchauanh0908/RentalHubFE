@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.authService.user.subscribe((user) => {
+      console.log(user);
       this.isAuthenticatedUser = !!user;
       console.log('User is authenticated: ', this.isAuthenticatedUser);
       this.user = user;
@@ -37,10 +38,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   toMyProfile() {
-    if (this.user !== null) {
-      let uId = this.user?._id;
-      this.router.navigate(['/profile/user/', uId]);
-    }
+    let uId = this.user?._id;
+    this.router.navigate(['/profile/user/', uId]);
   }
 
   toPostNew() {

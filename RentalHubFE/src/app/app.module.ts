@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { AuthGuard } from './auth/auth.guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,6 +25,7 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
       useClass: AuthInterceptorService,
       multi: true,
     },
+    AuthGuard,
   ],
   bootstrap: [AppComponent],
 })
