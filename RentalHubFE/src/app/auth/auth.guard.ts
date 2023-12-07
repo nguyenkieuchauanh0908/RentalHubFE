@@ -26,6 +26,7 @@ export class AuthGuard implements CanActivate {
     | UrlTree
     | Promise<boolean | UrlTree>
     | Observable<boolean | UrlTree> {
+    console.log("---------------------------------------------")
     return this.authService.user.pipe(
       take(1),
       mergeMap(async (user) => {
