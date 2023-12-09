@@ -29,6 +29,7 @@ export class AuthService {
   }
 
   login(email: string, pw: string) {
+    console.log('Is logging...................');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/login', {
         _email: email,
@@ -37,6 +38,7 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
+          console.log('On logging-------------------------');
           this.handleAuthentication(res.data);
         })
       );
@@ -74,7 +76,7 @@ export class AuthService {
       if (!loadedUserData.ACToken && loadedUserData.RFToken) {
         this.resetACToken(loadedUserData.RFToken);
         expirationDuration = loadedUserData._RFExpiredTime - Date.now();
-      } 
+      }
       console.log('expiration duration:', expirationDuration);
       this.autoLogout(expirationDuration, loadedUserData.RFToken);
     } else {
@@ -165,10 +167,13 @@ export class AuthService {
           });
           if (this.resetUser) {
             this.user.next(this.resetUser);
+            console.log(
+              '🚀 ~ file: auth.service.ts:168 ~ AuthService ~ tap ~ this.user.next:',
+              this.user.getValue()
+            );
           }
         })
-      )
-      .subscribe();
+      );
   }
 
   verifyAccount(phone: string) {

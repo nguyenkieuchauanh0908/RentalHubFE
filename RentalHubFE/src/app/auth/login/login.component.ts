@@ -25,9 +25,18 @@ export class LoginComponent {
     const pw = form.value.password;
 
     loginObs = this.authService.login(email, pw);
+    console.log(
+      '🚀 ~ file: login.component.ts:28 ~ LoginComponent ~ onSubmit ~ loginObs:',
+      loginObs
+    );
+    
     this.isLoading = true;
     loginObs.subscribe(
       (res) => {
+        console.log(
+          '🚀 ~ file: login.component.ts:32 ~ LoginComponent ~ onSubmit ~ res:',
+          res
+        );
         this.isLoading = false;
         this.router.navigate(['/posts']);
       },
@@ -36,6 +45,10 @@ export class LoginComponent {
         this.error = errorMsg;
         console.log(this.error);
       }
+    );
+    console.log(
+      '🚀 ~ file: login.component.ts:28 ~ LoginComponent ~ onSubmit ~ loginObs:',
+      loginObs
     );
   }
 }
