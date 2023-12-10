@@ -23,13 +23,9 @@ export class HostCardComponent implements OnInit, OnDestroy {
   private userSub!: Subscription;
   isAuthenticatedUser: boolean = false;
 
-  constructor(
-    private router: Router,
-    private accountService: AccountService,
-    private authService: AuthService
-  ) {}
+  constructor(private router: Router, private accountService: AccountService) {}
   ngOnInit(): void {
-    this.userSub = this.authService.user.subscribe((user) => {
+    this.userSub = this.accountService.getCurrentUser.subscribe((user) => {
       this.isAuthenticatedUser = !!user;
       console.log('User is authenticated: ', this.isAuthenticatedUser);
     });
@@ -38,7 +34,7 @@ export class HostCardComponent implements OnInit, OnDestroy {
 
   seeHostProfile() {
     if (this.isAuthenticatedUser) {
-      this.router.navigate(['/profile/posting-history/', this.host.hostId]);
+      this.router.navigate(['/hosts/post-history', this.host.hostId]);
     } else {
       console.log('You first need to login to perform this action...');
     }

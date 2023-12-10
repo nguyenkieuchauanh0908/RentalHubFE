@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
 import { Tags } from 'src/app/shared/tags/tag.model';
+import { AccountService } from '../accounts.service';
 
 @Component({
   selector: 'app-posts-edit',
@@ -30,13 +31,27 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private postService: PostService
+    private postService: PostService, 
+    private accountService: AccountService
   ) {}
 
   ngOnInit() {
+    // this.isHost = this.authService.isHost;
+    // console.log('isHost: ' + this.isHost);
+    // this.myProfileSub = this.authService.user.subscribe((user) => {
+    //   this.myProfile = user;
+    // });
+    // this.getTagSub = this.postService.getAllTags().subscribe((res) => {
+    //   if (res.data) {
+    //     console.log('Get tags successfully...');
+    //     res.data.forEach((tag: Tags) => {
+    //       this.sourceTags.add(tag);
+    //     });
+    //   }
+    // });
     this.isHost = this.authService.isHost;
     console.log('isHost: ' + this.isHost);
-    this.myProfileSub = this.authService.user.subscribe((user) => {
+    this.myProfileSub = this.accountService.getCurrentUser.subscribe((user) => {
       this.myProfile = user;
     });
     this.getTagSub = this.postService.getAllTags().subscribe((res) => {

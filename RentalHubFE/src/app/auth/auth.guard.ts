@@ -10,10 +10,13 @@ import { Observable, from } from 'rxjs';
 import { map, tap, take, mergeMap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
+import { AccountService } from '../accounts/accounts.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+     private router: Router, private accountService: AccountService) {}
   //   ngOnInit(): void {
   //     this.authService.autoLogin();
   //   }
@@ -27,7 +30,7 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | Observable<boolean | UrlTree> {
     console.log("---------------------------------------------")
-    return this.authService.user.pipe(
+    return this.accountService.getCurrentUser.pipe(
       take(1),
       mergeMap(async (user) => {
         console.log('Token before call api: ', user?.ACToken, user?.RFToken);
@@ -38,7 +41,7 @@ export class AuthGuard implements CanActivate {
               .toPromise();
             console.log(
               '🚀 ~ file: auth.guard.ts:35 ~ AuthGuard ~ map ~ auth:',
-              this.authService.user.getValue()
+              // this.authService.user.getValue()
             );
             return true;
           } catch (error) {

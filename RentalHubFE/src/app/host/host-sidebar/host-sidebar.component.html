@@ -1,0 +1,37 @@
+<div class="grid-flow-row items-center w-full">
+  <div class="max-w-md">
+    <div class="bg-white shadow-xl rounded-lg py-3">
+      <div class="photo-wrapper p-2">
+        <img
+          *ngIf="hostProfile?._avatar"
+          src="{{ hostProfile?._avatar }}"
+          class="w-32 h-32 rounded-full mx-auto"
+          alt="Avatar"
+        />
+      </div>
+      <div class="p-2">
+        <!-- Only for guests to see -->
+        <div>
+          <table class="text-xs my-3">
+            <tbody>
+              <tr>
+                <td class="px-2 py-2 text-gray-500 font-semibold">Tên</td>
+                <td class="px-2 py-2">
+                  {{ hostProfile?._fname }} {{ hostProfile?._lname }}
+                </td>
+              </tr>
+              <tr>
+                <td class="px-2 py-2 text-gray-500 font-semibold">Phone</td>
+                <td class="px-2 py-2">{{ hostProfile?._phone }}</td>
+              </tr>
+              <tr>
+                <td class="px-2 py-2 text-gray-500 font-semibold">Email</td>
+                <td class="px-2 py-2">{{ hostProfile?._email }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

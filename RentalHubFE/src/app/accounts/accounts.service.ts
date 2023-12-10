@@ -3,36 +3,58 @@ import { Injectable } from '@angular/core';
 import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, tap } from 'rxjs';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../auth/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
+  // currentUser: any;
   currentUserId = new Subject<string>();
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  private currentUser = new BehaviorSubject<User | null>(null);
+  constructor(
+    private http: HttpClient // private authService: AuthService
+  ) {}
 
-  getCurrentUserId(route: ActivatedRoute) {
-    console.log('on getting current userId ...');
-    route.params.subscribe((params) => {
-      let uId = params['uId'];
-      // console.log('current uId: ', uId);
-      this.currentUserId.next(uId);
-    });
+  getCurrentUser = this.currentUser.asObservable();
+  setCurrentUser(updatedUser: User | null) {
+    this.currentUser.next(updatedUser);
   }
+
+  getCurrentUserId(route: ActivatedRoute): string | null {
+    console.log('on getting current userId ...');
+    // route.params.subscribe((params) => {
+    //   let uId = params['uId'];
+    //   // console.log('current uId: ', uId);
+    //   this.currentUserId.next(uId);
+    // });
+    let uId: string | null | undefined = null;
+    this.getCurrentUser.subscribe((user) => {
+      uId = user?._id;
+    });
+    console.log('current uId: ', uId);
+    return uId;
+  }
+
   getProfile(uId: string) {
     console.log('current uId: ', uId);
-    const queryParams = { uId: uId };
-    return this.http.get<resDataDTO>(
-      environment.baseUrl + 'users/get-profile',
-      {
-        params: queryParams,
-      }
-    );
+    let profile: User | null = null;
+    this.getCurrentUser.subscribe((user) => {
+      profile = user;
+    });
+    return profile;
+    // const queryParams = { uId: uId };
+    // return this.http.get<resDataDTO>(
+    //   environment.baseUrl + 'users/get-profile',
+    //   {
+    //     params: queryParams,
+    //   }
+    // );
   }
 
   updateProfile(updatedProfile: any) {
     console.log('on calling update profile api...', updatedProfile);
+    let updatedtUser: User;
     return this.http
       .patch<resDataDTO>(environment.baseUrl + 'users/update-profile', {
         _fname: updatedProfile._fname,
@@ -44,7 +66,13 @@ export class AccountService {
       })
       .pipe(
         tap((res) => {
-          this.authService.user.next(res.data);
+          this.getCurrentUser.subscribe((currentUser) => {
+            if (currentUser) {
+              currentUser._avatar = res.data._avatar;
+              updatedtUser = currentUser;
+            }
+          });
+          this.setCurrentUser(updatedtUser);
         })
       );
   }
@@ -57,19 +85,20 @@ export class AccountService {
       'content-type',
       'multipart/form-data'
     );
-    let currentUser : User;
+    let updatedtUser: User;
     return this.http
       .patch<resDataDTO>(environment.baseUrl + 'users/update-avatar', body, {
         headers: headers,
       })
       .pipe(
         tap((res) => {
-          this.authService.user.subscribe((currentUser) => {
+          this.getCurrentUser.subscribe((currentUser) => {
             if (currentUser) {
               currentUser._avatar = res.data._avatar;
-              this.authService.user.next(currentUser);
+              updatedtUser = currentUser;
             }
           });
+          this.setCurrentUser(updatedtUser);
         })
       );
   }

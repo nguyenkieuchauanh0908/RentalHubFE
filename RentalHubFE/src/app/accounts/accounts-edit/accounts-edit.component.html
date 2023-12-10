@@ -1,6 +1,6 @@
-<div *ngIf="seeMyProfile" class="bg-white-background rounded-lg p-6">
+<div class="bg-white-background rounded-lg p-6">
   <form
-    *ngIf="profile"
+    *ngIf="myProfile"
     #profileForm="ngForm"
     (ngSubmit)="onSubmitProfile(profileForm.value)"
   >
@@ -25,7 +25,7 @@
                 type="text"
                 name="first_name"
                 id="first_name"
-                [(ngModel)]="profile._fname"
+                [(ngModel)]="myProfile._fname"
                 autocomplete="given-name"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -44,7 +44,7 @@
                 type="text"
                 name="last_name"
                 id="last_name"
-                [(ngModel)]="profile._lname"
+                [(ngModel)]="myProfile._lname"
                 autocomplete="family-name"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -62,7 +62,7 @@
                 type="text"
                 name="dob"
                 id="dob"
-                [(ngModel)]="profile._dob"
+                [(ngModel)]="myProfile._dob"
                 autocomplete="family-name"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -80,7 +80,7 @@
               <input
                 id="email"
                 name="email"
-                [(ngModel)]="profile._email"
+                [(ngModel)]="myProfile._email"
                 type="email"
                 ngModel
                 autocomplete="email"
@@ -100,7 +100,7 @@
               <input
                 id="phone"
                 name="phone"
-                [(ngModel)]="profile._phone"
+                [(ngModel)]="myProfile._phone"
                 type="string"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -110,6 +110,7 @@
       </div>
     </div>
 
+    <!-- Control Btn -->
     <div class="mt-6 flex items-center justify-end gap-x-6">
       <button
         type="button"

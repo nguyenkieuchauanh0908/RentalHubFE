@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 import { handleError } from './handle-errors';
 import { User } from './user.model';
+import { AccountService } from '../accounts/accounts.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,11 @@ export class AuthService {
 
   resetUser: User | undefined;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private accountService: AccountService
+  ) {
     this.user.subscribe((user) => {
       if (user) {
         this.resetUser = user;
@@ -68,9 +73,10 @@ export class AuthService {
         user?._ACToken,
         user?._ACExpiredTime
       );
-      this.user.next(loadedUserData);
+      this.accountService.setCurrentUser(loadedUserData);
       if (loadedUserData.ACToken && loadedUserData.RFToken) {
-        this.user.next(loadedUserData);
+        this.accountService.setCurrentUser(loadedUserData);
+
         expirationDuration = loadedUserData._RFExpiredTime - Date.now();
       }
       if (!loadedUserData.ACToken && loadedUserData.RFToken) {
@@ -96,7 +102,6 @@ export class AuthService {
 
   logout(refreshToken: any) {
     console.log('On loging out ...');
-    // console.log('RFToken: ', refreshToken);
     this.router.navigate(['/']);
     localStorage.removeItem('userData');
     if (this.tokenExpirationTimer) {
@@ -111,7 +116,7 @@ export class AuthService {
         catchError(handleError),
         tap((res) => {
           console.log(res);
-          this.user.next(null);
+          this.accountService.setCurrentUser(null);
         })
       );
   }
@@ -138,7 +143,7 @@ export class AuthService {
           console.log('on reset AC token function');
           console.log(res);
           // cập nhật lại user với AC token mới
-          this.user.subscribe((currentUser) => {
+          this.accountService.getCurrentUser.subscribe((currentUser) => {
             console.log('Current user: ', currentUser);
             if (currentUser) {
               console.log('On updating user with reseting AC token...');
@@ -166,10 +171,10 @@ export class AuthService {
             }
           });
           if (this.resetUser) {
-            this.user.next(this.resetUser);
+            this.accountService.setCurrentUser(this.resetUser);
             console.log(
               '🚀 ~ file: auth.service.ts:168 ~ AuthService ~ tap ~ this.user.next:',
-              this.user.getValue()
+              this.accountService.getCurrentUser
             );
           }
         })
@@ -202,7 +207,7 @@ export class AuthService {
       data.accessToken,
       data.expiredAccess
     );
-    this.user.next(user);
+    this.accountService.setCurrentUser(user);
     this.isUser = true;
     this.isHost = user._isHost;
     console.log('After login, isHost: ', this.isHost);

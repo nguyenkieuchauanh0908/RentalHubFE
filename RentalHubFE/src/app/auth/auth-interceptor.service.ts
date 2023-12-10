@@ -9,13 +9,18 @@ import { take, exhaustMap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import { AccountService } from '../accounts/accounts.service';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    // private authService: AuthService,
+    private router: Router,
+    private accountService: AccountService
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    return this.authService.user.pipe(
+    return this.accountService.getCurrentUser.pipe(
       take(1),
       exhaustMap((user) => {
         if (!user) {
@@ -24,7 +29,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         } else {
           if (!user.RFToken) {
             console.log('You need to login again!');
-            this.router.navigate(['/login']);
+            this.router.navigate(['/auth/login']);
           } else {
             if (user.ACToken && user.RFToken) {
               console.log('ACToken in interceptor: ', user.ACToken);

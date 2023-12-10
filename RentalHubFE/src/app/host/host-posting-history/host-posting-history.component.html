@@ -9,7 +9,7 @@
   </div>
   <!-- Active tabs -->
   <div class="mb-4 relative bottom-4">
-    <!-- All/Chờ duyệt/Đang đăng/Đã gỡ/ Bị báo cáo -->
+    <!-- Đang đăng/Bị báo cáo -->
     <div
       class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700"
     >
@@ -23,17 +23,6 @@
                 : 'inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'
             "
             >Tất cả</a
-          >
-        </li>
-        <li class="mr-2">
-          <a
-            (click)="toStackPostsHistory()"
-            [ngClass]="
-              currentActiveStatus.status === 0
-                ? 'inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500'
-                : 'inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'
-            "
-            >Chờ duyệt</a
           >
         </li>
         <li class="mr-2">
@@ -58,17 +47,6 @@
             >Bị báo cáo</a
           >
         </li>
-        <li class="mr-2">
-          <a
-            (click)="toHiddenPostsHistory()"
-            [ngClass]="
-              currentActiveStatus.status === 2
-                ? 'inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500'
-                : 'inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'
-            "
-            >Đã gỡ</a
-          >
-        </li>
       </ul>
     </div>
   </div>
@@ -76,7 +54,8 @@
   <div class="flex flex-col">
     <!-- Lists of products -->
     <!-- Item -->
-    <div class="grid grid-rows bg-white-background">
+
+    <div *ngIf="!seeMyProfile" class="grid grid-rows bg-white-background">
       <div
         *ngFor="let post of historyPosts"
         class="grid gap-4 grid-cols-12 mb-4"
@@ -120,15 +99,45 @@
             </p>
           </div>
         </div>
-
-        <!-- Edit button -->
-        <div class="grid col-span-3 p-8">
-          <button
-            type="button"
-            class="px-1 py-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      </div>
+      <div class="grid gap-4 grid-cols-12">
+        <!-- Image -->
+        <div class="grid col-span-2 w-full h-700px">
+          <img
+            class="hover:cursor-pointer"
+            src="https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg"
+            alt="hình nhà trọ"
+          />
+        </div>
+        <!-- Info -->
+        <div class="grid col-span-10">
+          <!-- Title -->
+          <div class="row flex flex-row items-center mb-0">
+            <a
+              [routerLink]="['/posts/1']"
+              class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+            >
+              Cho thuê biệt thự dương nội làm văn phòng, nhà hàng, nhà ở giá từ
+              12 - 35tr/tháng. - đường tố hữu, phường dương nội, quận hà đông,
+              hà nội
+            </a>
+          </div>
+          <!-- Price, Area, Assress -->
+          <div
+            class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
           >
-            Edit
-          </button>
+            <p>
+              Giá:
+              <span class="text-text-price-color font-medium">3,5tr</span>
+            </p>
+            <p>Diện tích: <span class="font-medium">23m2</span></p>
+            <p>
+              Địa chỉ:
+              <span class="font-medium"
+                >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+              >
+            </p>
+          </div>
         </div>
       </div>
     </div>

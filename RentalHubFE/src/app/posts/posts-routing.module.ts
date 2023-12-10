@@ -5,6 +5,7 @@ import { PostDetailComponent } from './post-detail/post-detail.component';
 import { PostsComponent } from './posts.component';
 import { PostsResolverService } from './posts-resolver.service';
 import { PostsSearchResultComponent } from './posts-search-result/posts-search-result.component';
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
       {
         path: ':id',
         component: PostDetailComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: '',

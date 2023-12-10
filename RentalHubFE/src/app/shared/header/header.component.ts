@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AccountService } from 'src/app/accounts/accounts.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
@@ -20,13 +21,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticatedUser: boolean = false;
 
   constructor(
-    private authService: AuthService,
+    // private authService: AuthService,
     private router: Router,
-    private postService: PostService
+    private postService: PostService, private accountService: AccountService
   ) {}
 
   ngOnInit() {
-    this.userSub = this.authService.user.subscribe((user) => {
+    // this.userSub = this.authService.user.subscribe((user) => {
+    //   console.log('On rendering headers...');
+    //   console.log(user);
+    //   this.isAuthenticatedUser = !!user;
+    //   console.log('User is authenticated: ', this.isAuthenticatedUser);
+    //   this.user = user;
+    //   if (this.user?._fname && this.user?._lname) {
+    //     this.fullName = this.user?._fname + ' ' + this.user._lname;
+    //   }
+    // });
+    this.userSub = this.accountService.getCurrentUser.subscribe((user) => {
+      console.log('On rendering headers...');
       console.log(user);
       this.isAuthenticatedUser = !!user;
       console.log('User is authenticated: ', this.isAuthenticatedUser);

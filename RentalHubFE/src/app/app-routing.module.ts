@@ -3,6 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { PostsResolverService } from './posts/posts-resolver.service';
 import { MainLayoutComponent } from './shared/layout/main-layout/main-layout.component';
 import { AuthGuard } from './auth/auth.guard';
+import { HostComponent } from './host/host.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,12 @@ const routes: Routes = [
     component: MainLayoutComponent,
     loadChildren: () =>
       import('./accounts/accounts.module').then((m) => m.AccountsModule),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'hosts',
+    component: MainLayoutComponent,
+    loadChildren: () => import('./host/host.module').then((m) => m.HostsModule),
     canActivate: [AuthGuard],
   },
   {

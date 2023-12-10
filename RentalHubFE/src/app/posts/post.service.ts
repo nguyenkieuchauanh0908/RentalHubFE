@@ -43,8 +43,12 @@ export class PostService {
     return this.posts.slice();
   }
 
-  getPostItem(postId: string): PostItem | undefined {
-    return this.posts.find((post) => post._id === postId);
+  getPostItem(postId: string) {
+    console.log('On getting post detail with postId: ' + postId);
+    let queryParams = new HttpParams().append('postId', postId);
+    return this.http.get<resDataDTO>(environment.baseUrl + 'posts/get-post', {
+      params: queryParams,
+    });
   }
 
   createPost(form: any, images: FileList, selectedTags: any) {

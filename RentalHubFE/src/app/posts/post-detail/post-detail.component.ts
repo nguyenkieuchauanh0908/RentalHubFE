@@ -9,31 +9,38 @@ import { PostService } from '../post.service';
   styleUrls: ['./post-detail.component.scss'],
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
-  post: PostItem | undefined;
+  stateData: any;
+  post: PostItem | undefined | any;
   host: any;
   relatedPosts!: PostItem[];
   id!: string;
 
   constructor(
     private postService: PostService,
-    private router: Router,
     private route: ActivatedRoute
   ) {}
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
-      this.post = this.postService.getPostItem(this.id);
+      this.postService.getPostItem(this.id).subscribe((res) => {
+        this.post = res.data;
+        this.host = {
+          hostId: this.post?.authorId,
+          fname: this.post?.authorFName,
+          lname: this.post?.authorLName,
+          address: this.post?.addressAuthor,
+          phone: this.post?.phoneNumber,
+          avatar:
+            'https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg',
+        };
+        console.log(
+          '🚀 ~ file: post-detail.component.ts:23 ~ PostDetailComponent ~ this.post:',
+          this.post
+        );
+      });
     });
+    //Gọi API get related posts
     this.relatedPosts = this.postService.posts;
-    this.host = {
-      hostId: this.post?.authorId,
-      fname: this.post?.authorFName,
-      lname: this.post?.authorLName,
-      address: this.post?.addressAuthor,
-      phone: this.post?.phoneNumber,
-      avatar:
-        'https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg',
-    };
   }
   ngOnDestroy() {}
 }

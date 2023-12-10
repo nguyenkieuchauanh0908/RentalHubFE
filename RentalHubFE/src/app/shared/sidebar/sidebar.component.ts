@@ -38,7 +38,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toPostingHistory() {
-    this.router.navigate(['/profile/posting-history', this.profile?._id]);
+    this.router.navigate(['/profile/posting-history', this.myProfile?._id]);
   }
 
   toPostNew() {

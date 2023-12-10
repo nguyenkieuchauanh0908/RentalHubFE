@@ -21,33 +21,37 @@ export class AccountsEditComponent implements OnInit, OnDestroy {
   private myProfileSub!: Subscription;
   private getProfileSub!: Subscription;
   profile!: User | null;
-  currentUid!: string;
+  currentUid!: string | null;
   myProfile!: User | null;
   seeMyProfile = false;
 
   constructor(
     private accountService: AccountService,
-    private authService: AuthService,
+    // private authService: AuthService,
     private route: ActivatedRoute
   ) {
-    this.accountService.currentUserId.subscribe((uId) => {
-      this.currentUid = uId;
-      if (this.currentUid) {
-        this.getProfileSub = this.accountService
-          .getProfile(this.currentUid)
-          .subscribe((profile) => {
-            this.profile = profile.data;
-            this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
-          });
-      }
-    });
+    // this.currentUid = this.accountService.getCurrentUserId(this.route)
+    //   if (this.currentUid) {
+    //     this.profile = this.accountService.getProfile(this.currentUid);
+    //     // this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
+    //   }
   }
 
   ngOnInit() {
-    this.myProfileSub = this.authService.user.subscribe((myProfile) => {
-      this.myProfile = myProfile;
-    });
-    this.accountService.getCurrentUserId(this.route);
+    // this.myProfileSub = this.authService.user.subscribe((myProfile) => {
+    //   this.myProfile = myProfile;
+    // });
+    // this.accountService.getCurrentUserId(this.route);
+    // this.myProfileSub = this.accountService.getCurrentUser.subscribe((myProfile) => {
+    //   this.myProfile = myProfile;
+    // });
+
+    // this.accountService.getCurrentUserId(this.route);
+    this.currentUid = this.accountService.getCurrentUserId(this.route);
+    if (this.currentUid) {
+      this.myProfile = this.accountService.getProfile(this.currentUid);
+      // this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
+    }
   }
   ngOnDestroy(): void {
     // this.myProfileSub.unsubscribe();
