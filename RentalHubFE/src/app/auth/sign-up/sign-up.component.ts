@@ -5,6 +5,7 @@ import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { resDataDTO } from 'src/app/shared/resDataDTO';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-sign-up',
@@ -15,9 +16,14 @@ export class SignUpComponent {
   isLoading = false;
   error: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private notifierService: NotifierService
+  ) {}
 
   onSubmit(form: NgForm) {
+    console.log('onSubmit....');
     let signupObs: Observable<resDataDTO>;
     if (!form.valid) {
       return;
@@ -33,16 +39,22 @@ export class SignUpComponent {
         (res) => {
           this.isLoading = false;
           this.router.navigate(['/auth/login']);
+          this.notifierService.notify(
+            'success',
+            'Đăng ký tài khoản thành công!'
+          );
         },
         (errorMsg) => {
           this.isLoading = false;
           this.error = errorMsg;
           console.log(this.error);
+          this.notifierService.notify('error', this.error);
         }
       );
     } else {
-      this.error = 'Please confirm correct password!';
+      this.error = 'Mật khẩu nhập lại không khớp!';
       console.log(this.error);
+      this.notifierService.notify('error', this.error);
     }
   }
 }

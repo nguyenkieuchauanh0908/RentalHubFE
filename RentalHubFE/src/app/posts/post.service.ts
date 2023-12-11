@@ -8,6 +8,8 @@ import {
   Pagination,
   PaginationService,
 } from '../shared/pagination/pagination.service';
+import { handleError } from '../shared/handle-errors';
+import { NotifierService } from 'angular-notifier';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -20,7 +22,8 @@ export class PostService {
 
   constructor(
     private http: HttpClient,
-    private paginationService: PaginationService
+    private paginationService: PaginationService,
+    private notifierService: NotifierService
   ) {}
 
   getPostList(page: number, limit: number) {
@@ -30,13 +33,18 @@ export class PostService {
         params: queryParams,
       })
       .pipe(
-        //    catchError(),
-        tap((res) => {
-          this.posts = res.data;
-          this.paginationService.pagination = res.data.pagination;
-          this.paginationService.paginationChanged.next(res.pagination);
-          this.postListChanged.next([...this.posts]);
-        })
+        catchError(handleError),
+        tap(
+          (res) => {
+            this.posts = res.data;
+            this.paginationService.pagination = res.data.pagination;
+            this.paginationService.paginationChanged.next(res.pagination);
+            this.postListChanged.next([...this.posts]);
+          },
+          (errMsg) => {
+            this.notifierService.notify('error', errMsg);
+          }
+        )
       )
       .subscribe();
 
@@ -46,9 +54,11 @@ export class PostService {
   getPostItem(postId: string) {
     console.log('On getting post detail with postId: ' + postId);
     let queryParams = new HttpParams().append('postId', postId);
-    return this.http.get<resDataDTO>(environment.baseUrl + 'posts/get-post', {
-      params: queryParams,
-    });
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/get-post', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
   }
 
   createPost(form: any, images: FileList, selectedTags: any) {
@@ -80,6 +90,7 @@ export class PostService {
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'posts/create-post', body)
       .pipe(
+        catchError(handleError),
         tap((res) => {
           if (res.data) {
             console.log('Created post successfully...', res.data);
@@ -94,10 +105,11 @@ export class PostService {
       .append('status', status)
       .append('page', page)
       .append('limit', limit);
-    return this.http.get<resDataDTO>(
-      environment.baseUrl + 'posts/history-post',
-      { params: queryParams }
-    );
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/history-post', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
   }
 
   searchPostsByKeyword(keyword: string, page: number, limit: number) {
@@ -113,6 +125,7 @@ export class PostService {
         params: queryParams,
       })
       .pipe(
+        catchError(handleError),
         tap((res) => {
           this.searchResult = res.data;
           this.searchResultsChanged.next([...this.searchResult]);
@@ -136,6 +149,7 @@ export class PostService {
         params: queryParams,
       })
       .pipe(
+        catchError(handleError),
         tap((res) => {
           if (res.data) {
             console.log('Search results: ', res.data);
@@ -145,7 +159,9 @@ export class PostService {
   }
 
   getAllTags() {
-    return this.http.get<resDataDTO>(environment.baseUrl + 'posts/get-tags');
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/get-tags')
+      .pipe(catchError(handleError));
   }
 
   createTag(tag: string) {
@@ -154,6 +170,7 @@ export class PostService {
         _tag: tag,
       })
       .pipe(
+        catchError(handleError),
         tap((res) => {
           if (res.data) {
             console.log('Created tag successfully...', res.data);

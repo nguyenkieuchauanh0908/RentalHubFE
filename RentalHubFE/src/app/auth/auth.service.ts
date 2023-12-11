@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
-import { handleError } from './handle-errors';
+import { handleError } from '../shared/handle-errors';
 import { User } from './user.model';
 import { AccountService } from '../accounts/accounts.service';
 
@@ -139,6 +139,7 @@ export class AuthService {
         refreshToken: refreshToken,
       })
       .pipe(
+        catchError(handleError),
         tap((res) => {
           console.log('on reset AC token function');
           console.log(res);
@@ -183,9 +184,11 @@ export class AuthService {
 
   verifyAccount(phone: string) {
     console.log('On verifying account ...');
-    return this.http.post(environment.baseUrl + 'users/accounts/verify-host', {
-      _phone: phone,
-    });
+    return this.http
+      .post(environment.baseUrl + 'users/accounts/verify-host', {
+        _phone: phone,
+      })
+      .pipe(catchError(handleError));
   }
 
   private handleAuthentication(data: any) {

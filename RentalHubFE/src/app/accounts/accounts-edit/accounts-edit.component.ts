@@ -11,6 +11,7 @@ import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { AccountService } from '../accounts.service';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-accounts-edit',
@@ -18,8 +19,8 @@ import { AccountService } from '../accounts.service';
   styleUrls: ['./accounts-edit.component.scss'],
 })
 export class AccountsEditComponent implements OnInit, OnDestroy {
-  private myProfileSub!: Subscription;
-  private getProfileSub!: Subscription;
+  isLoading = false;
+  error: string = '';
   profile!: User | null;
   currentUid!: string | null;
   myProfile!: User | null;
@@ -27,30 +28,14 @@ export class AccountsEditComponent implements OnInit, OnDestroy {
 
   constructor(
     private accountService: AccountService,
-    // private authService: AuthService,
-    private route: ActivatedRoute
-  ) {
-    // this.currentUid = this.accountService.getCurrentUserId(this.route)
-    //   if (this.currentUid) {
-    //     this.profile = this.accountService.getProfile(this.currentUid);
-    //     // this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
-    //   }
-  }
+    private route: ActivatedRoute,
+    private notifierService: NotifierService
+  ) {}
 
   ngOnInit() {
-    // this.myProfileSub = this.authService.user.subscribe((myProfile) => {
-    //   this.myProfile = myProfile;
-    // });
-    // this.accountService.getCurrentUserId(this.route);
-    // this.myProfileSub = this.accountService.getCurrentUser.subscribe((myProfile) => {
-    //   this.myProfile = myProfile;
-    // });
-
-    // this.accountService.getCurrentUserId(this.route);
     this.currentUid = this.accountService.getCurrentUserId(this.route);
     if (this.currentUid) {
       this.myProfile = this.accountService.getProfile(this.currentUid);
-      // this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
     }
   }
   ngOnDestroy(): void {
@@ -67,8 +52,18 @@ export class AccountsEditComponent implements OnInit, OnDestroy {
       _phone: form.phone,
       _email: form.email,
     };
-    this.accountService.updateProfile(updatedProfile).subscribe((res) => {
-      console.log(res);
-    });
+    this.accountService.updateProfile(updatedProfile).subscribe(
+      (res) => {
+        if (res.data) {
+          this.notifierService.notify('success', 'Cập nhật hồ sơ thành công!');
+        }
+      },
+      (errorMsg) => {
+        this.isLoading = false;
+        this.error = errorMsg;
+        console.log(this.error);
+        this.notifierService.notify('error', errorMsg);
+      }
+    );
   }
 }

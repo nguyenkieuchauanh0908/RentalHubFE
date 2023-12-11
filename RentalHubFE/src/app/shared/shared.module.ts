@@ -6,15 +6,13 @@ import { NgMaterialsModule } from './ng-materials/ng-materials.module';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { MatNativeDateModule } from '@angular/material/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { PaginationComponent } from './pagination/pagination.component';
 import { SliderComponent } from './slider/slider.component';
 import { HostCardComponent } from './host-card/host-card.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NotifierModule } from 'angular-notifier';
 
 @NgModule({
   declarations: [
@@ -32,6 +30,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     RouterModule,
     FormsModule,
     ScrollingModule,
+    NotifierModule,
   ],
   exports: [
     CommonModule,
@@ -45,7 +44,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     SliderComponent,
     HostCardComponent,
     MainLayoutComponent,
+    NotifierModule,
   ],
-  // providers: [provideAnimations(), provideHttpClient()], -----> fix double click routerLink bug by deleting it but still dont know why
 })
 export class SharedModule {}

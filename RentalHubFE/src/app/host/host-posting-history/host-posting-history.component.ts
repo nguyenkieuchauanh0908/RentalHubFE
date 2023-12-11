@@ -10,7 +10,7 @@ import { PaginationService } from 'src/app/shared/pagination/pagination.service'
 @Component({
   selector: 'app-host-posting-history',
   templateUrl: './host-posting-history.component.html',
-  styleUrls: ['./host-posting-history.component.scss']
+  styleUrls: ['./host-posting-history.component.scss'],
 })
 export class HostPostingHistoryComponent {
   private myProfileSub!: Subscription;
@@ -32,41 +32,17 @@ export class HostPostingHistoryComponent {
 
   constructor(
     private accountService: AccountService,
-    // private authService: AuthService,
     private route: ActivatedRoute,
     private postService: PostService,
     private paginationService: PaginationService
   ) {
-    // this.accountService.currentUserId.subscribe((uId) => {
-    //   this.currentUid = uId;
-    //   if (this.currentUid) {
-    //     this.getProfileSub = this.accountService
-    //       .getProfile(this.currentUid)
-    //       .subscribe((profile) => {
-    //         this.profile = profile.data;
-    //         this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
-    //       });
-    //   }
-    // });
     this.currentUid = this.accountService.getCurrentUserId(this.route);
     if (this.currentUid) {
       this.myProfile = this.accountService.getProfile(this.currentUid);
-      // this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
     }
   }
 
   ngOnInit() {
-    // this.myProfileSub = this.authService.user.subscribe((myProfile) => {
-    //   this.myProfile = myProfile;
-    // });
-    // this.accountService.getCurrentUserId(this.route);
-    // this.getPostHistorySub = this.postService
-    //   .getPostsHistory(4, 1, 5)
-    //   .subscribe((res) => {
-    //     this.historyPosts = res.data;
-    //     this.totalPages = res.pagination.total;
-    //   });
-
     this.myProfileSub = this.accountService.getCurrentUser.subscribe(
       (myProfile) => {
         this.myProfile = myProfile;
@@ -81,8 +57,6 @@ export class HostPostingHistoryComponent {
       });
   }
   ngOnDestroy(): void {
-    // this.myProfileSub.unsubscribe();
-    // this.getProfileSub.unsubscribe();
     this.getPostHistorySub.unsubscribe();
   }
 
@@ -92,7 +66,6 @@ export class HostPostingHistoryComponent {
       .subscribe((res) => {
         this.historyPosts = res.data;
         this.totalPages = res.pagination.total;
-        // console.log(this.historyPosts);
       });
     this.currentActiveStatus.status = 4;
     this.paginationService.currentPage = 1;

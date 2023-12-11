@@ -7,6 +7,7 @@ import {
   PaginationService,
 } from 'src/app/shared/pagination/pagination.service';
 import { PostService } from '../post.service';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-posts-search-result',
@@ -14,6 +15,8 @@ import { PostService } from '../post.service';
   styleUrls: ['./posts-search-result.component.scss'],
 })
 export class PostsSearchResultComponent implements OnInit, OnDestroy {
+  isLoading = false;
+  error: string = '';
   currentState$: Observable<any> = new Observable<any>();
   stateData: any;
   searchResult!: PostItem[];
@@ -46,7 +49,8 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
     public route: ActivatedRoute,
     private router: Router,
     private paginationService: PaginationService,
-    private postService: PostService
+    private postService: PostService,
+    private notifierService: NotifierService
   ) {
     this.stateData = this.router.getCurrentNavigation()?.extras.state;
     this.searchResult = this.stateData.searchResult;
@@ -54,8 +58,6 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
       console.log('Received search result...', this.stateData.searchResult);
       this.searchResult = this.stateData.searchResult;
       this.paginationService.pagination = this.stateData.pagination;
-
-      // this.currentKeyword = this.stateData.keyword;
     }
   }
 
@@ -70,11 +72,19 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
         this.currentPage,
         this.pageItemLimit
       )
-      .subscribe((res) => {
-        this.searchResult = res.data;
-        this.paginationService.pagination = res.pagination;
-        this.totalPages = res.pagination.total;
-      });
+      .subscribe(
+        (res) => {
+          this.searchResult = res.data;
+          this.paginationService.pagination = res.pagination;
+          this.totalPages = res.pagination.total;
+        },
+        (errorMsg) => {
+          this.isLoading = false;
+          this.error = errorMsg;
+          console.log(this.error);
+          this.notifierService.notify('error', this.error);
+        }
+      );
     this.searchResultChangedSub =
       this.postService.searchResultsChanged.subscribe(
         (searchResult: PostItem[]) => {
