@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             console.log('On navigating to search result page...');
             this.router.navigate(
               [
-                '/posts/search',
+                '/posts/search', 
                 {
                   keyword: searchForm.search,
                 },

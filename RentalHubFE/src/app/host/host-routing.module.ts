@@ -3,6 +3,7 @@ import { HostComponent } from './host.component';
 import { HostProfileComponent } from './host-profile/host-profile.component';
 import { HostPostingHistoryComponent } from './host-posting-history/host-posting-history.component';
 import { NgModule } from '@angular/core';
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -10,8 +11,9 @@ const routes: Routes = [
     component: HostComponent,
     children: [
       {
-        path: 'post-history/:uId',
+        path: 'post-history/:id',
         component: HostPostingHistoryComponent,
+        canActivate: [AuthGuard],
       },
       //Host Messenger
     ],

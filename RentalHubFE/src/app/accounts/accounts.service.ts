@@ -23,11 +23,6 @@ export class AccountService {
 
   getCurrentUserId(route: ActivatedRoute): string | null {
     console.log('on getting current userId ...');
-    // route.params.subscribe((params) => {
-    //   let uId = params['uId'];
-    //   // console.log('current uId: ', uId);
-    //   this.currentUserId.next(uId);
-    // });
     let uId: string | null | undefined = null;
     this.getCurrentUser.subscribe((user) => {
       uId = user?._id;

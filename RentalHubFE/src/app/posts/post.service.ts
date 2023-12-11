@@ -112,6 +112,19 @@ export class PostService {
       .pipe(catchError(handleError));
   }
 
+  getPostsHistoryOfAUser(uId: string, page: number, limit: number) {
+    console.log('Geting posts history...');
+    let queryParams = new HttpParams()
+      .append('uId', uId)
+      .append('page', page)
+      .append('limit', limit);
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/view-post-user', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
+
   searchPostsByKeyword(keyword: string, page: number, limit: number) {
     console.log('On searching posts by keyword...', keyword);
     let queryParams = new HttpParams()

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostsListComponent } from 'src/app/posts/posts-list/posts-list.component';
 import { AccountService } from '../accounts.service';
@@ -66,72 +65,103 @@ export class PostingHistoryComponent {
   }
 
   toAllPostHistory() {
+    this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(4, 1, 5)
       .subscribe((res) => {
-        this.historyPosts = res.data;
-        this.totalPages = res.pagination.total;
-        // console.log(this.historyPosts);
+        if (res.data) {
+          this.historyPosts = res.data;
+          this.totalPages = res.pagination.total;
+        } else {
+          this.historyPosts = [];
+        }
+        //console.log(this.historyPosts);
       });
     this.currentActiveStatus.status = 4;
     this.paginationService.currentPage = 1;
   }
 
   toStackPostsHistory() {
+    this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(0, 1, 5)
       .subscribe((res) => {
-        this.historyPosts = res.data;
-        this.totalPages = res.pagination.total;
-        // console.log(this.historyPosts);
+        if (res.data) {
+          this.historyPosts = res.data;
+          this.totalPages = res.pagination.total;
+        } else {
+          this.historyPosts = [];
+        }
+        //console.log(this.historyPosts);
       });
     this.currentActiveStatus.status = 0;
     this.paginationService.currentPage = 1;
   }
 
   toOnWallPostsHistory() {
+    this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(1, 1, 5)
       .subscribe((res) => {
-        this.historyPosts = res.data;
-        this.totalPages = res.pagination.total;
-        // console.log(this.historyPosts);
+        if (res.data) {
+          this.historyPosts = res.data;
+          this.totalPages = res.pagination.total;
+        } else {
+          this.historyPosts = [];
+        }
+        //console.log(this.historyPosts);
       });
     this.currentActiveStatus.status = 1;
     this.paginationService.currentPage = 1;
   }
 
   toReportedPostsHistory() {
+    this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(3, 1, 5)
       .subscribe((res) => {
-        this.historyPosts = res.data;
-        this.totalPages = res.pagination.total;
-        // console.log(this.historyPosts);
+        if (res.data) {
+          this.historyPosts = res.data;
+          this.totalPages = res.pagination.total;
+        } else {
+          this.historyPosts = [];
+        }
+        //console.log(this.historyPosts);
       });
     this.currentActiveStatus.status = 3;
     this.paginationService.currentPage = 1;
   }
 
   toHiddenPostsHistory() {
+    this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(2, 1, 5)
       .subscribe((res) => {
-        this.historyPosts = res.data;
-        this.totalPages = res.pagination.total;
-        // console.log(this.historyPosts);
+        if (res.data) {
+          this.historyPosts = res.data;
+          this.totalPages = res.pagination.total;
+        } else {
+          this.historyPosts = [];
+        }
+        //console.log(this.historyPosts);
       });
     this.currentActiveStatus.status = 2;
     this.paginationService.currentPage = 1;
   }
 
   changeCurrentPage(position: number) {
+    this.historyPosts = [];
     this.currentPage = this.paginationService.caculateCurrentPage(position);
     this.getPostHistorySub = this.postService
       .getPostsHistory(this.currentActiveStatus.status, this.currentPage, 5)
       .subscribe((res) => {
-        this.historyPosts = res.data;
-        this.totalPages = res.pagination.total;
+        if (res.data) {
+          this.historyPosts = res.data;
+          this.totalPages = res.pagination.total;
+        } else {
+          this.historyPosts = [];
+        }
+        //console.log(this.historyPosts);
         console.log(this.historyPosts);
         console.log(this.currentActiveStatus.status);
       });

@@ -24,8 +24,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService
   ) {}
   ngOnInit() {
+    this.id = '';
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
+      console.log(
+        '🚀 ~ file: post-detail.component.ts:30 ~ PostDetailComponent ~ this.route.params.subscribe ~ this.id:',
+        this.id
+      );
       this.postService.getPostItem(this.id).subscribe(
         (res) => {
           this.post = res.data;
@@ -39,8 +44,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               'https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg',
           };
           console.log(
-            '🚀 ~ file: post-detail.component.ts:23 ~ PostDetailComponent ~ this.post:',
-            this.post
+            '🚀 ~ file: post-detail.component.ts:33 ~ PostDetailComponent ~ this.route.params.subscribe ~ this.host:',
+            this.host
           );
         },
         (errorMsg) => {

@@ -11,22 +11,28 @@
       </div>
       <div class="p-2">
         <!-- Only for guests to see -->
-        <div>
-          <table class="text-xs my-3">
+        <div *ngIf="hostProfile" class="flex flex-col gap-4">
+          <table class="my-3">
             <tbody>
               <tr>
-                <td class="px-2 py-2 text-gray-500 font-semibold">Tên</td>
-                <td class="px-2 py-2">
-                  {{ hostProfile?._fname }} {{ hostProfile?._lname }}
+                <td class="px-2 py-2 text-gray-500 font-semibold text-right">
+                  Tên
+                </td>
+                <td class="px-2 py-2 text-left">
+                  {{ hostProfile?.fname }} {{ hostProfile?.lname }}
                 </td>
               </tr>
               <tr>
-                <td class="px-2 py-2 text-gray-500 font-semibold">Phone</td>
-                <td class="px-2 py-2">{{ hostProfile?._phone }}</td>
+                <td class="px-2 py-2 text-gray-500 font-semibold text-right">
+                  Phone
+                </td>
+                <td class="px-2 py-2 text-left">{{ hostProfile?.phone }}</td>
               </tr>
               <tr>
-                <td class="px-2 py-2 text-gray-500 font-semibold">Email</td>
-                <td class="px-2 py-2">{{ hostProfile?._email }}</td>
+                <td class="px-2 py-2 text-gray-500 font-semibold text-right">
+                  Email
+                </td>
+                <td class="px-2 py-2 text-left">{{ hostProfile?.email }}</td>
               </tr>
             </tbody>
           </table>

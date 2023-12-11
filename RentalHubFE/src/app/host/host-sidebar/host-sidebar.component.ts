@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { User } from 'src/app/auth/user.model';
 
 @Component({
   selector: 'app-host-sidebar',

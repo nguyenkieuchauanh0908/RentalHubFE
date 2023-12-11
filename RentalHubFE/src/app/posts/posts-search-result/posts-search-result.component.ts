@@ -53,6 +53,10 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService
   ) {
     this.stateData = this.router.getCurrentNavigation()?.extras.state;
+    console.log(
+      '🚀 ~ file: posts-search-result.component.ts:56 ~ PostsSearchResultComponent ~ this.stateData:',
+      this.stateData
+    );
     this.searchResult = this.stateData.searchResult;
     if (this.stateData.searchResult && this.stateData.pagination) {
       console.log('Received search result...', this.stateData.searchResult);
