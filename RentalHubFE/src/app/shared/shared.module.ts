@@ -14,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NotifierModule } from 'angular-notifier';
 import { AddTagDialogComponent } from './tags/add-tag-dialog/add-tag-dialog.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { AddTagDialogComponent } from './tags/add-tag-dialog/add-tag-dialog.comp
     HostCardComponent,
     MainLayoutComponent,
     AddTagDialogComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,

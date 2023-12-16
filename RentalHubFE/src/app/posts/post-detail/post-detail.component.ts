@@ -40,8 +40,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             lname: this.post?.authorLName,
             address: this.post?.addressAuthor,
             phone: this.post?.phoneNumber,
-            avatar:
-              'https://static.tapchitaichinh.vn/w640/images/upload/hoangthuviet/12172018/084806baoxaydung_image001.jpg',
+            avatar: this.post?.avatarAuthor,
           };
           console.log(
             '🚀 ~ file: post-detail.component.ts:33 ~ PostDetailComponent ~ this.route.params.subscribe ~ this.host:',

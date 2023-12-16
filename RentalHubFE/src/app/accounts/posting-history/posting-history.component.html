@@ -14,7 +14,7 @@
       class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700"
     >
       <ul class="flex flex-wrap -mb-px">
-        <li class="mr-2">
+        <!-- <li class="mr-2">
           <a
             (click)="toAllPostHistory()"
             [ngClass]="
@@ -24,7 +24,7 @@
             "
             >Tất cả</a
           >
-        </li>
+        </li> -->
         <li class="mr-2">
           <a
             (click)="toStackPostsHistory()"
@@ -55,7 +55,7 @@
                 ? 'inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500'
                 : 'inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'
             "
-            >Bị báo cáo</a
+            >Chưa được duyệt</a
           >
         </li>
         <li class="mr-2">
@@ -122,13 +122,23 @@
           </div>
 
           <!-- Edit button -->
-          <div class="grid col-span-3 p-8">
+          <div *ngIf="post._status !== 2" class="grid col-span-3 p-8">
             <button
               (click)="toEditPostDialog(post)"
               class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               type="button"
             >
               Chỉnh sửa
+            </button>
+          </div>
+
+          <div *ngIf="post._status === 2" class="grid col-span-3 p-8">
+            <button
+              (click)="activatePost(post._id)"
+              class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              type="button"
+            >
+              Yêu cầu duyệt
             </button>
           </div>
         </div>

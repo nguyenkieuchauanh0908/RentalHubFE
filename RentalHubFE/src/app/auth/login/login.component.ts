@@ -22,7 +22,6 @@ export class LoginComponent {
   ) {}
 
   onSubmit(form: NgForm) {
-    this.notifierService.hideAll();
     let loginObs: Observable<resDataDTO>;
     if (!form.valid) {
       return;
@@ -37,6 +36,7 @@ export class LoginComponent {
     );
 
     this.isLoading = true;
+    this.notifierService.hideAll();
     loginObs.subscribe(
       (res) => {
         console.log(
@@ -45,6 +45,7 @@ export class LoginComponent {
         );
         this.isLoading = false;
         this.router.navigate(['/posts']);
+        this.notifierService.hideAll();
         this.notifierService.notify('success', 'Đăng nhập thành công!');
       },
       (errorMsg) => {

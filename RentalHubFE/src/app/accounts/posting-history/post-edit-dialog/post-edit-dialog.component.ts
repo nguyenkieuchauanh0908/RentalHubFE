@@ -7,6 +7,7 @@ import { Tags } from 'src/app/shared/tags/tag.model';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotifierService } from 'angular-notifier';
 import { AddTagDialogComponent } from 'src/app/shared/tags/add-tag-dialog/add-tag-dialog.component';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-post-edit-dialog',
@@ -56,10 +57,6 @@ export class PostEditDialogComponent implements OnInit {
     this.postService.setCurrentChosenTags(this.data._tags);
     this.postService.getCurrentChosenTags.subscribe((tags) => {
       this.selectedTags = tags;
-      console.log(
-        '🚀 ~ file: post-edit-dialog.component.ts:59 ~ PostEditDialogComponent ~ ngOnInit ~ this.selectedTags:',
-        this.selectedTags
-      );
     });
   }
 
@@ -92,6 +89,13 @@ export class PostEditDialogComponent implements OnInit {
             this.notifierService.notify('error', errMsg);
           }
         );
+    } else {
+      if (this.selectedFiles) {
+        this.notifierService.notify(
+          'warning',
+          'Vui lòng không để trống ảnh của bài viết!'
+        );
+      }
     }
   }
 
@@ -185,6 +189,26 @@ export class PostEditDialogComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  toHidePostDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn gỡ bài viết này không?',
+    });
+    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      this.postService
+        .updatePostStatus(this.data._id, false)
+        .subscribe((res) => {
+          if (res.data) {
+            this.notifierService.hideAll();
+            this.notifierService.notify('success', 'Gỡ bài viết thành công!');
+          }
+        });
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
     });
   }
 }

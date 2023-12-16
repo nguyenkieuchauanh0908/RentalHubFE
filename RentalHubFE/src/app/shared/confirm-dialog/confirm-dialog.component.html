@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Xác nhận</h2>
+<mat-dialog-content>
+  <h4>{{ message }}</h4>
+  <notifier-container></notifier-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Hủy</button>
+  <button
+    class="bg-blue-700 hover:bg-blue-800"
+    style="color: white; background-color: #1a56db"
+    (click)="confirm()"
+    mat-dialog-close
+    mat-button
+  >
+    Xác nhận
+  </button>
+</mat-dialog-actions>

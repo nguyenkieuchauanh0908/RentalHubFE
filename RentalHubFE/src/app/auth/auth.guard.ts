@@ -52,10 +52,10 @@ export class AuthGuard implements CanActivate {
         if (user?.ACToken && user?.RFToken) {
           return true;
         }
-        this.notifierService.notify(
-          'warning',
-          'Bạn cần phải đăng nhập lại để tiếp tục!'
-        );
+        // this.notifierService.notify(
+        //   'warning',
+        //   'Bạn cần phải đăng nhập lại để tiếp tục!'
+        // );
         return this.router.createUrlTree(['/auth/login']);
       }),
       mergeMap((result) => from(Promise.resolve(result)))

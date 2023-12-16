@@ -87,6 +87,8 @@ export class PostsEditComponent implements OnInit, OnDestroy {
             this.notifierService.notify('error', errMsg);
           }
         );
+    } else {
+      this.notifierService.notify('warning', 'Vui lòng điền đủ các trường!');
     }
   }
 

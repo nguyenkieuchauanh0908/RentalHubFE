@@ -452,6 +452,14 @@
           </div>
         </div>
       </div>
+
+      <div
+        *ngIf="previews.length === 0"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <p>Vui lòng chọn ảnh</p>
+      </div>
     </div>
 
     <!-- Save btn -->

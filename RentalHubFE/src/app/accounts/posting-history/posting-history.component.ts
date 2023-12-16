@@ -13,6 +13,8 @@ import { Tags } from 'src/app/shared/tags/tag.model';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PostEditDialogComponent } from './post-edit-dialog/post-edit-dialog.component';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   standalone: true,
@@ -52,18 +54,17 @@ export class PostingHistoryComponent {
   selectedTags: Set<Tags> = new Set();
 
   currentActiveStatus = {
-    status: 4, //All posts
+    status: 0, //All posts
     data: this.historyPosts,
   };
-  notifierService: any;
-  authService: any;
 
   constructor(
     private accountService: AccountService,
     private route: ActivatedRoute,
     private postService: PostService,
     private paginationService: PaginationService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private notifierService: NotifierService
   ) {
     this.currentUid = this.accountService.getCurrentUserId(this.route);
     if (this.currentUid) {
@@ -84,7 +85,7 @@ export class PostingHistoryComponent {
 
     this.currentUid = this.accountService.getCurrentUserId(this.route);
     this.getPostHistorySub = this.postService
-      .getPostsHistory(4, 1, 5)
+      .getPostsHistory(1, 1, 5)
       .subscribe((res) => {
         this.historyPosts = res.data;
         console.log(
@@ -208,6 +209,25 @@ export class PostingHistoryComponent {
     });
     dialogRef.afterClosed().subscribe((result) => {
       console.log(`Dialog result: + $(result)`);
+    });
+  }
+
+  activatePost(postId: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn yêu cầu duyệt lại bài viết này không?',
+    });
+    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      this.postService.updatePostStatus(postId, true).subscribe((res) => {
+        if (res.data) {
+          console.log(res.data);
+          this.notifierService.hideAll();
+          this.notifierService.notify('success', 'Gửi yêu cầu thành công!');
+        }
+      });
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
     });
   }
 }

@@ -22,6 +22,7 @@ export class PostItem {
     public roomPrice: number,
     public roomElectricPrice: number,
     public roomWaterPrice: number,
-    public roomIsRented: boolean
+    public roomIsRented: boolean,
+    public _status: number
   ) {}
 }

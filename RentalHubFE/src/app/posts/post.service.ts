@@ -69,7 +69,7 @@ export class PostService {
   createPost(form: any, images: FileList, selectedTags: any) {
     let body = new FormData();
     body.append('_title', form.title);
-    body.append('_desc', form.description);
+    body.append('_desc', form.desc);
     body.append('_content', form.content);
     body.append('_street', form.street);
     body.append('_district', form.district);
@@ -78,7 +78,7 @@ export class PostService {
     body.append('_electricPrice', form.electric);
     body.append('_waterPrice', form.water_price);
     body.append('_services', form.services);
-    body.append('_ultilities', form.ultilities);
+    body.append('_ultilities', form.utilities);
     const numberOfImages = images.length;
     for (let i = 0; i < numberOfImages; i++) {
       const reader = new FileReader();
@@ -125,6 +125,9 @@ export class PostService {
     body.append('_waterPrice', form.water_price.toString());
     body.append('_services', form.services);
     body.append('_ultilities', form.ultilities);
+    body.append('_street', form.street);
+    body.append('_district', form.district);
+    body.append('_city', form.city);
 
     if (images) {
       const numberOfImages = images.length;
@@ -207,6 +210,18 @@ export class PostService {
           }
         })
       );
+  }
+
+  updatePostStatus(postId: string, status: boolean) {
+    console.log('On deactivating post has id: ', postId);
+    return this.http
+      .patch<resDataDTO>(
+        environment.baseUrl + 'posts/update-post-status/' + postId,
+        {
+          _active: status,
+        }
+      )
+      .pipe(catchError(handleError));
   }
 
   searchPostByTags(tags: [string], page: number, limit: number) {

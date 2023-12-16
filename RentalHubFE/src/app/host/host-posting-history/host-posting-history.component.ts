@@ -64,8 +64,8 @@ export class HostPostingHistoryComponent implements OnInit {
           this.hostProfile.fname = res.data[0].authorFName;
           this.hostProfile.lname = res.data[0].authorLName;
           this.hostProfile.id = res.data[0].authorId;
-          this.hostProfile.avatar = res.data[0].authorAvatar;
-          this.hostProfile.phone = res.data[0].authorPhone;
+          this.hostProfile.avatar = res.data[0].avatarAuthor;
+          this.hostProfile.phone = res.data[0].phoneNumber;
           this.hostProfile.email = res.data[0].authorEmail;
           this.totalPages = res.pagination.total;
         });
