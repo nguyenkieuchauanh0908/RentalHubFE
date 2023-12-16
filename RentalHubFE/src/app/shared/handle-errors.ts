@@ -162,7 +162,7 @@ export function handleError(errorRes: HttpErrorResponse) {
       errorMessage = 'Vui lòng điền diện tích phòng trọ';
       break;
     case 'AREA_INVALID':
-      errorMessage = 'Diện tích phòng trợ không hợp lệ! Vui lòng kiểm tra lại!';
+      errorMessage = 'Diện tích phòng trọ không hợp lệ! Vui lòng kiểm tra lại!';
       break;
     case 'PRICE_NOTFOUND':
       errorMessage = 'Vui lòng nhập giá thuê phòng trợ!';

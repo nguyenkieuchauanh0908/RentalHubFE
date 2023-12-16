@@ -21,7 +21,7 @@
   </h2>
   <form
     #createPostForm="ngForm"
-    (ngSubmit)="onSubmitPost(createPostForm.value)"
+    (ngSubmit)="onSubmitPost(createPostForm.value); createPostForm.resetForm()"
   >
     <!-- Title -->
     <div class="mb-6">
@@ -35,8 +35,19 @@
         id="title-input"
         name="title"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #title="ngModel"
       />
+      <div
+        *ngIf="title.invalid && (title.dirty || title.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="title.errors?.['required']">
+          Tiêu đề không được bỏ trống.
+        </div>
+      </div>
     </div>
     <!-- Description -->
     <div class="mb-6">
@@ -51,9 +62,18 @@
         id="desc-input"
         name="desc"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder="Viết mô tả ngắn về phòng trọ ở đây..."
+        #desc="ngModel"
       ></textarea>
+      <div
+        *ngIf="desc.invalid && (desc.dirty || desc.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="desc.errors?.['required']">Mô tả không được bỏ trống</div>
+      </div>
     </div>
     <!-- Content  -->
     <div class="mb-6">
@@ -68,9 +88,20 @@
         id="content-input"
         name="content"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder="Viết mô tả chi tiết về phòng trọ ở đây..."
+        #content="ngModel"
       ></textarea>
+      <div
+        *ngIf="content.invalid && (content.dirty || content.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="content.errors?.['required']">
+          Nội dung mô tả chi tiết không được bỏ trống.
+        </div>
+      </div>
     </div>
     <!-- Street -->
     <div class="mb-6">
@@ -84,8 +115,19 @@
         id="street-input"
         name="street"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #street="ngModel"
       />
+      <div
+        *ngIf="street.invalid && (street.dirty || street.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="street.errors?.['required']">
+          Mô tả không được bỏ trống.
+        </div>
+      </div>
     </div>
     <!-- District -->
     <div class="mb-6">
@@ -99,8 +141,45 @@
         id="district-input"
         name="district"
         ngModel
+        required
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #district="ngModel"
+      />
+      <div
+        *ngIf="district.invalid && (district.dirty || district.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="desc.errors?.['required']">
+          Nội dung bài viết không được bỏ trống.
+        </div>
+      </div>
+    </div>
+
+    <!-- City -->
+    <div class="mb-6">
+      <label
+        for="base-input"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Thành phố</label
+      >
+      <input
+        type="text"
+        id="city-input"
+        name="city"
+        disabled
+        value="Hồ Chí Minh"
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       />
+      <!-- <div
+        *ngIf="city.invalid && (city.dirty || city.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="desc.errors?.['required']">
+          Nội dung bài viết không được bỏ trống.
+        </div>
+      </div> -->
     </div>
 
     <!-- Area -->
@@ -115,8 +194,19 @@
         id="area-input"
         name="area"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #area="ngModel"
       />
+      <div
+        *ngIf="area.invalid && (area.dirty || area.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="area.errors?.['required']">
+          Diện tích không được bỏ trống.
+        </div>
+      </div>
     </div>
     <!-- Renting price -->
     <div class="mb-6">
@@ -130,8 +220,19 @@
         id="renting_price-input"
         name="renting_price"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #retalPrice="ngModel"
       />
+      <div
+        *ngIf="retalPrice.invalid && (retalPrice.dirty || retalPrice.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="retalPrice.errors?.['required']">
+          Gía thuê nhà không được bỏ trống
+        </div>
+      </div>
     </div>
     <!-- Electric price -->
     <div class="mb-6">
@@ -145,8 +246,22 @@
         id="electric_input"
         name="electric"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #electricPrice="ngModel"
       />
+      <div
+        *ngIf="
+          electricPrice.invalid &&
+          (electricPrice.dirty || electricPrice.touched)
+        "
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="electricPrice.errors?.['required']">
+          Mô tả không được bỏ trống
+        </div>
+      </div>
     </div>
     <!-- Water price -->
     <div class="mb-6">
@@ -160,8 +275,19 @@
         id="water_price_input"
         name="water_price"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #waterPrice="ngModel"
       />
+      <div
+        *ngIf="waterPrice.invalid && (waterPrice.dirty || waterPrice.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="waterPrice.errors?.['required']">
+          Gía nước không được bỏ trống.
+        </div>
+      </div>
     </div>
 
     <!-- Services -->
@@ -176,8 +302,19 @@
         id="services_input"
         name="services"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #services="ngModel"
       />
+      <div
+        *ngIf="services.invalid && (services.dirty || services.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="services.errors?.['required']">
+          Dịch vụ không được bỏ trống.
+        </div>
+      </div>
     </div>
 
     <!-- Utilities -->
@@ -192,8 +329,19 @@
         id="utilities_input"
         name="utilities"
         ngModel
+        required
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        #ultilities="ngModel"
       />
+      <div
+        *ngIf="ultilities.invalid && (ultilities.dirty || ultilities.touched)"
+        class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <div *ngIf="ultilities.errors?.['required']">
+          Tiện ích không được bỏ trống.
+        </div>
+      </div>
     </div>
 
     <!-- Tags -->
@@ -208,38 +356,42 @@
         class="flex flex-row flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <span
-          class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
+          (click)="createTag()"
+          class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
           >+</span
         >
         <div
-          class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
+          class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
           *ngFor="let tag of selectedTags"
         >
-          <span class="tag" (click)="addTag(tag)">
+          <span class="tag" (click)="updateChosentags(tag)">
             {{ tag._tag }}
           </span>
-          <span (click)="addTag(tag)" *ngIf="selectedTags.has(tag)">
+          <span
+            (click)="updateChosentags(tag)"
+            *ngIf="selectedTags.includes(tag)"
+          >
             <mat-icon>clear</mat-icon></span
           >
         </div>
       </div>
 
       <!-- Tags to choose from -->
-      <div class="mt-4 flex flex-wrap h-max-52 overflow-y-auto">
+      <!-- <div class="mt-4 flex flex-wrap h-max-52 overflow-y-auto">
         <div
           *ngFor="let tag of sourceTags"
           class="flex flex-row h-6 align-middle no-wrap bg-grey-background text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:bg-indigo-100"
           [class.chosenTag]="selectedTags.has(tag)"
         >
-          <span class="tag" (click)="addTag(tag)">{{ tag._tag }}</span>
-          <span (click)="addTag(tag)" *ngIf="!selectedTags.has(tag)">
+          <span class="tag" (click)="updateChosentags(tag)">{{ tag._tag }}</span>
+          <span (click)="updateChosentags(tag)" *ngIf="!selectedTags.has(tag)">
             <mat-icon>add</mat-icon></span
           >
-          <span (click)="addTag(tag)" *ngIf="selectedTags.has(tag)">
+          <span (click)="updateChosentags(tag)" *ngIf="selectedTags.has(tag)">
             <mat-icon>clear</mat-icon></span
           >
         </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- Images -->
@@ -247,19 +399,56 @@
       <label
         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
         for="multiple_files"
-        >Chọn tối đa 10 ảnh</label
+        >Chọn tối đa 5 ảnh</label
       >
       <div class="bg-white-background rounded-lg">
-        <input
-          (change)="selectFiles($event)"
-          class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-          id="multiple_files"
-          type="file"
-          multiple
-        />
-        <div class="flex flex-wrap justify-around mt-4">
-          <div *ngFor="let preview of previews" class="basis-[20%]">
-            <img [src]="preview" class="preview" />
+        <div class="flex flex-wrap mt-4 w-100">
+          <!-- Image -->
+          <div
+            (click)="deleteImage(preview, index)"
+            *ngFor="let preview of previews; index as index"
+            class="basis-[19%] h-100 border-solid border-2 border-indigo-600 p-3 mr-1 relative hover:cursor-pointer"
+          >
+            <img
+              *ngIf="preview !== ''"
+              [src]="preview"
+              class="object-cover h-38 w-96"
+            />
+            <mat-icon
+              *ngIf="preview === ''"
+              (click)="image.click()"
+              class="mat-icon-style hover:cursor-pointer hover:bg-indigo-100 hover:rounded-lg"
+              >add</mat-icon
+            >
+            <input
+              (change)="updateFile($event, index)"
+              class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+              id="image_file"
+              name="image_file"
+              type="file"
+              ngModel
+              #image
+            />
+          </div>
+          <!-- Add image -->
+          <div
+            *ngIf="previews.length < 5"
+            (click)="addImage.click()"
+            class="basis-[19%] w-96 border-solid border-2 border-indigo-600 p-3 mr-1 relative hover:cursor-pointer"
+          >
+            <input
+              (change)="addNewImage($event)"
+              class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+              id="addImage"
+              name="addImage"
+              type="file"
+              ngModel
+              #addImage
+            />
+            <mat-icon
+              class="mat-icon-style hover:cursor-pointer hover:bg-indigo-100 hover:rounded-lg"
+              >add</mat-icon
+            >
           </div>
         </div>
       </div>
@@ -269,10 +458,12 @@
     <div class="mt-6 flex items-center justify-end gap-x-6">
       <button
         type="submit"
+        [disabled]="createPostForm.invalid"
         class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
       >
         Tạo bài viết
       </button>
     </div>
   </form>
+  <notifier-container></notifier-container>
 </div>

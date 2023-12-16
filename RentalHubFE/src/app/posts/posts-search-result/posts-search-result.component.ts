@@ -86,6 +86,7 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.error = errorMsg;
           console.log(this.error);
+          this.notifierService.hideAll();
           this.notifierService.notify('error', this.error);
         }
       );

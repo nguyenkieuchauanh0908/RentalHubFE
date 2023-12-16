@@ -22,6 +22,7 @@ export class LoginComponent {
   ) {}
 
   onSubmit(form: NgForm) {
+    this.notifierService.hideAll();
     let loginObs: Observable<resDataDTO>;
     if (!form.valid) {
       return;

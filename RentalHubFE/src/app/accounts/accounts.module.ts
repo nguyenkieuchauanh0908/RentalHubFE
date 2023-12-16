@@ -12,6 +12,7 @@ import { VerifyAccountComponent } from './verify-account/verify-account.componen
 import { FormsModule } from '@angular/forms';
 import { VerifyOtpComponent } from './verify-otp/verify-otp.component';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
+import { PostEditDialogComponent } from './posting-history/post-edit-dialog/post-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
     VerifyAccountComponent,
     VerifyOtpComponent,
     ChangeAvatarComponent,
+    PostEditDialogComponent,
   ],
   imports: [
     CommonModule,

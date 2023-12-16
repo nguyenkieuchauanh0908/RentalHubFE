@@ -10,9 +10,10 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { SliderComponent } from './slider/slider.component';
 import { HostCardComponent } from './host-card/host-card.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NotifierModule } from 'angular-notifier';
+import { AddTagDialogComponent } from './tags/add-tag-dialog/add-tag-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,12 +24,14 @@ import { NotifierModule } from 'angular-notifier';
     SliderComponent,
     HostCardComponent,
     MainLayoutComponent,
+    AddTagDialogComponent,
   ],
   imports: [
     CommonModule,
     NgMaterialsModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     ScrollingModule,
     NotifierModule,
   ],
@@ -45,6 +48,7 @@ import { NotifierModule } from 'angular-notifier';
     HostCardComponent,
     MainLayoutComponent,
     NotifierModule,
+    ReactiveFormsModule,
   ],
 })
 export class SharedModule {}

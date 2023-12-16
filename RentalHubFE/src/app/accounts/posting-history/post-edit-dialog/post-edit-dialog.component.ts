@@ -1,24 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
-import { User } from 'src/app/auth/user.model';
+import { Component, Inject, OnInit } from '@angular/core';
 import { PostService } from 'src/app/posts/post.service';
+import { Subscription, Observable } from 'rxjs';
+import { User } from 'src/app/auth/user.model';
+import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
 import { Tags } from 'src/app/shared/tags/tag.model';
-import { AccountService } from '../accounts.service';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotifierService } from 'angular-notifier';
-import { Dialog } from '@angular/cdk/dialog';
 import { AddTagDialogComponent } from 'src/app/shared/tags/add-tag-dialog/add-tag-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-posts-edit',
-  templateUrl: './posts-edit.component.html',
-  styleUrls: ['./posts-edit.component.scss'],
+  selector: 'app-post-edit-dialog',
+  templateUrl: './post-edit-dialog.component.html',
+  styleUrls: ['./post-edit-dialog.component.scss'],
 })
-export class PostsEditComponent implements OnInit, OnDestroy {
-  isHost: boolean = false;
+export class PostEditDialogComponent implements OnInit {
+  private getProfileSub!: Subscription;
+  private getPostHistorySub!: Subscription;
+  profile!: User | null;
+  currentUid!: string | null;
   myProfile!: User | null;
+  historyPosts: PostItem[] = new Array<PostItem>();
+  totalPages: number = 1;
+  currentPage: number = 1;
+  pageItemLimit: number = 5;
+  isHost: boolean = false;
   myProfileSub = new Subscription();
   getTagSub = new Subscription();
 
@@ -28,58 +33,58 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   selectedFileNames: string[] = [];
   updatedFiles!: FileList;
   deletedImageIndexes: number[] = [];
+
   selectedTags!: Tags[];
 
+  currentActiveStatus = {
+    status: 4, //All posts
+    data: this.historyPosts,
+  };
+  authService: any;
   constructor(
-    private authService: AuthService,
-    private router: Router,
     private postService: PostService,
-    private accountService: AccountService,
     private notifierService: NotifierService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.postService.getCurrentChosenTags.subscribe((tags) => {
-      if (tags) {
-        console.log('Get tags successfully...');
-        this.selectedTags = tags;
-      }
-    });
+    console.log(this.data);
   }
 
-  ngOnInit() {
-    this.isHost = this.authService.isHost;
-    console.log('isHost: ' + this.isHost);
-    this.myProfileSub = this.accountService.getCurrentUser.subscribe((user) => {
-      this.myProfile = user;
-    });
-
+  ngOnInit(): void {
     this.postService.setCurrentChosenTags([]);
-    this.getTagSub = this.postService.getAllTags().subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.myProfileSub.unsubscribe();
-    this.getTagSub.unsubscribe();
-  }
-  onVerifyAccount() {
-    console.log('on verifying account ...');
-    let uId = this.myProfile?._id;
-    this.router.navigate(['/profile/verify-account/', uId]);
+    this.previews = this.data._images;
+    this.postService.setCurrentChosenTags(this.data._tags);
+    this.postService.getCurrentChosenTags.subscribe((tags) => {
+      this.selectedTags = tags;
+      console.log(
+        '🚀 ~ file: post-edit-dialog.component.ts:59 ~ PostEditDialogComponent ~ ngOnInit ~ this.selectedTags:',
+        this.selectedTags
+      );
+    });
   }
 
   onSubmitPost(form: any) {
     console.log('on submiting post ...');
     console.log('Form data: ', form);
-    this.notifierService.hideAll();
-    if (this.selectedFiles) {
+    if (this.previews) {
+      console.log(
+        '🚀 ~ file: post-edit-dialog.component.ts:59 ~ PostEditDialogComponent ~ onSubmitPost ~ this.selectedFiles:',
+        this.selectedFiles
+      );
       this.postService
-        .createPost(form, this.updatedFiles, this.selectedTags)
+        .updatePost(
+          form,
+          this.updatedFiles,
+          this.deletedImageIndexes,
+          this.selectedTags,
+          this.data._id
+        )
         .subscribe(
           (res) => {
             if (res.data) {
               this.notifierService.notify(
                 'success',
-                'Tạo bài viết thành công!'
+                'Cập nhật bài viết thành công!'
               );
             }
           },
@@ -168,9 +173,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
       const updatedTags = this.selectedTags.filter(
         (currentTag) => currentTag !== tag
       );
-      this.postService.setCurrentChosenTags(
-        this.selectedTags.filter((currentTag) => currentTag !== tag)
-      );
+      this.selectedTags = updatedTags;
     } else {
       this.selectedTags.push(tag);
     }

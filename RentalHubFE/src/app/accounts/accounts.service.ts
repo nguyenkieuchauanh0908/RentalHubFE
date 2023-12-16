@@ -4,7 +4,6 @@ import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, tap } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
 import { User } from '../auth/user.model';
 
 @Injectable({ providedIn: 'root' })

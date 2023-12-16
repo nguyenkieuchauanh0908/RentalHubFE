@@ -10,6 +10,7 @@ import {
 } from '../shared/pagination/pagination.service';
 import { handleError } from '../shared/handle-errors';
 import { NotifierService } from 'angular-notifier';
+import { Tags } from '../shared/tags/tag.model';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -19,6 +20,10 @@ export class PostService {
   searchResult: PostItem[] = [];
   searchKeyword: string = '';
   searchKeywordChanged = new Subject<string>();
+
+  private currentTags = new BehaviorSubject<Tags[]>([]);
+
+  private currentChosenTags = new BehaviorSubject<Tags[]>([]);
 
   constructor(
     private http: HttpClient,
@@ -62,9 +67,7 @@ export class PostService {
   }
 
   createPost(form: any, images: FileList, selectedTags: any) {
-    let tags = ['65167b55baf1f2214d5f7994', '65167b7bbaf1f2214d5f7995'];
     let body = new FormData();
-
     body.append('_title', form.title);
     body.append('_desc', form.description);
     body.append('_content', form.content);
@@ -74,7 +77,6 @@ export class PostService {
     body.append('_price', form.renting_price);
     body.append('_electricPrice', form.electric);
     body.append('_waterPrice', form.water_price);
-    body.append('_tags', selectedTags);
     body.append('_services', form.services);
     body.append('_ultilities', form.ultilities);
     const numberOfImages = images.length;
@@ -82,9 +84,15 @@ export class PostService {
       const reader = new FileReader();
       reader.readAsDataURL(images[i]);
       body.append('_images', images[i]);
+      // console.log(
+      //   '🚀 ~ file: post.service.ts:85 ~ PostService ~ createPost ~ images[i]:',
+      //   images[i]
+      // );
     }
-    for (let tag of tags) {
-      body.append('_tags', tag);
+    if (selectedTags) {
+      for (let tag of selectedTags) {
+        body.append('_tags', tag._id);
+      }
     }
 
     return this.http
@@ -94,6 +102,57 @@ export class PostService {
         tap((res) => {
           if (res.data) {
             console.log('Created post successfully...', res.data);
+          }
+        })
+      );
+  }
+
+  updatePost(
+    form: any,
+    images: FileList,
+    deletedImageIndexes: number[],
+    selectedTags: any,
+    postId: string
+  ) {
+    let body = new FormData();
+    body.append('_title', form.title);
+    body.append('_desc', form.desc);
+    body.append('_content', form.content);
+    body.append('_address', form.address);
+    body.append('_area', form.area.toString());
+    body.append('_price', form.renting_price.toString());
+    body.append('_electricPrice', form.electric.toString());
+    body.append('_waterPrice', form.water_price.toString());
+    body.append('_services', form.services);
+    body.append('_ultilities', form.ultilities);
+
+    if (images) {
+      const numberOfImages = images.length;
+      for (let i = 0; i < numberOfImages; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(images[i]);
+        body.append('_images', images[i]);
+      }
+    }
+
+    if (selectedTags) {
+      for (let tag of selectedTags) {
+        body.append('_tags', tag._id);
+      }
+    }
+
+    body.append('_deleteImages', deletedImageIndexes.toString());
+
+    return this.http
+      .patch<resDataDTO>(
+        environment.baseUrl + 'posts/update-post/' + postId,
+        body
+      )
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            console.log('Updated post successfully...', res.data);
           }
         })
       );
@@ -171,10 +230,29 @@ export class PostService {
       );
   }
 
+  setCurrentTags(updatedTags: Tags[]) {
+    this.currentTags.next(updatedTags);
+  }
+
+  getCurrentTags = this.currentTags.asObservable();
+
+  setCurrentChosenTags(updatedChosenTags: Tags[]) {
+    this.currentChosenTags.next(updatedChosenTags);
+  }
+
+  getCurrentChosenTags = this.currentChosenTags.asObservable();
+
   getAllTags() {
     return this.http
       .get<resDataDTO>(environment.baseUrl + 'posts/get-tags')
-      .pipe(catchError(handleError));
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            this.setCurrentTags(res.data);
+          }
+        })
+      );
   }
 
   createTag(tag: string) {

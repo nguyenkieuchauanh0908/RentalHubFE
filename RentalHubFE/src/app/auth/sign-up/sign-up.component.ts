@@ -23,6 +23,7 @@ export class SignUpComponent {
   ) {}
 
   onSubmit(form: NgForm) {
+    this.notifierService.hideAll();
     console.log('onSubmit....');
     let signupObs: Observable<resDataDTO>;
     if (!form.valid) {

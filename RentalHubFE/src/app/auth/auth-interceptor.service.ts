@@ -10,13 +10,15 @@ import { take, exhaustMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { AccountService } from '../accounts/accounts.service';
+import { NotifierService } from 'angular-notifier';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
   constructor(
     // private authService: AuthService,
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private notifierService: NotifierService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
@@ -28,6 +30,10 @@ export class AuthInterceptorService implements HttpInterceptor {
           return next.handle(req);
         } else {
           if (!user.RFToken) {
+            this.notifierService.notify(
+              'warning',
+              'Bạn cần phải đăng nhập lại để tiếp tục!'
+            );
             console.log('You need to login again!');
             this.router.navigate(['/auth/login']);
           } else {

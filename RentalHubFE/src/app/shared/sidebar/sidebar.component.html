@@ -1,8 +1,9 @@
 <div class="grid-flow-row items-center w-full">
   <div class="max-w-md">
     <div class="bg-white shadow-xl rounded-lg py-3">
-      <div *ngIf="seeMyProfile" class="photo-wrapper p-2">
+      <div class="photo-wrapper p-2">
         <img
+          (click)="editAvatar()"
           *ngIf="myProfile?._avatar"
           src="{{ myProfile?._avatar }}"
           class="w-32 h-32 rounded-full mx-auto"
@@ -18,7 +19,7 @@
         </div>
       </div>
       <!-- Manage list -->
-      <div *ngIf="seeMyProfile" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4">
         <!-- Account -->
         <div class="flex flex-col gap-2 text-center">
           <a

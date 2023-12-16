@@ -11,13 +11,15 @@ import { map, tap, take, mergeMap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
 import { AccountService } from '../accounts/accounts.service';
+import { NotifierService } from 'angular-notifier';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private notifierService: NotifierService
   ) {}
 
   canActivate(
@@ -28,6 +30,7 @@ export class AuthGuard implements CanActivate {
     | UrlTree
     | Promise<boolean | UrlTree>
     | Observable<boolean | UrlTree> {
+    this.notifierService.hideAll();
     console.log('---------------------------------------------');
     return this.accountService.getCurrentUser.pipe(
       take(1),
@@ -49,6 +52,10 @@ export class AuthGuard implements CanActivate {
         if (user?.ACToken && user?.RFToken) {
           return true;
         }
+        this.notifierService.notify(
+          'warning',
+          'Bạn cần phải đăng nhập lại để tiếp tục!'
+        );
         return this.router.createUrlTree(['/auth/login']);
       }),
       mergeMap((result) => from(Promise.resolve(result)))
