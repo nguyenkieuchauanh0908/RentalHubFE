@@ -4,8 +4,9 @@ import { Router } from '@angular/router';
 import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
-import { handleError } from './handle-errors';
+import { handleError } from '../shared/handle-errors';
 import { User } from './user.model';
+import { AccountService } from '../accounts/accounts.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,11 +16,25 @@ export class AuthService {
   isHost = true;
 
   user = new BehaviorSubject<User | null>(null);
+  resetToken: User | undefined;
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  resetUser: User | undefined;
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private accountService: AccountService
+  ) {
+    this.user.subscribe((user) => {
+      if (user) {
+        this.resetUser = user;
+      }
+    });
+  }
 
   login(email: string, pw: string) {
+    console.log('Is logging...................');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/login', {
         _email: email,
@@ -28,6 +43,7 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
+          console.log('On logging-------------------------');
           this.handleAuthentication(res.data);
         })
       );
@@ -57,8 +73,10 @@ export class AuthService {
         user?._ACToken,
         user?._ACExpiredTime
       );
+      this.accountService.setCurrentUser(loadedUserData);
       if (loadedUserData.ACToken && loadedUserData.RFToken) {
-        this.user.next(loadedUserData);
+        this.accountService.setCurrentUser(loadedUserData);
+
         expirationDuration = loadedUserData._RFExpiredTime - Date.now();
       }
       if (!loadedUserData.ACToken && loadedUserData.RFToken) {
@@ -84,7 +102,6 @@ export class AuthService {
 
   logout(refreshToken: any) {
     console.log('On loging out ...');
-    // console.log('RFToken: ', refreshToken);
     this.router.navigate(['/']);
     localStorage.removeItem('userData');
     if (this.tokenExpirationTimer) {
@@ -99,7 +116,7 @@ export class AuthService {
         catchError(handleError),
         tap((res) => {
           console.log(res);
-          this.user.next(null);
+          this.accountService.setCurrentUser(null);
         })
       );
   }
@@ -122,13 +139,16 @@ export class AuthService {
         refreshToken: refreshToken,
       })
       .pipe(
+        catchError(handleError),
         tap((res) => {
           console.log('on reset AC token function');
           console.log(res);
           // cập nhật lại user với AC token mới
-          this.user.subscribe((currentUser) => {
+          this.accountService.getCurrentUser.subscribe((currentUser) => {
+            console.log('Current user: ', currentUser);
             if (currentUser) {
-              let resetUser = new User(
+              console.log('On updating user with reseting AC token...');
+              this.resetUser = new User(
                 currentUser._id,
                 currentUser._fname,
                 currentUser._lname,
@@ -148,20 +168,27 @@ export class AuthService {
               );
               this.isHost = currentUser._isHost;
               console.log('After reset token, isHost: ', this.isHost);
-              localStorage.setItem('userData', JSON.stringify(resetUser));
-              this.user.next(resetUser);
+              localStorage.setItem('userData', JSON.stringify(this.resetUser));
             }
           });
+          if (this.resetUser) {
+            this.accountService.setCurrentUser(this.resetUser);
+            console.log(
+              '🚀 ~ file: auth.service.ts:168 ~ AuthService ~ tap ~ this.user.next:',
+              this.accountService.getCurrentUser
+            );
+          }
         })
-      )
-      .subscribe();
+      );
   }
 
   verifyAccount(phone: string) {
     console.log('On verifying account ...');
-    return this.http.post(environment.baseUrl + 'users/accounts/verify-host', {
-      _phone: phone,
-    });
+    return this.http
+      .post(environment.baseUrl + 'users/accounts/verify-host', {
+        _phone: phone,
+      })
+      .pipe(catchError(handleError));
   }
 
   private handleAuthentication(data: any) {
@@ -183,12 +210,13 @@ export class AuthService {
       data.accessToken,
       data.expiredAccess
     );
-    this.user.next(user);
+    this.accountService.setCurrentUser(user);
     this.isUser = true;
     this.isHost = user._isHost;
     console.log('After login, isHost: ', this.isHost);
     localStorage.setItem('userData', JSON.stringify(user));
     const expirationDuration = user._RFExpiredTime - Date.now();
+    console.log('expiration duration:', expirationDuration);
     this.autoLogout(expirationDuration, user.RFToken);
   }
 }

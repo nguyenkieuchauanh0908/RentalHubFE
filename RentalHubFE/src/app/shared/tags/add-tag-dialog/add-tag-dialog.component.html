@@ -1,0 +1,42 @@
+<div class="add-tag-container">
+  <h2 mat-dialog-title>Tạo tag</h2>
+  <mat-dialog-content>
+    <form
+      #createTagForm="ngForm"
+      (ngSubmit)="onSubmitPost()"
+      class="max-w-sm mx-auto"
+    >
+      <mat-form-field class="w-full">
+        <input
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Pick one"
+          aria-label="Tag"
+          matInput
+          [formControl]="myControl"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let option of filteredOptions | async"
+            [value]="option._tag"
+          >
+            {{ option._tag }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close="true">Hủy</button>
+    <button
+      class="bg-blue-700 hover:bg-blue-800"
+      style="color: white; background-color: #1a56db"
+      mat-button
+      type="submit"
+      (click)="onSubmitPost()"
+    >
+      Lưu
+    </button>
+    <notifier-container></notifier-container>
+  </mat-dialog-actions>
+</div>

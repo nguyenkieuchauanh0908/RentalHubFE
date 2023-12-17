@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PostItem } from '../posts-list/post-item/post-item.model';
 import { Router } from '@angular/router';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-post-card',
@@ -10,9 +11,19 @@ import { Router } from '@angular/router';
 export class PostCardComponent {
   @Input() post!: PostItem;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private notifierService: NotifierService
+  ) {}
 
   goToPost() {
-    this.router.navigate(['/posts/', this.post._id]);
+    if (this.post._id) {
+      this.router.navigate(['/posts/', this.post._id]);
+    } else {
+      this.notifierService.notify(
+        'error',
+        'Có lỗi xảy ra trong quá trình điều hướng!'
+      );
+    }
   }
 }

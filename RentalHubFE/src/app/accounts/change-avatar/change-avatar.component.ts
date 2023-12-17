@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/shared/file-upload.services';
 import { AccountService } from '../accounts.service';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-change-avatar',
@@ -10,6 +11,8 @@ import { AccountService } from '../accounts.service';
   styleUrls: ['./change-avatar.component.scss'],
 })
 export class ChangeAvatarComponent {
+  isLoading = false;
+  error: string = '';
   selectedFiles?: FileList;
   selectedFileNames: string[] = [];
 
@@ -21,7 +24,8 @@ export class ChangeAvatarComponent {
 
   constructor(
     private uploadService: FileUploadService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private notifierService: NotifierService
   ) {}
 
   ngOnInit(): void {
@@ -59,13 +63,23 @@ export class ChangeAvatarComponent {
     if (this.selectedFiles) {
       for (let i = 0; i < this.selectedFiles.length; i++) {
         console.log(typeof this.selectedFiles[i]);
-        this.accountService
-          .updateAvatar(this.selectedFiles[i])
-          .subscribe((res) => {
-            if (res.data.message === 'Update avatar sucessfully!') {
-              console.log(res.data.message);
+        this.accountService.updateAvatar(this.selectedFiles[i]).subscribe(
+          (res) => {
+            if (res.data) {
+              console.log(res.data);
+              this.notifierService.notify(
+                'success',
+                'Cập nhật avatar thành công!'
+              );
             }
-          });
+          },
+          (errorMsg) => {
+            this.isLoading = false;
+            this.error = errorMsg;
+            console.log(this.error);
+            this.notifierService.notify('error', errorMsg);
+          }
+        );
       }
     }
   }

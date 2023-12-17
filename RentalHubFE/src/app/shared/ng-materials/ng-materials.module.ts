@@ -10,6 +10,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NgImageSliderModule } from 'ng-image-slider';
 
 @NgModule({
   declarations: [],
@@ -24,6 +27,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatFormFieldModule,
     MatProgressBarModule,
     MatListModule,
+    MatDialogModule,
+    MatAutocompleteModule,
+    NgImageSliderModule,
   ],
   exports: [
     MatDividerModule,
@@ -36,6 +42,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatFormFieldModule,
     MatProgressBarModule,
     MatListModule,
+    MatDialogModule,
+    MatAutocompleteModule,
+    NgImageSliderModule,
   ],
 })
 export class NgMaterialsModule {}

@@ -6,15 +6,15 @@ import { NgMaterialsModule } from './ng-materials/ng-materials.module';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { MatNativeDateModule } from '@angular/material/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { PaginationComponent } from './pagination/pagination.component';
 import { SliderComponent } from './slider/slider.component';
 import { HostCardComponent } from './host-card/host-card.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NotifierModule } from 'angular-notifier';
+import { AddTagDialogComponent } from './tags/add-tag-dialog/add-tag-dialog.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,13 +25,17 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     SliderComponent,
     HostCardComponent,
     MainLayoutComponent,
+    AddTagDialogComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,
     NgMaterialsModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     ScrollingModule,
+    NotifierModule,
   ],
   exports: [
     CommonModule,
@@ -45,7 +49,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     SliderComponent,
     HostCardComponent,
     MainLayoutComponent,
+    NotifierModule,
+    ReactiveFormsModule,
   ],
-  // providers: [provideAnimations(), provideHttpClient()], -----> fix double click routerLink bug by deleting it but still dont know why
 })
 export class SharedModule {}

@@ -1,8 +1,9 @@
 <div class="grid-flow-row items-center w-full">
   <div class="max-w-md">
     <div class="bg-white shadow-xl rounded-lg py-3">
-      <div *ngIf="seeMyProfile; else seeOtherProfile" class="photo-wrapper p-2">
+      <div class="photo-wrapper p-2">
         <img
+          (click)="editAvatar()"
           *ngIf="myProfile?._avatar"
           src="{{ myProfile?._avatar }}"
           class="w-32 h-32 rounded-full mx-auto"
@@ -10,82 +11,50 @@
         />
         <a (click)="editAvatar()">Đổi avatar</a>
       </div>
-      <ng-template #seeOtherProfile class="photo-wrapper p-2">
-        <img
-          *ngIf="profile?._avatar"
-          src="{{ profile?._avatar }}"
-          class="w-32 h-32 rounded-full mx-auto"
-          alt="Avatar"
-        />
-      </ng-template>
       <div class="p-2">
         <div *ngIf="seeMyProfile">
           <p class="text-center text-base text-gray-900 font-medium leading-8">
             {{ myProfile?._fname }} {{ myProfile?._lname }}
           </p>
         </div>
-
-        <!-- Only for guests to see -->
-        <div *ngIf="!seeMyProfile">
-          <table class="text-xs my-3">
-            <tbody>
-              <tr>
-                <td class="px-2 py-2 text-gray-500 font-semibold">Tên</td>
-                <td class="px-2 py-2">
-                  {{ profile?._fname }} {{ profile?._lname }}
-                </td>
-              </tr>
-              <tr>
-                <td class="px-2 py-2 text-gray-500 font-semibold">Phone</td>
-                <td class="px-2 py-2">{{ profile?._phone }}</td>
-              </tr>
-              <tr>
-                <td class="px-2 py-2 text-gray-500 font-semibold">Email</td>
-                <td class="px-2 py-2">{{ profile?._email }}</td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+      <!-- Manage list -->
+      <div class="flex flex-col gap-4">
+        <!-- Account -->
+        <div class="flex flex-col gap-2 text-center">
+          <a
+            class="hover:text-primary-600 hover:font-medium"
+            (click)="showAccount()"
+            >Tài khoản</a
+          >
+          <mat-divider></mat-divider>
         </div>
-        <!-- Manage list -->
-        <div *ngIf="seeMyProfile" class="flex flex-col gap-4">
-          <!-- Account -->
-          <div class="flex flex-col gap-2 text-center">
-            <a
-              class="hover:text-primary-600 hover:font-medium"
-              (click)="showAccount()"
-              >Tài khoản</a
-            >
-            <mat-divider></mat-divider>
-          </div>
 
-          <!-- Post new -->
-          <div class="flex flex-col gap-2 text-center">
-            <a
-              class="hover:text-primary-600 hover:font-medium"
-              (click)="toPostNew()"
-              >Đăng bài</a
-            >
-            <mat-divider></mat-divider>
-          </div>
+        <!-- Post new -->
+        <div class="flex flex-col gap-2 text-center">
+          <a
+            class="hover:text-primary-600 hover:font-medium"
+            (click)="toPostNew()"
+            >Đăng bài</a
+          >
+          <mat-divider></mat-divider>
+        </div>
 
-          <!-- Posting history -->
-          <div class="flex flex-col gap-2 text-center">
-            <a
-              class="hover:text-primary-600 hover:font-medium"
-              (click)="toPostingHistory()"
-              >Lịch sử đăng bài</a
-            >
-            <mat-divider></mat-divider>
-          </div>
+        <!-- Posting history -->
+        <div class="flex flex-col gap-2 text-center">
+          <a
+            class="hover:text-primary-600 hover:font-medium"
+            (click)="toPostingHistory()"
+            >Lịch sử đăng bài</a
+          >
+          <mat-divider></mat-divider>
+        </div>
 
-          <!-- Logout -->
-          <div class="flex flex-col gap-2 text-center">
-            <a
-              class="hover:text-primary-600 hover:font-medium"
-              (click)="logout()"
-              >Đăng xuất</a
-            >
-          </div>
+        <!-- Logout -->
+        <div class="flex flex-col gap-2 text-center">
+          <a class="hover:text-primary-600 hover:font-medium" (click)="logout()"
+            >Đăng xuất</a
+          >
         </div>
       </div>
     </div>

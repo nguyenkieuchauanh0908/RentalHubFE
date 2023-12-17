@@ -26,9 +26,18 @@
           class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="name@company.com"
           ngModel
-          required
           email
+          #email="ngModel"
         />
+        <div
+          *ngIf="email.invalid && (email.dirty || email.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="email.errors?.['required']">
+            Email không được bỏ trống!
+          </div>
+        </div>
       </div>
       <div>
         <label
@@ -43,9 +52,17 @@
           placeholder="••••••••"
           class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           ngModel
-          required
-          minlength="8"
+          #pw="ngModel"
         />
+        <div
+          *ngIf="pw.invalid && (pw.dirty || pw.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="pw.errors?.['required']">
+            Mật khẩu không được bỏ trống!
+          </div>
+        </div>
       </div>
 
       <div>
@@ -61,9 +78,17 @@
           placeholder="••••••••"
           class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           ngModel
-          required
-          minlength="8"
+          #confirmPw="ngModel"
         />
+        <div
+          *ngIf="confirmPw.invalid && (confirmPw.dirty || confirmPw.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="confirmPw.errors?.['required']">
+            Vui lòng nhập xác nhận lại mật khẩu!
+          </div>
+        </div>
       </div>
       <button
         type="submit"
