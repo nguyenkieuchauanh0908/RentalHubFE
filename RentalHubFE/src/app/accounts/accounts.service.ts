@@ -1,10 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subject, tap } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, tap } from 'rxjs';
 import { User } from '../auth/user.model';
+import { handleError } from '../shared/handle-errors';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -20,7 +20,7 @@ export class AccountService {
     this.currentUser.next(updatedUser);
   }
 
-  getCurrentUserId(route: ActivatedRoute): string | null {
+  getCurrentUserId(): string | null {
     console.log('on getting current userId ...');
     let uId: string | null | undefined = null;
     this.getCurrentUser.subscribe((user) => {
@@ -37,13 +37,6 @@ export class AccountService {
       profile = user;
     });
     return profile;
-    // const queryParams = { uId: uId };
-    // return this.http.get<resDataDTO>(
-    //   environment.baseUrl + 'users/get-profile',
-    //   {
-    //     params: queryParams,
-    //   }
-    // );
   }
 
   updateProfile(updatedProfile: any) {
@@ -59,6 +52,7 @@ export class AccountService {
         _email: updatedProfile._email,
       })
       .pipe(
+        catchError(handleError),
         tap((res) => {
           this.getCurrentUser.subscribe((currentUser) => {
             if (currentUser) {
@@ -94,35 +88,43 @@ export class AccountService {
           });
           this.setCurrentUser(updatedtUser);
         })
-      );
+      )
+      .pipe(catchError(handleError));
   }
 
   verifyAccount(phone: string) {
     console.log('your phone is: ', phone);
     console.log('sending otp to mail ...');
-    return this.http.post<resDataDTO>(
-      environment.baseUrl + 'users/accounts/active-host',
-      {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'users/accounts/active-host', {
         _phone: phone,
-      }
-    );
+      })
+      .pipe(catchError(handleError));
   }
 
   confirmOtp(otp: string) {
     console.log('On verify otp...', otp);
-    return this.http.post<resDataDTO>(
-      environment.baseUrl + 'users/accounts/verify-host',
-      {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'users/accounts/verify-host', {
         otp: otp,
-      }
-    );
+      })
+      .pipe(catchError(handleError));
     //Xử lý otp hết hạn hoặc yêu cầu gửi lại otp
   }
 
   resetOtp() {
-    return this.http.post<resDataDTO>(
-      environment.baseUrl + 'users/accounts/reset-otp',
-      {}
-    );
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'users/accounts/reset-otp', {})
+      .pipe(catchError(handleError));
+  }
+
+  updateEmailPassword(email: string, pw: string, repw: string) {
+    return this.http
+      .patch<resDataDTO>(environment.baseUrl + 'users/update-login-info', {
+        _email: email,
+        _pw: pw,
+        _pwconfirm: repw,
+      })
+      .pipe(catchError(handleError));
   }
 }

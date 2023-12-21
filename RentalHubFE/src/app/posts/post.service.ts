@@ -187,6 +187,19 @@ export class PostService {
       .pipe(catchError(handleError));
   }
 
+  getRelatedPosts(pId: string, page: number, limit: number) {
+    console.log('Geting posts similar...');
+    let queryParams = new HttpParams()
+      .append('postId', pId)
+      .append('page', page)
+      .append('limit', limit);
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/posts-similar', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
+
   searchPostsByKeyword(keyword: string, page: number, limit: number) {
     console.log('On searching posts by keyword...', keyword);
     let queryParams = new HttpParams()

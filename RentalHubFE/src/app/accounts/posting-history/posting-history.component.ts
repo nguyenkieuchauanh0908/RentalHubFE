@@ -15,6 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PostEditDialogComponent } from './post-edit-dialog/post-edit-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { NotifierService } from 'angular-notifier';
+import { PostsModule } from 'src/app/posts/posts.module';
+import { PostItemComponent } from 'src/app/posts/posts-list/post-item/post-item.component';
 
 @Component({
   standalone: true,
@@ -24,6 +26,7 @@ import { NotifierService } from 'angular-notifier';
     CommonModule,
     SharedModule,
     FormsModule,
+    PostItemComponent,
   ],
   selector: 'app-posting-history',
   templateUrl: './posting-history.component.html',
@@ -66,7 +69,7 @@ export class PostingHistoryComponent {
     public dialog: MatDialog,
     private notifierService: NotifierService
   ) {
-    this.currentUid = this.accountService.getCurrentUserId(this.route);
+    this.currentUid = this.accountService.getCurrentUserId();
     if (this.currentUid) {
       this.myProfile = this.accountService.getProfile(this.currentUid);
     }
@@ -83,7 +86,7 @@ export class PostingHistoryComponent {
       }
     });
 
-    this.currentUid = this.accountService.getCurrentUserId(this.route);
+    this.currentUid = this.accountService.getCurrentUserId();
     this.getPostHistorySub = this.postService
       .getPostsHistory(1, 1, 5)
       .subscribe((res) => {
@@ -150,7 +153,7 @@ export class PostingHistoryComponent {
     this.paginationService.currentPage = 1;
   }
 
-  toReportedPostsHistory() {
+  toUnSensoredPostsHistory() {
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(3, 1, 5)

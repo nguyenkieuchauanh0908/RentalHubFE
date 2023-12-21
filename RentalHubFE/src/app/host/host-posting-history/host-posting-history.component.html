@@ -47,20 +47,36 @@
                 </div>
                 <!-- Price, Area, Assress -->
                 <div
-                  class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+                  class="row flex flex-row gap-4 items-center hover:cursor-pointer text-sm text-sub-text-color"
                 >
                   <p>
                     Giá:
-                    <span class="text-text-price-color font-medium"
-                      >{{ post.roomPrice }}tr</span
+                    <span class="text-text-price-color font-medium">
+                      {{ post.roomPrice }}đ</span
                     >
                   </p>
+
                   <p>
-                    Diện tích:
-                    <span class="font-medium">{{ post.roomArea }}m2</span>
+                    Giá điện:
+                    <span class="text-text-price-color font-medium"
+                      >{{ post.roomElectricPrice }}đ</span
+                    >
                   </p>
+
                   <p>
-                    Địa chỉ:
+                    Giá nước:
+                    <span class="text-text-price-color font-medium"
+                      >{{ post.roomWaterPrice }}đ</span
+                    >
+                  </p>
+                </div>
+
+                <!-- Address -->
+                <div
+                  class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+                >
+                  <p>
+                    Địa chỉ phòng trọ:
                     <span class="font-medium">{{ post.roomAddress }}</span>
                   </p>
                 </div>

@@ -92,12 +92,12 @@
           <img
             *ngIf="user?._avatar"
             src="{{ user?._avatar }}"
-            (click)="toMyProfile()"
+            (click)="toMyPosting()"
             class="w-10 h-10 rounded-full relative bottom-1"
             alt="Rounded avatar"
           />
           <a
-            (click)="toMyProfile()"
+            (click)="toMyPosting()"
             class="text-white-text-color text-800 dark:text-white focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm lg:py-2.5 ml-1 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
             >{{ fullName }}</a
           >

@@ -15,13 +15,13 @@
     <div
       class="row flex flex-row gap-2 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color relative bottom-2"
     >
-      <span class="text-text-price-color font-normal">3,5tr</span>
-
-      <span class="font-normal">23m2</span>
-
-      <span class="font-normal line-clamp-1"
-        >16 tố hữu, phường dương nội, quận hà đông, hà nội</span
+      <span class="text-text-price-color font-normal"
+        >{{ post.roomPrice }}tr</span
       >
+
+      <span class="font-normal">{{ post.roomArea }}m2</span>
+
+      <span class="font-normal line-clamp-1">{{ post.roomAddress }}</span>
     </div>
   </div>
 </div>

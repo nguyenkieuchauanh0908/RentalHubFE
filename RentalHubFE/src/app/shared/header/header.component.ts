@@ -41,9 +41,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  toMyProfile() {
+  toMyPosting() {
     let uId = this.user?._id;
-    this.router.navigate(['/profile/user/', uId]);
+    this.router.navigate(['/profile/posting-history/', uId]);
   }
 
   toPostNew() {
@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             console.log('On navigating to search result page...');
             this.router.navigate(
               [
-                '/posts/search', 
+                '/posts/search',
                 {
                   keyword: searchForm.search,
                 },

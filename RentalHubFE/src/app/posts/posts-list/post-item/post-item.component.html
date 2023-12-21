@@ -3,11 +3,11 @@
   *ngIf="item"
   class="grid grid-rows-1 bg-white-background p-4 rounded-lg mb-2"
 >
-  <div class="grid gap-4 grid-cols-12">
+  <div class="grid gap-4 grid-cols-12 w-full h-max-full">
     <!-- Image -->
-    <div class="grid col-span-3 w-full h-900px">
+    <div class="grid col-span-3">
       <img
-        class="hover:cursor-pointer"
+        class="hover:cursor-pointer object-fill max-h-44 w-full"
         src="{{ item._images[0] }}"
         alt="hình nhà trọ"
       />
@@ -24,7 +24,7 @@
       </div>
       <!-- Price, Area, Assress -->
       <div
-        class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+        class="row flex flex-row gap-4 items-center hover:cursor-pointer text-sm text-sub-text-color"
       >
         <p>
           Giá:
@@ -32,14 +32,41 @@
             {{ item.roomPrice }}đ</span
           >
         </p>
+
         <p>
-          Diện tích: <span class="font-medium"> {{ item.roomArea }}m2</span>
+          Giá điện:
+          <span class="text-text-price-color font-medium"
+            >{{ item.roomElectricPrice }}đ</span
+          >
         </p>
+
         <p>
-          Địa chỉ:
+          Giá nước:
+          <span class="text-text-price-color font-medium"
+            >{{ item.roomWaterPrice }}đ</span
+          >
+        </p>
+      </div>
+
+      <!-- Address -->
+      <div
+        *ngIf="isAuthenticated; else noAuthenticated"
+        class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+      >
+        <p>
+          Địa chỉ phòng trọ:
           <span class="font-medium">{{ item.roomAddress }}</span>
         </p>
       </div>
+      <ng-template
+        #noAuthenticated
+        class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+      >
+        <p>
+          Địa chỉ phòng trọ:
+          <span class="font-medium">***********</span>
+        </p>
+      </ng-template>
       <!-- Description -->
       <div class="row">
         <p class="hover:cursor-pointer text-sub-text-color line-clamp-3">

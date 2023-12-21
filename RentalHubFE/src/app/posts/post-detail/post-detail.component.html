@@ -13,7 +13,7 @@
             {{ post._title }}
           </p>
         </div>
-        <!-- Price, Area, Assress -->
+        <!-- Price, Area -->
         <div
           class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
         >
@@ -23,10 +23,30 @@
               >{{ post.roomPrice }}đ</span
             >
           </p>
+
+          <p>
+            Giá điện:
+            <span class="text-text-price-color font-medium"
+              >{{ post.roomElectricPrice }}đ</span
+            >
+          </p>
+
+          <p>
+            Giá nước:
+            <span class="text-text-price-color font-medium"
+              >{{ post.roomWaterPrice }}đ</span
+            >
+          </p>
           <p>
             Diện tích:
             <span class="font-medium">{{ post.roomArea }}m2</span>
           </p>
+        </div>
+
+        <!-- Address -->
+        <div
+          class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+        >
           <p>
             Địa chỉ phòng trọ:
             <span class="font-medium">{{ post.roomAddress }}</span>
@@ -139,9 +159,17 @@
       <div flex flex-col gap-4>
         <p class="font-medium text-lg text-center">Tìm kiếm liên quan</p>
         <!-- Room n -->
-        <div *ngFor="let post of relatedPosts">
-          <app-post-card [post]="post"></app-post-card>
+        <div
+          *ngIf="relatedPosts.length === 0; else similarPostsBlock"
+          class="text-center"
+        >
+          <p>Không có bài viết liên quan</p>
         </div>
+        <ng-template #similarPostsBlock>
+          <div *ngFor="let post of relatedPosts">
+            <app-post-card [post]="post"></app-post-card>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>

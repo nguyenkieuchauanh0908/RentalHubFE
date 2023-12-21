@@ -1,0 +1,93 @@
+<h2 mat-dialog-title>Thông tin đăng nhập</h2>
+<mat-dialog-content>
+  <!-- Edit modal -->
+  <div class="p-4 md:p-5">
+    <form #editProfileForm="ngForm" class="space-y-4">
+      <!-- Email  -->
+      <div class="mb-6">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Email</label
+        >
+        <input
+          [ngModel]="data"
+          rows="8"
+          type="email"
+          id="email-input"
+          name="email"
+          ngModel
+          required
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #email="ngModel"
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="mb-6">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Mật khẩu mới</label
+        >
+        <input
+          type="password"
+          id="pw-input"
+          name="pw"
+          ngModel
+          placeholder="••••••••"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #pw="ngModel"
+        />
+        <div
+          *ngIf="pw.invalid && (pw.dirty || pw.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="pw.errors?.['required']">
+            Mật khẩu không được bỏ trống.
+          </div>
+        </div>
+      </div>
+      <!-- Password -->
+      <div class="mb-6">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Xác thực mật khẩu cũ</label
+        >
+        <input
+          type="password"
+          id="repw-input"
+          name="repw"
+          ngModel
+          placeholder="••••••••"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #repw="ngModel"
+        />
+        <div
+          *ngIf="repw.invalid && (repw.dirty || repw.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="repw.errors?.['required']">
+            Vui lòng nhập mật khẩu cũ để xác thực.
+          </div>
+        </div>
+      </div>
+    </form>
+    <notifier-container></notifier-container>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Hủy</button>
+  <button
+    (click)="saveChanges(editProfileForm.value)"
+    class="bg-blue-700 hover:bg-blue-800"
+    style="color: white; background-color: #1a56db"
+    mat-button
+    type="submit"
+  >
+    Lưu thay đổi
+  </button>
+</mat-dialog-actions>

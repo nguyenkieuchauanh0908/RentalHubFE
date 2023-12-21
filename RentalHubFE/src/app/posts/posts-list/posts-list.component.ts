@@ -28,7 +28,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   postListChangedSub: Subscription = new Subscription();
 
   currentPage: number = 1;
-  pageItemLimit: number = 5;
+  pageItemLimit: number = 10;
   totalPages: number = this.paginationService.pagination?.total;
 
   ngOnInit() {

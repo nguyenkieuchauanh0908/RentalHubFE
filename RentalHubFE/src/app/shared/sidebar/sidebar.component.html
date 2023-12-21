@@ -9,7 +9,7 @@
           class="w-32 h-32 rounded-full mx-auto"
           alt="Avatar"
         />
-        <a (click)="editAvatar()">Đổi avatar</a>
+        <!-- <a (click)="editAvatar()">Đổi avatar</a> -->
       </div>
       <div class="p-2">
         <div *ngIf="seeMyProfile">
@@ -26,6 +26,16 @@
             class="hover:text-primary-600 hover:font-medium"
             (click)="showAccount()"
             >Tài khoản</a
+          >
+          <mat-divider></mat-divider>
+        </div>
+
+        <!-- Login detail -->
+        <div class="flex flex-col gap-2 text-center">
+          <a
+            class="hover:text-primary-600 hover:font-medium"
+            (click)="toLoginDetail()"
+            >Thông tin đăng nhập</a
           >
           <mat-divider></mat-divider>
         </div>

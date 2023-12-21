@@ -13,6 +13,9 @@ import { FormsModule } from '@angular/forms';
 import { VerifyOtpComponent } from './verify-otp/verify-otp.component';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 import { PostEditDialogComponent } from './posting-history/post-edit-dialog/post-edit-dialog.component';
+import { LoginDetailUpdateDialogComponent } from './login-detail-update-dialog/login-detail-update-dialog.component';
+import { AccountEditDialogComponent } from './account-edit-dialog/account-edit-dialog.component';
+import { UpdateAvatarDialogComponent } from './update-avatar-dialog/update-avatar-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,9 @@ import { PostEditDialogComponent } from './posting-history/post-edit-dialog/post
     VerifyOtpComponent,
     ChangeAvatarComponent,
     PostEditDialogComponent,
+    LoginDetailUpdateDialogComponent,
+    AccountEditDialogComponent,
+    UpdateAvatarDialogComponent,
   ],
   imports: [
     CommonModule,

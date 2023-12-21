@@ -1,6 +1,6 @@
 <div class="grid grid-cols-12 gap-6">
   <!-- Lists of products -->
-  <div class="grid col-span-9 mt-12 mb-12">
+  <div class="grid col-span-12 mt-6 mb-12 w-full h-max-full">
     <!-- Item list -->
     <div *ngFor="let post of searchResult">
       <app-post-item [item]="post"></app-post-item>
@@ -15,8 +15,8 @@
   </div>
 
   <!-- Tags -->
-  <div class="col-span-3 mt-12">
+  <!-- <div class="col-span-3 mt-12">
     <app-tags></app-tags>
-  </div>
-  <!-- <notifier-container></notifier-container> -->
+  </div> -->
+  <notifier-container></notifier-container>
 </div>

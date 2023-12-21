@@ -14,10 +14,18 @@ const routes: Routes = [
     path: '',
     component: AccountsComponent,
     children: [
-      { path: 'posting-history/:uId', component: PostingHistoryComponent, canActivate: [AuthGuard], },
-      { path: 'post-new/:uId', component: PostsEditComponent, canActivate: [AuthGuard], },
-      { path: 'user/:uId', component: AccountsEditComponent, canActivate: [AuthGuard], },
-      { path: 'user/edit-avatar/:uId', component: ChangeAvatarComponent, canActivate: [AuthGuard], },
+      {
+        path: 'posting-history/:uId',
+        component: PostingHistoryComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'post-new/:uId',
+        component: PostsEditComponent,
+        canActivate: [AuthGuard],
+      },
+      // { path: 'user/:uId', component: AccountsEditComponent, canActivate: [AuthGuard], },
+      // { path: 'user/edit-avatar/:uId', component: ChangeAvatarComponent, canActivate: [AuthGuard], },
       {
         path: 'verify-account/:uId',
         children: [
@@ -26,7 +34,11 @@ const routes: Routes = [
             component: VerifyAccountComponent,
             canActivate: [AuthGuard],
           },
-          { path: 'verify-otp', component: VerifyOtpComponent, canActivate: [AuthGuard],},
+          {
+            path: 'verify-otp',
+            component: VerifyOtpComponent,
+            canActivate: [AuthGuard],
+          },
         ],
       },
     ],

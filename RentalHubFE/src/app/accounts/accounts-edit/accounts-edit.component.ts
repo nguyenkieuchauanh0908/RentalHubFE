@@ -33,7 +33,7 @@ export class AccountsEditComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.currentUid = this.accountService.getCurrentUserId(this.route);
+    this.currentUid = this.accountService.getCurrentUserId();
     if (this.currentUid) {
       this.myProfile = this.accountService.getProfile(this.currentUid);
     }

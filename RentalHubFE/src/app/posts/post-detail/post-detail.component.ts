@@ -25,6 +25,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   ) {}
   ngOnInit() {
     this.id = '';
+    this.relatedPosts = [];
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       console.log(
@@ -34,6 +35,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       this.postService.getPostItem(this.id).subscribe(
         (res) => {
           this.post = res.data;
+          //Gọi API get related posts
+          this.postService
+            .getRelatedPosts(this.post._id, 1, 5)
+            .subscribe((res) => {
+              this.relatedPosts = res.data;
+            });
           this.host = {
             hostId: this.post?.authorId,
             fname: this.post?.authorFName,
@@ -55,8 +62,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         }
       );
     });
-    //Gọi API get related posts
-    this.relatedPosts = this.postService.posts;
   }
+
   ngOnDestroy() {}
 }

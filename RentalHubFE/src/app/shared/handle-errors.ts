@@ -18,8 +18,7 @@ export function handleError(errorRes: HttpErrorResponse) {
       errorMessage = 'Mật khẩu không đúng, vui lòng nhập lại!';
       break;
     case 'PASSWORD_INVALID':
-      errorMessage =
-        'Mật khẩu vui lòng dài ít nhất 8 ký tự, chứa kỹ tự in hoa, in thường, ký tự đặc biệt và số!';
+      errorMessage = 'Mật khẩu không hợp lệ!';
       break;
     case 'PASSWORD_CONFIRM_NOTFOUND':
       errorMessage = 'Vui lòng nhập đủ xác nhận mật khẩu!';

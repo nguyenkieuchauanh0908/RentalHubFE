@@ -29,25 +29,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
         this.myProfile = myProfile;
       }
     );
-    this.currentUid = this.accountService.getCurrentUserId(this.curentRoute);
+    this.currentUid = this.accountService.getCurrentUserId();
     console.log(
       '🚀 ~ file: accounts.component.ts:33 ~ AccountsComponent ~ ngOnInit ~ this.currentUid:',
       this.currentUid
     );
     if (this.currentUid) {
       this.myProfile = this.accountService.getProfile(this.currentUid);
-      // this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
     }
-    // if (this.currentUid) {
-    //   this.getProfileSub = this.accountService
-    //     .getProfile(this.currentUid)
-    //     .subscribe((profile) => {
-    //       this.profile = profile.data;
-    //       this.seeMyProfile = !!(this.profile?._id === this.myProfile?._id);
-    //       console.log('Current profile to display: ', this.profile);
-    //       console.log('Am I seeing my profile: ', this.seeMyProfile);
-    //     });
-    // }
   }
 
   ngOnDestroy() {

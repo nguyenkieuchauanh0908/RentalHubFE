@@ -6,6 +6,10 @@ import { Observable, Subscription } from 'rxjs';
 import { resDataDTO } from '../resDataDTO';
 import { User } from 'src/app/auth/user.model';
 import { AccountService } from 'src/app/accounts/accounts.service';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginDetailUpdateDialogComponent } from 'src/app/accounts/login-detail-update-dialog/login-detail-update-dialog.component';
+import { AccountEditDialogComponent } from 'src/app/accounts/account-edit-dialog/account-edit-dialog.component';
+import { UpdateAvatarDialogComponent } from 'src/app/accounts/update-avatar-dialog/update-avatar-dialog.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,7 +21,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   @Input() myProfile!: User | null;
   @Input() seeMyProfile!: boolean;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     console.log('Am I seeing my profile from sidebar: ', this.seeMyProfile);
@@ -26,7 +34,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   showAccount() {
-    this.router.navigate(['/profile/user', this.myProfile?._id]);
+    // this.router.navigate(['/profile/user', this.myProfile?._id]);
+    const dialogRef = this.dialog.open(AccountEditDialogComponent, {
+      width: '400px',
+      data: this.myProfile,
+    });
+  }
+
+  toLoginDetail() {
+    console.log('On opening up edit login detail component...');
+    const dialogRef = this.dialog.open(LoginDetailUpdateDialogComponent, {
+      width: '400px',
+      data: this.myProfile?._email,
+    });
   }
 
   logout() {
@@ -46,6 +66,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   editAvatar() {
-    this.router.navigate(['/profile/user/edit-avatar', this.myProfile?._id]);
+    // this.router.navigate(['/profile/user/edit-avatar', this.myProfile?._id]);
+    const dialogRef = this.dialog.open(UpdateAvatarDialogComponent, {
+      width: '400px',
+      data: this.myProfile?._avatar,
+    });
   }
 }
