@@ -8,7 +8,6 @@ import { handleError } from '../shared/handle-errors';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  // currentUser: any;
   currentUserId = new Subject<string>();
   private currentUser = new BehaviorSubject<User | null>(null);
   constructor(
@@ -108,7 +107,21 @@ export class AccountService {
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/verify-host', {
         otp: otp,
       })
-      .pipe(catchError(handleError));
+      .pipe(
+        catchError(handleError),
+        tap(() => {
+          let updatedtUser: User;
+          this.getCurrentUser.subscribe((user) => {
+            user!._isHost = true;
+            updatedtUser = user!;
+            console.log(
+              '🚀 ~ file: accounts.service.ts:116 ~ AccountService ~ this.getCurrentUser.subscribe ~ user:',
+              user
+            );
+          });
+          this.setCurrentUser(updatedtUser!);
+        })
+      );
     //Xử lý otp hết hạn hoặc yêu cầu gửi lại otp
   }
 

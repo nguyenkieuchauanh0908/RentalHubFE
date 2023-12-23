@@ -16,6 +16,7 @@ import { PostEditDialogComponent } from './posting-history/post-edit-dialog/post
 import { LoginDetailUpdateDialogComponent } from './login-detail-update-dialog/login-detail-update-dialog.component';
 import { AccountEditDialogComponent } from './account-edit-dialog/account-edit-dialog.component';
 import { UpdateAvatarDialogComponent } from './update-avatar-dialog/update-avatar-dialog.component';
+import { VerifyHostComponent } from './verify-host/verify-host.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { UpdateAvatarDialogComponent } from './update-avatar-dialog/update-avata
     LoginDetailUpdateDialogComponent,
     AccountEditDialogComponent,
     UpdateAvatarDialogComponent,
+    VerifyHostComponent,
   ],
   imports: [
     CommonModule,

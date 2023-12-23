@@ -1,21 +1,28 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccountService } from '../accounts.service';
 import { Subscription } from 'rxjs';
 import { NotifierService } from 'angular-notifier';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-verify-otp',
   templateUrl: './verify-otp.component.html',
   styleUrls: ['./verify-otp.component.scss'],
 })
-export class VerifyOtpComponent implements OnDestroy {
+export class VerifyOtpComponent implements OnInit, OnDestroy {
+  uId: string | null | undefined;
   isLoading = false;
   error: string = '';
   otpVerifySub!: Subscription;
   constructor(
     private accountService: AccountService,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    private router: Router
   ) {}
+
+  ngOnInit() {
+    this.uId = this.accountService.getCurrentUserId();
+  }
   ngOnDestroy() {
     this.otpVerifySub.unsubscribe();
   }
@@ -24,6 +31,7 @@ export class VerifyOtpComponent implements OnDestroy {
     this.otpVerifySub = this.accountService.confirmOtp(form.otp).subscribe(
       (res) => {
         if (res.data) {
+          this.router.navigate(['profile/post-new/', this.uId]);
           this.notifierService.notify(
             'success',
             'Kích hoạt tài khoản chủ nhà thành công!'

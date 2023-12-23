@@ -37,10 +37,7 @@ export class VerifyAccountComponent {
             console.log(
               'There is one more step, please provide correct otp code to become host...'
             );
-            this.notifierService.notify(
-              'success',
-              'Vui lòng kiểm tra mã OTP được gửi tới mail!'
-            );
+
             this.onNavigateToVerifyOTP();
           }
         }
@@ -48,7 +45,10 @@ export class VerifyAccountComponent {
       (errorMsg) => {
         this.isLoading = false;
         this.error = errorMsg;
-        console.log(this.error);
+        console.log(
+          '🚀 ~ file: verify-account.component.ts:48 ~ VerifyAccountComponent ~ onSubmitUserPhone ~ this.error:',
+          this.error
+        );
         this.notifierService.notify('error', errorMsg);
       }
     );
@@ -59,5 +59,9 @@ export class VerifyAccountComponent {
     this.router.navigate(['verify-otp'], {
       relativeTo: this.currentRoute,
     });
+    this.notifierService.notify(
+      'success',
+      'Vui lòng kiểm tra mã OTP được gửi tới mail!'
+    );
   }
 }

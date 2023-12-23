@@ -477,6 +477,9 @@
   <button *ngIf="data._status === 1" (click)="toHidePostDialog()" mat-button>
     Gỡ bài viết
   </button>
+  <button *ngIf="data._status === 2" (click)="toOpenPostDialog()" mat-button>
+    Yêu cầu duyệt lại
+  </button>
   <button
     (click)="onSubmitPost(createPostForm.value)"
     class="bg-blue-700 hover:bg-blue-800"

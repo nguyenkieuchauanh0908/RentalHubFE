@@ -21,6 +21,8 @@ export class PostService {
   searchKeyword: string = '';
   searchKeywordChanged = new Subject<string>();
 
+  private currentPostingHistory = new BehaviorSubject<PostItem[] | null>([]);
+
   private currentTags = new BehaviorSubject<Tags[]>([]);
 
   private currentChosenTags = new BehaviorSubject<Tags[]>([]);
@@ -30,6 +32,12 @@ export class PostService {
     private paginationService: PaginationService,
     private notifierService: NotifierService
   ) {}
+
+  getCurrentPostingHistory = this.currentPostingHistory.asObservable();
+
+  setCurrentPostingHistory(updatedPostingHistory: PostItem[]) {
+    this.currentPostingHistory.next(updatedPostingHistory);
+  }
 
   getPostList(page: number, limit: number) {
     const queryParams = { page: page, limit: limit };
@@ -78,7 +86,7 @@ export class PostService {
     body.append('_electricPrice', form.electric);
     body.append('_waterPrice', form.water_price);
     body.append('_services', form.services);
-    body.append('_ultilities', form.utilities);
+    body.append('_utilities', form.utilities);
     const numberOfImages = images.length;
     for (let i = 0; i < numberOfImages; i++) {
       const reader = new FileReader();
@@ -114,6 +122,7 @@ export class PostService {
     selectedTags: any,
     postId: string
   ) {
+    console.log(form.city);
     let body = new FormData();
     body.append('_title', form.title);
     body.append('_desc', form.desc);
@@ -171,7 +180,16 @@ export class PostService {
       .get<resDataDTO>(environment.baseUrl + 'posts/history-post', {
         params: queryParams,
       })
-      .pipe(catchError(handleError));
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          this.setCurrentPostingHistory(res.data);
+          console.log(
+            '🚀 ~ file: post.service.ts:187 ~ PostService ~ tap ~ res.data:',
+            res.data
+          );
+        })
+      );
   }
 
   getPostsHistoryOfAUser(uId: string, page: number, limit: number) {
@@ -234,7 +252,29 @@ export class PostService {
           _active: status,
         }
       )
-      .pipe(catchError(handleError));
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          {
+            let updatedPostingHistory: PostItem[] = [];
+            this.getCurrentPostingHistory.subscribe((postingHistory) => {
+              console.log(
+                '🚀 ~ file: post.service.ts:252 ~ PostService ~ this.getCurrentPostingHistory.subscribe ~ postingHistory:',
+                postingHistory
+              );
+
+              updatedPostingHistory = postingHistory!.filter(
+                (post) => post._id !== postId
+              );
+              console.log(
+                '🚀 ~ file: post.service.ts:253 ~ PostService ~ this.getCurrentPostingHistory.subscribe ~ updatedPostingHistory:',
+                updatedPostingHistory
+              );
+            });
+            this.setCurrentPostingHistory(updatedPostingHistory);
+          }
+        })
+      );
   }
 
   searchPostByTags(tags: [string], page: number, limit: number) {

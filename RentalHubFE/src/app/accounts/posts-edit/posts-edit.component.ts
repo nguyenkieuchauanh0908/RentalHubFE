@@ -47,10 +47,15 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isHost = this.authService.isHost;
-    console.log('isHost: ' + this.isHost);
     this.myProfileSub = this.accountService.getCurrentUser.subscribe((user) => {
-      this.myProfile = user;
+      if (user) {
+        this.myProfile = user;
+        this.isHost = user._isHost;
+        console.log(
+          '🚀 ~ file: posts-edit.component.ts:54 ~ PostsEditComponent ~ this.myProfileSub=this.accountService.getCurrentUser.subscribe ~ this.isHost:',
+          this.isHost
+        );
+      }
     });
 
     this.postService.setCurrentChosenTags([]);

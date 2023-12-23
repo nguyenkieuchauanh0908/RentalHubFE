@@ -73,6 +73,18 @@ export class PostingHistoryComponent {
     if (this.currentUid) {
       this.myProfile = this.accountService.getProfile(this.currentUid);
     }
+    this.getPostHistorySub = this.postService
+      .getPostsHistory(0, 1, 5)
+      .subscribe((res) => {
+        console.log(res.data);
+        this.historyPosts = res.data;
+        this.postService.getCurrentPostingHistory.subscribe(
+          (postingHistory) => {
+            this.historyPosts = postingHistory!;
+          }
+        );
+        this.totalPages = res.pagination.total;
+      });
   }
 
   ngOnInit() {
@@ -87,16 +99,6 @@ export class PostingHistoryComponent {
     });
 
     this.currentUid = this.accountService.getCurrentUserId();
-    this.getPostHistorySub = this.postService
-      .getPostsHistory(1, 1, 5)
-      .subscribe((res) => {
-        this.historyPosts = res.data;
-        console.log(
-          '🚀 ~ file: posting-history.component.ts:88 ~ PostingHistoryComponent ~ .subscribe ~ this.historyPosts:',
-          this.historyPosts
-        );
-        this.totalPages = res.pagination.total;
-      });
   }
   ngOnDestroy(): void {
     this.getPostHistorySub.unsubscribe();

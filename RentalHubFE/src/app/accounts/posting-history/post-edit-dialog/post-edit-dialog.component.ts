@@ -211,4 +211,27 @@ export class PostEditDialogComponent implements OnInit {
       sub.unsubscribe();
     });
   }
+
+  toOpenPostDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn mở lại bài viết? Bài viết sẽ nằm trong mục Chờ duyệt!',
+    });
+    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      this.postService
+        .updatePostStatus(this.data._id, true)
+        .subscribe((res) => {
+          if (res.data) {
+            this.notifierService.hideAll();
+            this.notifierService.notify(
+              'success',
+              'Mở lại bài viết thành công!'
+            );
+          }
+        });
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
+  }
 }

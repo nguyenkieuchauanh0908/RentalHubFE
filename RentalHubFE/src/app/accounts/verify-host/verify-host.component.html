@@ -1,0 +1,82 @@
+<div class="bg-white-background rounded-lg p-6" style="min-height: 428px">
+  <h2 class="text-base font-semibold leading-7 text-gray-900">
+    Xác thực tài khoản
+  </h2>
+  <!-- <button mat-raised-button (click)="isEditable = !isEditable">
+    {{ !isEditable ? "Enable edit mode" : "Disable edit mode" }}
+  </button> -->
+
+  <mat-stepper linear #stepper>
+    <!-- Step 1 -->
+    <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Số điện thoại</ng-template>
+        <mat-form-field>
+          <mat-label>Số điện thoại</mat-label>
+          <input
+            matInput
+            formControlName="firstCtrl"
+            placeholder="1234567890"
+            required
+          />
+        </mat-form-field>
+        <div>
+          <button mat-button (click)="verifyPhone(stepper)">Xác thực</button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Step 2 -->
+    <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>Mã OTP</ng-template>
+        <mat-form-field>
+          <mat-label></mat-label>
+          <input
+            matInput
+            formControlName="secondCtrl"
+            placeholder="123456"
+            required
+          />
+        </mat-form-field>
+        <div>
+          <!-- <button mat-button matStepperPrevious>Back</button> -->
+          <button mat-button (click)="verifyOTP(stepper)">Xác thực</button>
+        </div>
+      </form>
+    </mat-step>
+    <!-- Step 3 -->
+    <mat-step style="align-items: center">
+      <ng-template matStepLabel>Đăng bài</ng-template>
+      <div
+        class="flex mt-3 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      >
+        <div class="w-full justify-center">
+          <p
+            class="mb-3 font-medium text-gray-700 dark:text-gray-400 bold text-center"
+          >
+            Xác thực chủ nhà thành công! Bạn có thể đăng bài bây giờ!
+          </p>
+          <div class="flex flex-row gap-2 justify-center">
+            <div>
+              <a
+                (click)="goToPostNew()"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Đăng bài
+              </a>
+            </div>
+            <div>
+              <a
+                (click)="goToHome()"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Về trang chủ
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>
+<notifier-container></notifier-container>

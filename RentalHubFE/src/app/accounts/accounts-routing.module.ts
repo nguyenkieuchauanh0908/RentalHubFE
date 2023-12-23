@@ -8,6 +8,7 @@ import { VerifyAccountComponent } from './verify-account/verify-account.componen
 import { VerifyOtpComponent } from './verify-otp/verify-otp.component';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { VerifyHostComponent } from './verify-host/verify-host.component';
 
 const routes: Routes = [
   {
@@ -31,7 +32,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: VerifyAccountComponent,
+            component: VerifyHostComponent,
             canActivate: [AuthGuard],
           },
           {
@@ -42,6 +43,7 @@ const routes: Routes = [
         ],
       },
     ],
+    canActivate: [AuthGuard],
   },
 ];
 

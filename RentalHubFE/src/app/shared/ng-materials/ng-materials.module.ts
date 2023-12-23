@@ -13,6 +13,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgImageSliderModule } from 'ng-image-slider';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   declarations: [],
@@ -30,6 +31,7 @@ import { NgImageSliderModule } from 'ng-image-slider';
     MatDialogModule,
     MatAutocompleteModule,
     NgImageSliderModule,
+    MatStepperModule,
   ],
   exports: [
     MatDividerModule,
@@ -45,6 +47,7 @@ import { NgImageSliderModule } from 'ng-image-slider';
     MatDialogModule,
     MatAutocompleteModule,
     NgImageSliderModule,
+    MatStepperModule,
   ],
 })
 export class NgMaterialsModule {}
