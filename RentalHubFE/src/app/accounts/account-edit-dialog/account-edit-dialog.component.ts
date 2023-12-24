@@ -42,7 +42,7 @@ export class AccountEditDialogComponent {
               'success',
               'Cập nhật hồ sơ thành công!'
             );
-            this.accountService.setCurrentUser(res.data);
+            // this.accountService.setCurrentUser(res.data);
           }
         },
         (errorMsg) => {

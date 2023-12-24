@@ -181,6 +181,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     } else {
       this.selectedTags.push(tag);
     }
+    this.postService.setCurrentChosenTags(this.selectedTags);
   }
 
   createTag() {

@@ -87,6 +87,9 @@ export class PostService {
     body.append('_waterPrice', form.water_price);
     body.append('_services', form.services);
     body.append('_utilities', form.utilities);
+    if (form.city) {
+      body.append('_city', form.city);
+    }
     const numberOfImages = images.length;
     for (let i = 0; i < numberOfImages; i++) {
       const reader = new FileReader();
@@ -133,11 +136,12 @@ export class PostService {
     body.append('_electricPrice', form.electric.toString());
     body.append('_waterPrice', form.water_price.toString());
     body.append('_services', form.services);
-    body.append('_ultilities', form.ultilities);
+    body.append('_utilities', form.ultilities);
     body.append('_street', form.street);
     body.append('_district', form.district);
-    body.append('_city', form.city);
-
+    if (form.city) {
+      body.append('_city', form.city);
+    }
     if (images) {
       const numberOfImages = images.length;
       for (let i = 0; i < numberOfImages; i++) {

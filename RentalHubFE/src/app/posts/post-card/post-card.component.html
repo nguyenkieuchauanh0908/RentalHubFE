@@ -1,5 +1,6 @@
 <div
-  class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2"
+  (click)="goToPost()"
+  class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2 cursor-pointer"
 >
   <a (click)="goToPost()">
     <img class="rounded-t-lg" src="{{ post._images[0] }}" alt="room's images" />

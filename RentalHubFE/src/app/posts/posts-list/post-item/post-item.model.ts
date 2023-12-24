@@ -1,9 +1,11 @@
+import { Tags } from 'src/app/shared/tags/tag.model';
+
 export class PostItem {
   constructor(
     public _id: string,
     public _content: string,
     public _postingDate: Date,
-    public _tags: string[],
+    public _tags: Tags[],
     public _videos: string[],
     public _images: string[],
     public _title: string,

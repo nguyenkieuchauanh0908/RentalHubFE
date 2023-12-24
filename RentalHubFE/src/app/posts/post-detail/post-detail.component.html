@@ -15,7 +15,7 @@
         </div>
         <!-- Price, Area -->
         <div
-          class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          class="row flex flex-row gap-4 items-center justify-between text-sm text-sub-text-color"
         >
           <p>
             Giá:
@@ -45,7 +45,7 @@
 
         <!-- Address -->
         <div
-          class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+          class="row flex flex-row gap-4 items-center justify-between text-sm text-sub-text-color"
         >
           <p>
             Địa chỉ phòng trọ:
@@ -58,7 +58,7 @@
           <p class="text-base font-medium">Tag bài viết</p>
           <div class="flex flex-row flex-wrap">
             <div
-              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
               *ngFor="let tag of post._tags"
             >
               <span class="tag">
@@ -76,7 +76,7 @@
             *ngIf="post.roomServices.length > 0; else noServicesBlock"
           >
             <div
-              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
               *ngFor="let tag of post.roomServices"
             >
               <span class="tag">
@@ -97,7 +97,7 @@
             *ngIf="post.roomUtilities.length > 0; else noUltilitiesBlock"
           >
             <div
-              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
               *ngFor="let tag of post.roomUtilities"
             >
               <span class="tag">

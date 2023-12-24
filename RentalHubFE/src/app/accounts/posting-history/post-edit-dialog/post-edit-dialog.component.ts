@@ -41,6 +41,8 @@ export class PostEditDialogComponent implements OnInit {
     status: 4, //All posts
     data: this.historyPosts,
   };
+
+  currentPost!: PostItem;
   authService: any;
   constructor(
     private postService: PostService,
@@ -48,13 +50,15 @@ export class PostEditDialogComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    console.log(this.data);
+    this.currentPost = this.data;
+    console.log(
+      '🚀 ~ file: post-edit-dialog.component.ts:54 ~ PostEditDialogComponent ~ this.currentPost:',
+      this.currentPost
+    );
   }
 
   ngOnInit(): void {
-    this.postService.setCurrentChosenTags([]);
     this.previews = this.data._images;
-    this.postService.setCurrentChosenTags(this.data._tags);
     this.postService.getCurrentChosenTags.subscribe((tags) => {
       this.selectedTags = tags;
     });
@@ -181,6 +185,18 @@ export class PostEditDialogComponent implements OnInit {
     } else {
       this.selectedTags.push(tag);
     }
+    this.postService.getCurrentPostingHistory.subscribe((historyPosts) => {
+      historyPosts!.forEach((post) => {
+        if (post._id === this.currentPost._id) {
+          post._tags = this.selectedTags;
+          console.log(
+            '🚀 ~ file: post-edit-dialog.component.ts:191 ~ PostEditDialogComponent ~ this.historyPosts.forEach ~  post._tags:',
+            post._tags
+          );
+        }
+      });
+      this.postService.setCurrentChosenTags(this.selectedTags);
+    });
   }
 
   createTag() {

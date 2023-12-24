@@ -55,7 +55,10 @@ export class AccountService {
         tap((res) => {
           this.getCurrentUser.subscribe((currentUser) => {
             if (currentUser) {
-              currentUser._avatar = res.data._avatar;
+              currentUser._fname = res.data._fname;
+              currentUser._lname = res.data._lname;
+              currentUser._email = res.data._email;
+              currentUser._phone = res.data._phone;
               updatedtUser = currentUser;
             }
           });
