@@ -1,5 +1,8 @@
 <!-- Container -->
-<div class="flex flex-col flex-nowrap bg-white-background p-6 rounded-lg">
+<div
+  style="min-height: 425px"
+  class="flex flex-col flex-nowrap bg-white-background p-6 rounded-lg"
+>
   <!-- Title -->
   <div class="flex flex-row gap-4 align-middle text-justify">
     <h2 class="text-base font-semibold leading-7 text-gray-900 mb-0">
@@ -25,7 +28,7 @@
             >Tất cả</a
           >
         </li> -->
-        <li class="mr-2">
+        <li class="mr-2 cursor-pointer">
           <a
             (click)="toStackPostsHistory()"
             [ngClass]="
@@ -36,7 +39,7 @@
             >Chờ duyệt</a
           >
         </li>
-        <li class="mr-2">
+        <li class="mr-2 cursor-pointer">
           <a
             (click)="toOnWallPostsHistory()"
             [ngClass]="
@@ -47,7 +50,7 @@
             >Đang đăng</a
           >
         </li>
-        <li class="mr-2">
+        <li class="mr-2 cursor-pointer">
           <a
             (click)="toUnSensoredPostsHistory()"
             [ngClass]="
@@ -58,7 +61,7 @@
             >Không được duyệt</a
           >
         </li>
-        <li class="mr-2">
+        <li class="mr-2 cursor-pointer">
           <a
             (click)="toHiddenPostsHistory()"
             [ngClass]="
@@ -158,18 +161,17 @@
             </button>
           </div>
         </div>
+        <!-- Pagination -->
+        <app-pagination
+          [totalPages]="totalPages"
+          (toPrevPage)="changeCurrentPage($event)"
+          (toNextPage)="changeCurrentPage($event)"
+        ></app-pagination>
       </div>
       <ng-template #noPostsBlock>
         <p class="text-center">Không có bài viết nào!</p>
       </ng-template>
     </div>
-
-    <!-- Pagination -->
-    <app-pagination
-      [totalPages]="totalPages"
-      (toPrevPage)="changeCurrentPage($event)"
-      (toNextPage)="changeCurrentPage($event)"
-    ></app-pagination>
   </div>
 </div>
 

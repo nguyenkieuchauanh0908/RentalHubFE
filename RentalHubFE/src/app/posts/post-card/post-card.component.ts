@@ -18,7 +18,9 @@ export class PostCardComponent {
 
   goToPost() {
     if (this.post._id) {
-      this.router.navigate(['/posts/', this.post._id]);
+      this.router.navigate(['/posts/', this.post._id]).then(() => {
+        window.location.reload();
+      });
     } else {
       this.notifierService.notify(
         'error',

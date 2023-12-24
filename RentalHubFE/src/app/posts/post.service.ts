@@ -136,7 +136,7 @@ export class PostService {
     body.append('_electricPrice', form.electric.toString());
     body.append('_waterPrice', form.water_price.toString());
     body.append('_services', form.services);
-    body.append('_utilities', form.ultilities);
+    body.append('_utilities', form.utilities);
     body.append('_street', form.street);
     body.append('_district', form.district);
     if (form.city) {

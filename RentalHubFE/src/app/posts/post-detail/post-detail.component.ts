@@ -22,8 +22,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     private postService: PostService,
     private route: ActivatedRoute,
     private notifierService: NotifierService
-  ) {}
-  ngOnInit() {
+  ) {
     this.id = '';
     this.relatedPosts = [];
     this.route.params.subscribe((params: Params) => {
@@ -63,6 +62,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       );
     });
   }
+  ngOnInit() {}
 
   ngOnDestroy() {}
 }
