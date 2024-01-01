@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { PostService } from 'src/app/posts/post.service';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, interval } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
 import { Tags } from 'src/app/shared/tags/tag.model';
@@ -8,6 +8,8 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotifierService } from 'angular-notifier';
 import { AddTagDialogComponent } from 'src/app/shared/tags/add-tag-dialog/add-tag-dialog.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { ThemePalette } from '@angular/material/core';
 
 @Component({
   selector: 'app-post-edit-dialog',
@@ -15,6 +17,10 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
   styleUrls: ['./post-edit-dialog.component.scss'],
 })
 export class PostEditDialogComponent implements OnInit {
+  isLoading: boolean = false;
+  color: ThemePalette = 'primary';
+  mode: ProgressSpinnerMode = 'determinate';
+  value = 100;
   private getProfileSub!: Subscription;
   private getPostHistorySub!: Subscription;
   profile!: User | null;
@@ -24,7 +30,7 @@ export class PostEditDialogComponent implements OnInit {
   totalPages: number = 1;
   currentPage: number = 1;
   pageItemLimit: number = 5;
-  isHost: boolean = false;
+  isHost: boolean = true;
   myProfileSub = new Subscription();
   getTagSub = new Subscription();
 
@@ -67,6 +73,7 @@ export class PostEditDialogComponent implements OnInit {
   onSubmitPost(form: any) {
     console.log('on submiting post ...');
     console.log('Form data: ', form);
+    this.isLoading = true;
     if (this.previews) {
       console.log(
         '🚀 ~ file: post-edit-dialog.component.ts:59 ~ PostEditDialogComponent ~ onSubmitPost ~ this.selectedFiles:',
@@ -83,6 +90,8 @@ export class PostEditDialogComponent implements OnInit {
         .subscribe(
           (res) => {
             if (res.data) {
+              this.isLoading = false;
+              this.value = 0;
               this.notifierService.notify(
                 'success',
                 'Cập nhật bài viết thành công!'

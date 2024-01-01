@@ -56,6 +56,7 @@ export class UpdateAvatarDialogComponent {
 
   uploadFiles(): void {
     console.log('Uploading files...');
+    this.isLoading = true;
     this.message = [];
     if (this.selectedFiles) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -69,6 +70,7 @@ export class UpdateAvatarDialogComponent {
             (res) => {
               if (res.data) {
                 console.log(res.data);
+                this.isLoading = false;
                 this.notifierService.notify(
                   'success',
                   'Cập nhật ảnh đại diện thành công!'

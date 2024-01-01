@@ -35,9 +35,11 @@ export class AccountEditDialogComponent {
       data: 'Xác nhận cập nhật thông tin?',
     });
     const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      this.isLoading = true;
       this.accountService.updateProfile(updatedProfile).subscribe(
         (res) => {
           if (res.data) {
+            this.isLoading = false;
             this.notifierService.notify(
               'success',
               'Cập nhật hồ sơ thành công!'

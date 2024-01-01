@@ -56,6 +56,8 @@ export class PostingHistoryComponent {
   sourceTags: Set<Tags> = new Set();
   selectedTags: Set<Tags> = new Set();
 
+  isLoading: boolean = false;
+
   currentActiveStatus = {
     status: 0, //All posts
     data: this.historyPosts,
@@ -69,26 +71,33 @@ export class PostingHistoryComponent {
     public dialog: MatDialog,
     private notifierService: NotifierService
   ) {
+    this.isLoading = true;
+    this.historyPosts = [];
     this.currentUid = this.accountService.getCurrentUserId();
     if (this.currentUid) {
       this.myProfile = this.accountService.getProfile(this.currentUid);
     }
     this.getPostHistorySub = this.postService
       .getPostsHistory(0, 1, 5)
-      .subscribe((res) => {
-        console.log(res.data);
-        this.historyPosts = res.data;
-        this.postService.getCurrentPostingHistory.subscribe(
-          (postingHistory) => {
-            this.historyPosts = postingHistory!;
-          }
-        );
-        this.totalPages = res.pagination.total;
-      });
+      .subscribe(
+        (res) => {
+          console.log(res.data);
+          this.historyPosts = res.data;
+          this.postService.getCurrentPostingHistory.subscribe(
+            (postingHistory) => {
+              this.historyPosts = postingHistory!;
+            }
+          );
+          this.totalPages = res.pagination.total;
+          this.isLoading = false;
+        },
+        (errorMsg) => {
+          this.isLoading = false;
+        }
+      );
   }
 
   ngOnInit() {
-    this.historyPosts = [];
     this.getTagSub = this.postService.getAllTags().subscribe((res) => {
       if (res.data) {
         console.log('Get tags successfully...');
@@ -105,106 +114,154 @@ export class PostingHistoryComponent {
   }
 
   toAllPostHistory() {
+    this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(4, 1, 5)
-      .subscribe((res) => {
-        if (res.data) {
-          this.historyPosts = res.data;
-          this.totalPages = res.pagination.total;
-        } else {
-          this.historyPosts = [];
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.historyPosts = res.data;
+            this.totalPages = res.pagination.total;
+            this.isLoading = false;
+          } else {
+            this.historyPosts = [];
+            this.isLoading = false;
+          }
+          //console.log(this.historyPosts);
+        },
+        (errorMsg) => {
+          this.isLoading = false;
         }
-        //console.log(this.historyPosts);
-      });
+      );
     this.currentActiveStatus.status = 4;
     this.paginationService.currentPage = 1;
   }
 
   toStackPostsHistory() {
+    this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(0, 1, 5)
-      .subscribe((res) => {
-        if (res.data) {
-          this.historyPosts = res.data;
-          this.totalPages = res.pagination.total;
-        } else {
-          this.historyPosts = [];
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.historyPosts = res.data;
+            this.totalPages = res.pagination.total;
+            this.isLoading = false;
+          } else {
+            this.historyPosts = [];
+            this.isLoading = false;
+          }
+          //console.log(this.historyPosts);
+        },
+        (errorMsg) => {
+          this.isLoading = false;
         }
-        //console.log(this.historyPosts);
-      });
+      );
     this.currentActiveStatus.status = 0;
     this.paginationService.currentPage = 1;
   }
 
   toOnWallPostsHistory() {
+    this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(1, 1, 5)
-      .subscribe((res) => {
-        if (res.data) {
-          this.historyPosts = res.data;
-          this.totalPages = res.pagination.total;
-        } else {
-          this.historyPosts = [];
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.historyPosts = res.data;
+            this.totalPages = res.pagination.total;
+            this.isLoading = false;
+          } else {
+            this.historyPosts = [];
+            this.isLoading = false;
+          }
+          //console.log(this.historyPosts);
+        },
+        (errorMsg) => {
+          this.isLoading = false;
         }
-        //console.log(this.historyPosts);
-      });
+      );
     this.currentActiveStatus.status = 1;
     this.paginationService.currentPage = 1;
   }
 
   toUnSensoredPostsHistory() {
+    this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(3, 1, 5)
-      .subscribe((res) => {
-        if (res.data) {
-          this.historyPosts = res.data;
-          this.totalPages = res.pagination.total;
-        } else {
-          this.historyPosts = [];
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.historyPosts = res.data;
+            this.totalPages = res.pagination.total;
+            this.isLoading = false;
+          } else {
+            this.historyPosts = [];
+            this.isLoading = false;
+          }
+          //console.log(this.historyPosts);
+        },
+        (errorMsg) => {
+          this.isLoading = false;
         }
-        //console.log(this.historyPosts);
-      });
+      );
     this.currentActiveStatus.status = 3;
     this.paginationService.currentPage = 1;
   }
 
   toHiddenPostsHistory() {
+    this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(2, 1, 5)
-      .subscribe((res) => {
-        if (res.data) {
-          this.historyPosts = res.data;
-          this.totalPages = res.pagination.total;
-        } else {
-          this.historyPosts = [];
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.historyPosts = res.data;
+            this.totalPages = res.pagination.total;
+            this.isLoading = false;
+          } else {
+            this.historyPosts = [];
+            this.isLoading = false;
+          }
+          //console.log(this.historyPosts);
+        },
+        (errorMsg) => {
+          this.isLoading = false;
         }
-        //console.log(this.historyPosts);
-      });
+      );
     this.currentActiveStatus.status = 2;
     this.paginationService.currentPage = 1;
   }
 
   changeCurrentPage(position: number) {
+    this.isLoading = true;
     this.historyPosts = [];
     this.currentPage = this.paginationService.caculateCurrentPage(position);
     this.getPostHistorySub = this.postService
       .getPostsHistory(this.currentActiveStatus.status, this.currentPage, 5)
-      .subscribe((res) => {
-        if (res.data) {
-          this.historyPosts = res.data;
-          this.totalPages = res.pagination.total;
-        } else {
-          this.historyPosts = [];
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.historyPosts = res.data;
+            this.totalPages = res.pagination.total;
+            this.isLoading = false;
+          } else {
+            this.historyPosts = [];
+            this.isLoading = false;
+          }
+          //console.log(this.historyPosts);
+          console.log(this.historyPosts);
+          console.log(this.currentActiveStatus.status);
+        },
+        (errorMsg) => {
+          this.isLoading = false;
         }
-        //console.log(this.historyPosts);
-        console.log(this.historyPosts);
-        console.log(this.currentActiveStatus.status);
-      });
+      );
   }
 
   toEditPostDialog(post: any) {

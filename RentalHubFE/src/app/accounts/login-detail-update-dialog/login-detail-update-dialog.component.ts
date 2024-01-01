@@ -32,11 +32,13 @@ export class LoginDetailUpdateDialogComponent {
       data: 'Xác nhận cập nhật thông tin?',
     });
     const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      this.isLoading = true;
       this.accountService
         .updateEmailPassword(form.email, form.pw, form.repw)
         .subscribe(
           (res) => {
             if (res.data) {
+              this.isLoading = false;
               this.notifierService.notify(
                 'success',
                 'Cập nhật thông tin đăng nhập thành công!Vui lòng đăng nhập lại!'

@@ -25,6 +25,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   ) {
     this.id = '';
     this.relatedPosts = [];
+    this.isLoading = true;
     this.route.params.subscribe((params: Params) => {
       this.id = params['id'];
       console.log(
@@ -52,6 +53,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             '🚀 ~ file: post-detail.component.ts:33 ~ PostDetailComponent ~ this.route.params.subscribe ~ this.host:',
             this.host
           );
+          this.isLoading = false;
         },
         (errorMsg) => {
           this.isLoading = false;

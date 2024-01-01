@@ -5,10 +5,6 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './host-sidebar.component.html',
   styleUrls: ['./host-sidebar.component.scss'],
 })
-export class HostSidebarComponent implements OnInit {
+export class HostSidebarComponent {
   @Input() hostProfile: any | undefined;
-
-  ngOnInit(): void {
-    console.log(this.hostProfile);
-  }
 }

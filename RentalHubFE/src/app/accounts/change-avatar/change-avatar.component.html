@@ -1,4 +1,10 @@
-<div class="bg-white-background rounded-lg p-6">
+<div
+  [ngClass]="
+    isLoading
+      ? 'opacity-70 bg-white-background rounded-lg p-6'
+      : 'bg-white-background rounded-lg p-6'
+  "
+>
   <input
     (change)="selectFiles($event)"
     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"

@@ -8,7 +8,7 @@
     <div class="flex justify-center">
       <a
         (click)="onVerifyAccount()"
-        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
       >
         Đồng ý
       </a>
@@ -16,6 +16,11 @@
   </div>
 </div>
 <ng-template #host>
+  <div *ngIf="isLoading" class="spinner__loading">
+    <!-- <mat-progress-spinner diameter="40" [value]="value" mode="determinate">
+    </mat-progress-spinner> -->
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
   <div class="bg-white-background rounded-lg p-6">
     <h2 class="text-base font-semibold leading-7 text-gray-900">
       Tạo bài viết mới
@@ -477,4 +482,3 @@
     <notifier-container></notifier-container>
   </div>
 </ng-template>
-<notifier-container></notifier-container>

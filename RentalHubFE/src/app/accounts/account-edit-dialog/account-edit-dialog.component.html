@@ -1,120 +1,129 @@
-<h2 mat-dialog-title>Thông tin cá nhân</h2>
-<mat-dialog-content>
-  <!-- Edit modal -->
-  <div class="p-4 md:p-5">
-    <form #editProfileForm="ngForm" class="space-y-4">
-      <!-- Firstname -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Tên</label
-        >
-        <input
-          type="text"
-          id="fname-input"
-          name="fname"
-          [ngModel]="data._fname"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #fname="ngModel"
-        />
-        <div
-          *ngIf="fname.invalid && (fname.dirty || fname.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="fname.errors?.['required']">Tên không được bỏ trống.</div>
-        </div>
-      </div>
-      <!-- Last name -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Họ</label
-        >
-        <input
-          [ngModel]="data._lname"
-          type="text"
-          rows="4"
-          id="lname-input"
-          name="lname"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #lname="ngModel"
-        />
-        <div
-          *ngIf="lname.invalid && (lname.dirty || lname.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="lname.errors?.['required']">Họ không được bỏ trống.</div>
-        </div>
-      </div>
-      <!-- Email  -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Email</label
-        >
-        <input
-          [ngModel]="data._email"
-          rows="8"
-          type="email"
-          id="email-input"
-          name="email"
-          ngModel
-          required
-          disabled
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #email="ngModel"
-        />
-      </div>
-
-      <!-- Phone -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Số điện thoại</label
-        >
-        <input
-          [ngModel]="data._phone"
-          type="text"
-          id="phone-input"
-          name="phone"
-          ngModel
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #phone="ngModel"
-        />
-        <div
-          *ngIf="phone.invalid && (phone.dirty || phone.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="phone.errors?.['required']">
-            Số điện thoại không được bỏ trống.
+<div [ngClass]="isLoading ? 'opacity-70 ' : ''">
+  <div *ngIf="isLoading" class="spinner__loading text-center">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <h2 mat-dialog-title>Thông tin cá nhân</h2>
+  <mat-dialog-content>
+    <!-- Edit modal -->
+    <div class="p-4 md:p-5">
+      <form #editProfileForm="ngForm" class="space-y-4">
+        <!-- Firstname -->
+        <div class="mb-6">
+          <label
+            for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Tên</label
+          >
+          <input
+            type="text"
+            id="fname-input"
+            name="fname"
+            [ngModel]="data._fname"
+            ngModel
+            required
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            #fname="ngModel"
+          />
+          <div
+            *ngIf="fname.invalid && (fname.dirty || fname.touched)"
+            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <div *ngIf="fname.errors?.['required']">
+              Tên không được bỏ trống.
+            </div>
           </div>
         </div>
-      </div>
-    </form>
-    <notifier-container></notifier-container>
-  </div>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Hủy</button>
-  <button
-    (click)="saveChanges(editProfileForm.value)"
-    class="bg-blue-700 hover:bg-blue-800"
-    style="color: white; background-color: #1a56db"
-    mat-button
-    type="submit"
-    [disabled]="editProfileForm.invalid"
-  >
-    Lưu thay đổi
-  </button>
-</mat-dialog-actions>
+        <!-- Last name -->
+        <div class="mb-6">
+          <label
+            for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Họ</label
+          >
+          <input
+            [ngModel]="data._lname"
+            type="text"
+            rows="4"
+            id="lname-input"
+            name="lname"
+            ngModel
+            required
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            #lname="ngModel"
+          />
+          <div
+            *ngIf="lname.invalid && (lname.dirty || lname.touched)"
+            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <div *ngIf="lname.errors?.['required']">
+              Họ không được bỏ trống.
+            </div>
+          </div>
+        </div>
+        <!-- Email  -->
+        <div class="mb-6">
+          <label
+            for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Email</label
+          >
+          <input
+            [ngModel]="data._email"
+            rows="8"
+            type="email"
+            id="email-input"
+            name="email"
+            ngModel
+            required
+            disabled
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            #email="ngModel"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-6">
+          <label
+            for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Số điện thoại</label
+          >
+          <input
+            [ngModel]="data._phone"
+            type="text"
+            id="phone-input"
+            name="phone"
+            ngModel
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            #phone="ngModel"
+          />
+          <div
+            *ngIf="phone.invalid && (phone.dirty || phone.touched)"
+            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <div *ngIf="phone.errors?.['required']">
+              Số điện thoại không được bỏ trống.
+            </div>
+          </div>
+        </div>
+      </form>
+      <notifier-container></notifier-container>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Hủy</button>
+    <button
+      (click)="saveChanges(editProfileForm.value)"
+      class="bg-blue-700 hover:bg-blue-800"
+      style="color: white; background-color: #1a56db"
+      mat-button
+      type="submit"
+      [disabled]="editProfileForm.invalid"
+    >
+      Lưu thay đổi
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -52,6 +52,7 @@ export class HostPostingHistoryComponent implements OnInit {
   ngOnInit() {
     this.currentUid = '';
     this.currentUid = this.route.snapshot.paramMap.get('id');
+    this.isLoading = true;
     if (this.currentUid) {
       console.log(
         '🚀 ~ file: host-posting-history.component.ts:52 ~ HostPostingHistoryComponent ~ ngOnInit ~ this.currentUid:',
@@ -68,6 +69,7 @@ export class HostPostingHistoryComponent implements OnInit {
           this.hostProfile.phone = res.data[0].phoneNumber;
           this.hostProfile.email = res.data[0].authorEmail;
           this.totalPages = res.pagination.total;
+          this.isLoading = false;
         });
     }
   }

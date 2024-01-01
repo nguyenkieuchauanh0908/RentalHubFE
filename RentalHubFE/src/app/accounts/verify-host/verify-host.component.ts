@@ -33,14 +33,22 @@ export class VerifyHostComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.error = '';
+    this.otpSent = false;
+    this.otpVerified = false;
+    this.phoneVerified = false;
     this.uId = this.accountService.getCurrentUserId()!;
   }
 
   verifyPhone(stepper: MatStepper) {
+    this.phoneVerified = false;
+    this.otpSent = false;
+    this.isLoading = true;
     let phone = this.firstFormGroup.value.firstCtrl;
     this.accountService.verifyAccount(phone!).subscribe(
       (res) => {
         if (res.data) {
+          this.isLoading = false;
           this.otpSent = res.data;
           console.log('otp sent: ', this.otpSent);
           if (this.otpSent === true) {
@@ -68,10 +76,13 @@ export class VerifyHostComponent implements OnInit {
   }
 
   verifyOTP(stepper: MatStepper) {
+    this.otpVerified = false;
+    this.isLoading = true;
     let otp = this.secondFormGroup.value.secondCtrl!;
     this.accountService.confirmOtp(otp).subscribe(
       (res) => {
         if (res.data) {
+          this.isLoading = false;
           this.notifierService.notify(
             'success',
             'Kích hoạt tài khoản chủ nhà thành công!'

@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./posts-edit.component.scss'],
 })
 export class PostsEditComponent implements OnInit, OnDestroy {
+  isLoading = false;
   isHost: boolean = false;
   myProfile!: User | null;
   myProfileSub = new Subscription();
@@ -73,6 +74,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmitPost(form: any) {
+    this.isLoading = true;
     console.log('on submiting post ...');
     console.log('Form data: ', form);
     this.notifierService.hideAll();
@@ -86,13 +88,16 @@ export class PostsEditComponent implements OnInit, OnDestroy {
                 'success',
                 'Tạo bài viết thành công!'
               );
+              this.isLoading = false;
             }
           },
           (errMsg) => {
+            this.isLoading = false;
             this.notifierService.notify('error', errMsg);
           }
         );
     } else {
+      this.isLoading = false;
       this.notifierService.notify('warning', 'Vui lòng điền đủ các trường!');
     }
   }

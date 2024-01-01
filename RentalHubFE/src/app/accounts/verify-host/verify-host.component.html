@@ -2,13 +2,13 @@
   <h2 class="text-base font-semibold leading-7 text-gray-900">
     Xác thực tài khoản
   </h2>
-  <!-- <button mat-raised-button (click)="isEditable = !isEditable">
-    {{ !isEditable ? "Enable edit mode" : "Disable edit mode" }}
-  </button> -->
 
-  <mat-stepper linear #stepper>
+  <mat-stepper class="relative" linear #stepper>
     <!-- Step 1 -->
     <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+      <div *ngIf="isLoading" class="spinner__loading text-center">
+        <mat-spinner diameter="30"></mat-spinner>
+      </div>
       <form [formGroup]="firstFormGroup">
         <ng-template matStepLabel>Số điện thoại</ng-template>
         <mat-form-field>
@@ -27,6 +27,12 @@
     </mat-step>
     <!-- Step 2 -->
     <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
+      <div *ngIf="isLoading" class="spinner__loading text-center">
+        <mat-spinner diameter="30"></mat-spinner>
+      </div>
+      <div *ngIf="isLoading" class="spinner__loading text-center">
+        <mat-spinner diameter="30"></mat-spinner>
+      </div>
       <form [formGroup]="secondFormGroup">
         <ng-template matStepLabel>Mã OTP</ng-template>
         <mat-form-field>
@@ -60,7 +66,7 @@
             <div>
               <a
                 (click)="goToPostNew()"
-                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
               >
                 Đăng bài
               </a>
@@ -68,7 +74,7 @@
             <div>
               <a
                 (click)="goToHome()"
-                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
               >
                 Về trang chủ
               </a>

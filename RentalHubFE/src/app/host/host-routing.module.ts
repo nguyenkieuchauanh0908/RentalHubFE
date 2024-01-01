@@ -1,6 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
 import { HostComponent } from './host.component';
-import { HostProfileComponent } from './host-profile/host-profile.component';
 import { HostPostingHistoryComponent } from './host-posting-history/host-posting-history.component';
 import { NgModule } from '@angular/core';
 import { AuthGuard } from '../auth/auth.guard';

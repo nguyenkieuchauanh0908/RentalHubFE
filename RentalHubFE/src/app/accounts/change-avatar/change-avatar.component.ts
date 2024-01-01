@@ -59,7 +59,7 @@ export class ChangeAvatarComponent {
   uploadFiles(): void {
     console.log('Uploading files...');
     this.message = [];
-
+    this.isLoading = true;
     if (this.selectedFiles) {
       for (let i = 0; i < this.selectedFiles.length; i++) {
         console.log(typeof this.selectedFiles[i]);
@@ -67,6 +67,7 @@ export class ChangeAvatarComponent {
           (res) => {
             if (res.data) {
               console.log(res.data);
+              this.isLoading = false;
               this.notifierService.notify(
                 'success',
                 'Cập nhật avatar thành công!'
