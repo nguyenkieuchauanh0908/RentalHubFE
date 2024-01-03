@@ -15,6 +15,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NotifierModule } from 'angular-notifier';
 import { AddTagDialogComponent } from './tags/add-tag-dialog/add-tag-dialog.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { OtpDialogComponent } from './otp-dialog/otp-dialog.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     MainLayoutComponent,
     AddTagDialogComponent,
     ConfirmDialogComponent,
+    OtpDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,45 @@
+<div [ngClass]="isLoading ? 'opacity-70 relative' : 'relative'">
+  <div *ngIf="isLoading" class="spinner__loading text-center">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <h2 mat-dialog-title>Xác nhận mail</h2>
+  <mat-dialog-content>
+    <!-- Edit modal -->
+    <div class="p-4 md:p-5">
+      <form #otp="ngForm" class="space-y-4">
+        <!-- otp  -->
+        <div class="mb-6">
+          <label
+            for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >OTP</label
+          >
+          <input
+            [ngModel]="data"
+            rows="8"
+            type="text"
+            id="otp-input"
+            name="otp"
+            ngModel
+            required
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            #otp="ngModel"
+          />
+        </div>
+      </form>
+      <notifier-container></notifier-container>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Hủy</button>
+    <button
+      (click)="saveChanges(otp.value)"
+      class="bg-blue-700 hover:bg-blue-800"
+      style="color: white; background-color: #1a56db"
+      mat-button
+      type="submit"
+    >
+      Xác nhận
+    </button>
+  </mat-dialog-actions>
+</div>

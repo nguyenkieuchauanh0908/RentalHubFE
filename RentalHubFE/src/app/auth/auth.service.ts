@@ -110,6 +110,15 @@ export class AuthService {
       .pipe(catchError(handleError));
   }
 
+  verifyUser(email: string, otp: string) {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'users/accounts/verify-user', {
+        _email: email,
+        otp: otp,
+      })
+      .pipe(catchError(handleError));
+  }
+
   logout(refreshToken: any) {
     console.log('On loging out ...');
     this.router.navigate(['/auth/login']);

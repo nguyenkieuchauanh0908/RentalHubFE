@@ -1,11 +1,11 @@
-import { NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { resDataDTO } from 'src/app/shared/resDataDTO';
 import { NotifierService } from 'angular-notifier';
+import { MatDialog } from '@angular/material/dialog';
+import { OtpDialogComponent } from 'src/app/shared/otp-dialog/otp-dialog.component';
 
 @Component({
   selector: 'app-sign-up',
@@ -19,19 +19,22 @@ export class SignUpComponent implements OnInit {
   isConfirmPwShown: boolean = false;
   isLoading = false;
   error: string = '';
+  temptEmail: string = '';
 
   constructor(
     private authService: AuthService,
-    private router: Router,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.password = 'password';
     this.confirmPassword = 'password';
+    this.temptEmail = '';
   }
 
   onSubmit(form: NgForm) {
+    this.temptEmail = form.value.email;
     this.notifierService.hideAll();
     console.log('onSubmit....');
     let signupObs: Observable<resDataDTO>;
@@ -43,16 +46,19 @@ export class SignUpComponent implements OnInit {
     const pw_confirm = form.value.pw_confirm;
 
     if (pw === pw_confirm) {
-      signupObs = this.authService.signup(email, pw, pw_confirm);
+      signupObs = this.authService.signupOTP(email, pw, pw_confirm);
       this.isLoading = true;
       signupObs.subscribe(
         (res) => {
           this.isLoading = false;
-          this.router.navigate(['/auth/login']);
           this.notifierService.notify(
             'success',
-            'Đăng ký tài khoản thành công!'
+            'OTP đã được gửi đến email đăng ký!'
           );
+          const dialogRef = this.dialog.open(OtpDialogComponent, {
+            width: '400px',
+            data: this.temptEmail,
+          });
         },
         (errorMsg) => {
           this.isLoading = false;
@@ -64,7 +70,7 @@ export class SignUpComponent implements OnInit {
     } else {
       this.error = 'Mật khẩu nhập lại không khớp!';
       console.log(this.error);
-      this.notifierService.notify('error', this.error);
+      this.notifierService.notify('error', 'Mật khẩu nhập lại không khớp!');
     }
   }
   onEyesSeePwClick() {
