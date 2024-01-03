@@ -100,6 +100,16 @@ export class AuthService {
       .pipe(catchError(handleError));
   }
 
+  signupOTP(email: string, pw: string, _pwconfirm: string) {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'users/accounts/registor-user', {
+        _email: email,
+        _pw: pw,
+        _pwconfirm: _pwconfirm,
+      })
+      .pipe(catchError(handleError));
+  }
+
   logout(refreshToken: any) {
     console.log('On loging out ...');
     this.router.navigate(['/auth/login']);

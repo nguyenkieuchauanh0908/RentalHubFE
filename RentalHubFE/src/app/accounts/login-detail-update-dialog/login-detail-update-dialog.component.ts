@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotifierService } from 'angular-notifier';
 import { AccountService } from 'src/app/accounts/accounts.service';
@@ -11,7 +11,11 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
   templateUrl: './login-detail-update-dialog.component.html',
   styleUrls: ['./login-detail-update-dialog.component.scss'],
 })
-export class LoginDetailUpdateDialogComponent {
+export class LoginDetailUpdateDialogComponent implements OnInit {
+  password: string = 'password';
+  confirmPassword: string = 'password';
+  isPwShown: boolean = false;
+  isConfirmPwShown: boolean = false;
   isLoading = false;
   error: string = '';
 
@@ -23,6 +27,11 @@ export class LoginDetailUpdateDialogComponent {
     public dialog: MatDialog
   ) {
     console.log(this.data);
+  }
+
+  ngOnInit(): void {
+    this.password = 'password';
+    this.confirmPassword = 'password';
   }
 
   saveChanges(form: any) {
@@ -58,5 +67,25 @@ export class LoginDetailUpdateDialogComponent {
     dialogRef.afterClosed().subscribe(() => {
       sub.unsubscribe();
     });
+  }
+
+  onEyesSeePwClick() {
+    if (this.password === 'password') {
+      this.password = 'text';
+      this.isPwShown = true;
+    } else {
+      this.password = 'password';
+      this.isPwShown = false;
+    }
+  }
+
+  onEyesSeeConfirmPwClick() {
+    if (this.confirmPassword === 'password') {
+      this.confirmPassword = 'text';
+      this.isConfirmPwShown = true;
+    } else {
+      this.confirmPassword = 'password';
+      this.isConfirmPwShown = false;
+    }
   }
 }

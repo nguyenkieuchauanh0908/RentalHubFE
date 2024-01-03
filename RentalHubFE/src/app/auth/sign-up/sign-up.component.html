@@ -16,6 +16,7 @@
       (ngSubmit)="onSubmit(signUpForm)"
       class="space-y-4 md:space-y-6"
     >
+      <!-- Email -->
       <div>
         <label
           for="email"
@@ -29,6 +30,7 @@
           class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="name@company.com"
           ngModel
+          required
           email
           #email="ngModel"
         />
@@ -42,21 +44,34 @@
           </div>
         </div>
       </div>
+
+      <!-- Password -->
       <div>
         <label
           for="password"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >Mật khẩu</label
         >
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="••••••••"
-          class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          ngModel
-          #pw="ngModel"
-        />
+        <div class="relative">
+          <input
+            [type]="password"
+            name="password"
+            id="password"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            ngModel
+            #pw="ngModel"
+          />
+          <button
+            class="absolute top-3 right-4"
+            (click)="onEyesSeePwClick()"
+            type="button"
+          >
+            <i class="fa fa-eye" aria-hidden="true" *ngIf="!isPwShown"></i>
+            <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="isPwShown"></i>
+          </button>
+        </div>
         <div
           *ngIf="pw.invalid && (pw.dirty || pw.touched)"
           class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
@@ -68,21 +83,41 @@
         </div>
       </div>
 
+      <!-- password confirm -->
       <div>
         <label
           for="pw_confirm"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >Nhập lại Mật khẩu</label
         >
-        <input
-          type="password"
-          name="pw_confirm"
-          id="password"
-          placeholder="••••••••"
-          class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          ngModel
-          #confirmPw="ngModel"
-        />
+        <div class="relative">
+          <input
+            [type]="confirmPassword"
+            name="pw_confirm"
+            id="password"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            ngModel
+            #confirmPw="ngModel"
+          />
+          <button
+            class="absolute top-3 right-4"
+            (click)="onEyesSeeConfirmPwClick()"
+            type="button"
+          >
+            <i
+              class="fa fa-eye"
+              aria-hidden="true"
+              *ngIf="!isConfirmPwShown"
+            ></i>
+            <i
+              class="fa fa-eye-slash"
+              aria-hidden="true"
+              *ngIf="isConfirmPwShown"
+            ></i>
+          </button>
+        </div>
         <div
           *ngIf="confirmPw.invalid && (confirmPw.dirty || confirmPw.touched)"
           class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
@@ -93,6 +128,8 @@
           </div>
         </div>
       </div>
+
+      <!-- Submit btn -->
       <button
         type="submit"
         [disabled]="!signUpForm.valid"
@@ -111,3 +148,4 @@
     </form>
   </div>
 </div>
+<notifier-container></notifier-container>

@@ -35,10 +35,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   showAccount() {
     // this.router.navigate(['/profile/user', this.myProfile?._id]);
+    console.log();
     const dialogRef = this.dialog.open(AccountEditDialogComponent, {
       width: '400px',
       data: this.myProfile,
     });
+    console.log(
+      '🚀 ~ file: sidebar.component.ts:43 ~ SidebarComponent ~ showAccount ~ this.myProfile:',
+      this.myProfile
+    );
   }
 
   toLoginDetail() {

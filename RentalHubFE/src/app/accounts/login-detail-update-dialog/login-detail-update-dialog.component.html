@@ -28,54 +28,89 @@
         </div>
 
         <!-- Password -->
-        <div class="mb-6">
+        <div>
           <label
-            for="base-input"
+            for="password"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Mật khẩu mới</label
+            >Mật khẩu</label
           >
-          <input
-            type="password"
-            id="pw-input"
-            name="pw"
-            ngModel
-            placeholder="••••••••"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            #pw="ngModel"
-          />
+          <div class="relative">
+            <input
+              [type]="password"
+              name="pw"
+              id="password"
+              placeholder="••••••••"
+              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              required
+              ngModel
+              #pw="ngModel"
+            />
+            <button
+              class="absolute top-3 right-4"
+              (click)="onEyesSeePwClick()"
+              type="button"
+            >
+              <i class="fa fa-eye" aria-hidden="true" *ngIf="!isPwShown"></i>
+              <i
+                class="fa fa-eye-slash"
+                aria-hidden="true"
+                *ngIf="isPwShown"
+              ></i>
+            </button>
+          </div>
           <div
             *ngIf="pw.invalid && (pw.dirty || pw.touched)"
             class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
           >
             <div *ngIf="pw.errors?.['required']">
-              Mật khẩu không được bỏ trống.
+              Mật khẩu không được bỏ trống!
             </div>
           </div>
         </div>
-        <!-- Password -->
-        <div class="mb-6">
+
+        <!-- password confirm -->
+        <div>
           <label
-            for="base-input"
+            for="pw_confirm"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Xác thực mật khẩu cũ</label
+            >Mật khẩu cũ</label
           >
-          <input
-            type="password"
-            id="repw-input"
-            name="repw"
-            ngModel
-            placeholder="••••••••"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            #repw="ngModel"
-          />
+          <div class="relative">
+            <input
+              [type]="confirmPassword"
+              name="repw"
+              id="password"
+              placeholder="••••••••"
+              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              required
+              ngModel
+              #confirmPw="ngModel"
+            />
+            <button
+              class="absolute top-3 right-4"
+              (click)="onEyesSeeConfirmPwClick()"
+              type="button"
+            >
+              <i
+                class="fa fa-eye"
+                aria-hidden="true"
+                *ngIf="!isConfirmPwShown"
+              ></i>
+              <i
+                class="fa fa-eye-slash"
+                aria-hidden="true"
+                *ngIf="isConfirmPwShown"
+              ></i>
+            </button>
+          </div>
           <div
-            *ngIf="repw.invalid && (repw.dirty || repw.touched)"
+            *ngIf="confirmPw.invalid && (confirmPw.dirty || confirmPw.touched)"
             class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
           >
-            <div *ngIf="repw.errors?.['required']">
-              Vui lòng nhập mật khẩu cũ để xác thực.
+            <div *ngIf="confirmPw.errors?.['required']">
+              Vui lòng nhập xác nhận lại mật khẩu!
             </div>
           </div>
         </div>
