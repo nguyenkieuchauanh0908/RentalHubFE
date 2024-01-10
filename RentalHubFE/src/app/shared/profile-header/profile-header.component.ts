@@ -97,8 +97,6 @@ export class ProfileHeaderComponent {
   }
 
   toHome() {
-    this.router.navigate(['']).then(() => {
-      window.location.reload();
-    });
+    this.router.navigate(['']);
   }
 }
