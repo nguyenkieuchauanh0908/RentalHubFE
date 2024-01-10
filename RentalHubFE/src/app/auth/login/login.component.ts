@@ -11,7 +11,8 @@ import { NotifierService } from 'angular-notifier';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  loginObs!: Observable<resDataDTO>;
   password: string = 'password';
   isShow: boolean = false;
   isLoading = false;
@@ -27,41 +28,41 @@ export class LoginComponent implements OnInit {
     this.password = 'password';
   }
 
+  ngOnDestroy(): void {}
+
   onSubmit(form: NgForm) {
-    let loginObs: Observable<resDataDTO>;
     if (!form.valid) {
       return;
     }
     const email = form.value.email;
     const pw = form.value.password;
 
-    loginObs = this.authService.login(email, pw);
+    this.loginObs = this.authService.login(email, pw);
     console.log(
-      '🚀 ~ file: login.component.ts:28 ~ LoginComponent ~ onSubmit ~ loginObs:',
-      loginObs
+      '🚀 ~ file: login.component.ts:28 ~ LoginComponent ~ onSubmit ~ this.loginObs:',
+      this.loginObs
     );
 
     this.isLoading = true;
-    loginObs.subscribe(
+    this.notifierService.hideAll();
+    this.loginObs.subscribe(
       (res) => {
         console.log(
           '🚀 ~ file: login.component.ts:32 ~ LoginComponent ~ onSubmit ~ res:',
           res
         );
-        this.isLoading = false;
         this.notifierService.notify('success', 'Đăng nhập thành công!');
-        this.router.navigate(['/posts']);
+        this.isLoading = false;
+        setTimeout(() => {
+          this.router.navigate(['']);
+        }, 1000);
       },
       (errorMsg) => {
         this.isLoading = false;
         this.error = errorMsg;
         console.log(this.error);
-        this.notifierService.notify('error', this.error);
+        this.notifierService.notify('error', errorMsg);
       }
-    );
-    console.log(
-      '🚀 ~ file: login.component.ts:28 ~ LoginComponent ~ onSubmit ~ loginObs:',
-      loginObs
     );
   }
 

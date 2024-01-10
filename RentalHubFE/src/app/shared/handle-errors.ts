@@ -5,6 +5,9 @@ export function handleError(errorRes: HttpErrorResponse) {
   let errorMessage = 'Đã xảy ra lỗi! Chúng tôi sẽ sớm khắc phục!';
 
   switch (errorRes.error.error.code) {
+    case 'USER_NOTFOUND':
+      errorMessage = 'Không tìm thấy người dùng';
+      break;
     case 'DUPLICATED':
       errorMessage = 'Email đã tồn tại!';
       break;

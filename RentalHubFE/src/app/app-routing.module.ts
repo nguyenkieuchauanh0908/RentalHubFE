@@ -4,6 +4,7 @@ import { PostsResolverService } from './posts/posts-resolver.service';
 import { MainLayoutComponent } from './shared/layout/main-layout/main-layout.component';
 import { AuthGuard } from './auth/auth.guard';
 import { HostComponent } from './host/host.component';
+import { ProfileLayoutComponent } from './shared/layout/profile-layout/profile-layout.component';
 
 const routes: Routes = [
   {
@@ -20,7 +21,7 @@ const routes: Routes = [
 
   {
     path: 'profile',
-    component: MainLayoutComponent,
+    component: ProfileLayoutComponent,
     loadChildren: () =>
       import('./accounts/accounts.module').then((m) => m.AccountsModule),
     canActivate: [AuthGuard],

@@ -88,6 +88,7 @@ export class PostingHistoryComponent {
               this.historyPosts = postingHistory!;
             }
           );
+          this.paginationService.pagination = res.pagination;
           this.totalPages = res.pagination.total;
           this.isLoading = false;
         },
@@ -122,6 +123,7 @@ export class PostingHistoryComponent {
         (res) => {
           if (res.data) {
             this.historyPosts = res.data;
+            this.paginationService.pagination = res.pagination;
             this.totalPages = res.pagination.total;
             this.isLoading = false;
           } else {
@@ -148,6 +150,7 @@ export class PostingHistoryComponent {
           if (res.data) {
             this.historyPosts = res.data;
             this.totalPages = res.pagination.total;
+            this.paginationService.pagination = res.pagination;
             this.isLoading = false;
           } else {
             this.historyPosts = [];
@@ -173,6 +176,7 @@ export class PostingHistoryComponent {
           if (res.data) {
             this.historyPosts = res.data;
             this.totalPages = res.pagination.total;
+            this.paginationService.pagination = res.pagination;
             this.isLoading = false;
           } else {
             this.historyPosts = [];
@@ -198,6 +202,7 @@ export class PostingHistoryComponent {
           if (res.data) {
             this.historyPosts = res.data;
             this.totalPages = res.pagination.total;
+            this.paginationService.pagination = res.pagination;
             this.isLoading = false;
           } else {
             this.historyPosts = [];
@@ -223,6 +228,7 @@ export class PostingHistoryComponent {
           if (res.data) {
             this.historyPosts = res.data;
             this.totalPages = res.pagination.total;
+            this.paginationService.pagination = res.pagination;
             this.isLoading = false;
           } else {
             this.historyPosts = [];
@@ -241,7 +247,15 @@ export class PostingHistoryComponent {
   changeCurrentPage(position: number) {
     this.isLoading = true;
     this.historyPosts = [];
-    this.currentPage = this.paginationService.caculateCurrentPage(position);
+    this.currentPage = this.paginationService.pagination.page;
+    this.currentPage = this.paginationService.navigatePage(
+      position,
+      this.currentPage
+    );
+    console.log(
+      '🚀 ~ file: posting-history.component.ts:249 ~ PostingHistoryComponent ~ changeCurrentPage ~ this.currentPage:',
+      this.currentPage
+    );
     this.getPostHistorySub = this.postService
       .getPostsHistory(this.currentActiveStatus.status, this.currentPage, 5)
       .subscribe(

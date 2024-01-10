@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginDetailUpdateDialogComponent } from 'src/app/accounts/login-detail-update-dialog/login-detail-update-dialog.component';
 import { AccountEditDialogComponent } from 'src/app/accounts/account-edit-dialog/account-edit-dialog.component';
 import { UpdateAvatarDialogComponent } from 'src/app/accounts/update-avatar-dialog/update-avatar-dialog.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -56,10 +57,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   logout() {
     console.log('On logging out...');
-    let logoutObs: Observable<resDataDTO>;
-    logoutObs = this.authService.logout(this.myProfile?.RFToken);
-    logoutObs.subscribe();
-    this.router.navigate(['/posts']);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn đăng xuất?',
+    });
+    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      let logoutObs: Observable<resDataDTO>;
+      logoutObs = this.authService.logout(this.myProfile?.RFToken);
+      logoutObs.subscribe();
+      this.router.navigate(['/posts']);
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
   }
 
   toPostingHistory() {

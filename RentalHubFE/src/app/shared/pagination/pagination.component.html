@@ -6,8 +6,17 @@
     [ngStyle]="{ cursor: currentPage === 1 ? 'default' : 'pointer' }"
     class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
   >
-    Trước</button
-  ><button></button>
+    Trước
+  </button>
+
+  <!-- Current Button -->
+  <button
+    [disabled]="true"
+    [ngStyle]="{ cursor: currentPage === totalPages ? 'default' : 'pointer' }"
+    class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+  >
+    {{ currentPage }}
+  </button>
 
   <!-- Next Button -->
   <button

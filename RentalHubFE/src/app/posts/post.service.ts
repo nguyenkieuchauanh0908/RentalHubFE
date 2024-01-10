@@ -50,7 +50,7 @@ export class PostService {
         tap(
           (res) => {
             this.posts = res.data;
-            this.paginationService.pagination = res.data.pagination;
+            this.paginationService.pagination = res.pagination;
             this.paginationService.paginationChanged.next(res.pagination);
             this.postListChanged.next([...this.posts]);
           },
@@ -188,6 +188,7 @@ export class PostService {
         catchError(handleError),
         tap((res) => {
           this.setCurrentPostingHistory(res.data);
+          this.paginationService.pagination = res.pagination;
           console.log(
             '🚀 ~ file: post.service.ts:187 ~ PostService ~ tap ~ res.data:',
             res.data
@@ -240,6 +241,7 @@ export class PostService {
           this.searchResult = res.data;
           this.searchResultsChanged.next([...this.searchResult]);
           this.paginationService.pagination = res.pagination;
+          this.paginationService.paginationChanged.next(res.pagination);
           if (res.data) {
             console.log('Search results: ', res.data);
           }

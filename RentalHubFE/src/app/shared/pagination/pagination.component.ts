@@ -30,8 +30,14 @@ export class PaginationComponent implements OnInit, OnDestroy {
   constructor(private paginationService: PaginationService) {}
 
   ngOnInit() {
-    console.log('On getting current page index from param...');
-    this.currentPage = this.paginationService.getCurrentPageIndexFromParam();
+    this.currentPage = this.paginationService.pagination.page;
+    console.log(
+      '🚀 ~ file: pagination.component.ts:34 ~ PaginationComponent ~ ngOnInit ~ this.paginationService.pagination.page:',
+      this.paginationService.pagination.page
+    );
+    // console.log('On getting current page index from param...');
+    // this.currentPage = this.paginationService.getCurrentPageIndexFromParam();
+    console.log('sdrftgskdfgjsdk');
     console.log('Current page: ' + this.currentPage);
   }
 
@@ -40,7 +46,11 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   prevPage() {
-    this.currentPage = this.paginationService.currentPage;
+    // this.currentPage = this.paginationService.currentPage;
+    console.log(
+      '🚀 ~ file: pagination.component.ts:44 ~ PaginationComponent ~ prevPage ~ this.currentPage:',
+      this.currentPage
+    );
     this.reachPrevPaginationLimit = false;
     if (this.totalPages && this.currentPage === 1) {
       this.reachPrevPaginationLimit = true;
@@ -50,6 +60,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
         this.toPrevPage.emit(-1);
         this.currentPage -= 1;
       }
+      this.paginationService.pagination.page = this.currentPage;
       console.log(
         'total page: ' + this.totalPages,
         ', current page: ' + this.currentPage
@@ -58,7 +69,6 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   nextPage() {
-    this.currentPage = this.paginationService.currentPage;
     this.reachNextPaginationLimit = false;
     if (this.totalPages && this.currentPage === this.totalPages) {
       this.reachNextPaginationLimit = true;
@@ -69,6 +79,8 @@ export class PaginationComponent implements OnInit, OnDestroy {
         this.currentPage += 1;
       }
     }
+    this.paginationService.pagination.page = this.currentPage;
+    console.log('AAAA');
     console.log(
       'total page: ' + this.totalPages,
       ', current page: ' + this.currentPage

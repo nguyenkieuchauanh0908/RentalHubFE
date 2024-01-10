@@ -50,12 +50,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
     this.paginationService.paginationChanged.subscribe(
       (pagination: Pagination) => {
         this.totalPages = pagination.total;
-        // console.log('Total pages: ' + this.totalPages);
       }
-    );
-    console.log(
-      '🚀 ~ file: posts-list.component.ts:46 ~ PostsListComponent ~ this.postService.postListChanged.subscribe ~ this.isLoading:',
-      this.isLoading
     );
   }
 
@@ -66,7 +61,10 @@ export class PostsListComponent implements OnInit, OnDestroy {
   //position can be either 1 (navigate to next page) or -1 (to previous page)
   changeCurrentPage(position: number) {
     this.isLoading = true;
-    this.currentPage = this.paginationService.navigatePage(position);
+    this.currentPage = this.paginationService.navigatePage(
+      position,
+      this.currentPage
+    );
     this.postService.getPostList(this.currentPage, this.pageItemLimit);
     this.postListChangedSub = this.postService.postListChanged.subscribe(
       (posts: PostItem[]) => {

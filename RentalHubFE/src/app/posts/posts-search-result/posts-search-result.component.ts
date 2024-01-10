@@ -31,7 +31,11 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
         (searchResult: PostItem[]) => {
           console.log('Detecting search results changed...');
           this.searchResult = searchResult;
-          this.currentPage = this.paginationService.pagination.total;
+          // this.currentPage = this.paginationService.pagination.page;
+          console.log(
+            '🚀 ~ file: posts-search-result.component.ts:35 ~ PostsSearchResultComponent ~ ngOnInit ~ this.currentPage:',
+            this.currentPage
+          );
           this.currentKeyword = this.postService.searchKeyword;
           this.totalPages = this.paginationService.pagination.total;
         }
@@ -53,15 +57,18 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService
   ) {
     this.stateData = this.router.getCurrentNavigation()?.extras.state;
-    console.log(
-      '🚀 ~ file: posts-search-result.component.ts:56 ~ PostsSearchResultComponent ~ this.stateData:',
-      this.stateData
-    );
     this.searchResult = this.stateData.searchResult;
     if (this.stateData.searchResult && this.stateData.pagination) {
-      console.log('Received search result...', this.stateData.searchResult);
       this.searchResult = this.stateData.searchResult;
       this.paginationService.pagination = this.stateData.pagination;
+      this.paginationService.paginationChanged.next(this.stateData.pagination);
+      // this.currentPage = this.paginationService.pagination.page;
+      console.log(
+        '🚀 ~ file: posts-search-result.component.ts:63 ~ PostsSearchResultComponent ~ this.currentPage:',
+        this.currentPage
+      );
+      this.currentKeyword = this.postService.searchKeyword;
+      this.totalPages = this.paginationService.pagination.total;
     }
   }
 
@@ -69,7 +76,14 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
   changeCurrentPage(position: number) {
     console.log('On changing page...');
     console.log('Your keyword is: ', this.currentKeyword);
-    this.currentPage = this.paginationService.navigatePage(position);
+    this.currentPage = this.paginationService.navigatePage(
+      position,
+      this.currentPage
+    );
+    console.log(
+      '🚀 ~ file: posts-search-result.component.ts:80 ~ PostsSearchResultComponent ~ changeCurrentPage ~ this.currentPage:',
+      this.currentPage
+    );
     this.postService
       .searchPostsByKeyword(
         this.currentKeyword!,

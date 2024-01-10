@@ -43,7 +43,6 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          console.log('On logging-------------------------');
           this.handleAuthentication(res.data);
         })
       );

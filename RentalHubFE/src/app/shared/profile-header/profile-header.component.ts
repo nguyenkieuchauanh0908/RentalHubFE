@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { Subscription } from 'rxjs';
@@ -7,11 +7,11 @@ import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  selector: 'app-profile-header',
+  templateUrl: './profile-header.component.html',
+  styleUrls: ['./profile-header.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class ProfileHeaderComponent {
   isLoading = false;
   error: string = '';
   private userSub!: Subscription;
@@ -88,20 +88,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
           }
         );
     } else {
-      this.router.navigate(['']).then(() => {
-        window.location.reload();
-      });
+      this.notifierService.notify('error', 'Vui lòng nhập từ khóa tìm kiếm!');
     }
+  }
+
+  ngOnDestroy() {
+    this.userSub.unsubscribe();
   }
 
   toHome() {
     this.router.navigate(['']).then(() => {
       window.location.reload();
     });
-  }
-
-  ngOnDestroy() {
-    this.userSub.unsubscribe();
-    // this.searchSub.unsubscribe();
   }
 }

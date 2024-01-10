@@ -13,10 +13,7 @@ export class AppComponent implements OnInit {
   isUser = false;
   isHost = false;
 
-  constructor(
-    private authService: AuthService,
-    private notifierService: NotifierService
-  ) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.isUser = this.authService.isUser;

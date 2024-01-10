@@ -4,6 +4,8 @@ import { PostItem } from './post-item.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { AccountService } from 'src/app/accounts/accounts.service';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   standalone: true,
@@ -19,9 +21,9 @@ export class PostItemComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private notifierService: NotifierService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    public dialog: MatDialog
   ) {}
   ngOnInit() {
     this.isAuthenticated = false;
@@ -38,7 +40,20 @@ export class PostItemComponent implements OnInit, OnDestroy {
 
   goToPost() {
     if (this.item._id) {
-      this.router.navigate(['/posts/', this.item._id]);
+      if (this.isAuthenticated) {
+        this.router.navigate(['/posts/', this.item._id]);
+      } else {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          width: '400px',
+          data: 'Bạn cần phải đăng nhập để tiếp tục!',
+        });
+        const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+          this.router.navigate(['/auth/login']);
+        });
+        dialogRef.afterClosed().subscribe(() => {
+          sub.unsubscribe();
+        });
+      }
     } else {
       this.notifierService.notify(
         'error',
