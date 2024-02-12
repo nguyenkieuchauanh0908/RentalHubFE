@@ -10,14 +10,10 @@ import { NotifierService } from 'angular-notifier';
 })
 export class AppComponent implements OnInit {
   title = 'Rental Hub';
-  isUser = false;
-  isHost = false;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.isUser = this.authService.isUser;
-    this.isHost = this.authService.isHost;
     this.authService.autoLogin();
     initFlowbite();
   }

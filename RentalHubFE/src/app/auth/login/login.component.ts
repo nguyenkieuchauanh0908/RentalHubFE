@@ -5,6 +5,13 @@ import { resDataDTO } from 'src/app/shared/resDataDTO';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
+import {
+  MatDialog,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { SendForgetPwEmailComponent } from 'src/app/shared/send-forget-pw-email/send-forget-pw-email.component';
 
 @Component({
   selector: 'app-login',
@@ -17,11 +24,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   isShow: boolean = false;
   isLoading = false;
   error: string = '';
+  forgetPassEmail: string = '';
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -74,5 +83,19 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.password = 'password';
       this.isShow = false;
     }
+  }
+
+  onForgetPasswordClick() {
+    const dialogRef = this.dialog.open(SendForgetPwEmailComponent, {
+      data: { title: 'Quên mật khẩu', inputLabel: 'Email' },
+      width: '400px',
+    });
+    const sub = dialogRef.componentInstance.closeDialog.subscribe(() => {
+      dialogRef.close();
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+      this.forgetPassEmail = result;
+    });
   }
 }

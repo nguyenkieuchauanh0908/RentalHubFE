@@ -209,6 +209,40 @@ export class AuthService {
       .pipe(catchError(handleError));
   }
 
+  sendForgetPwMail(email: string) {
+    // console.log('Send forgetPwMail to email:', email);
+    return this.http
+      .post<resDataDTO>(
+        environment.baseUrl + 'users/accounts/forgot-password',
+        {
+          url: 'http://localhost:4200/forget-password',
+          _email: email,
+        }
+      )
+      .pipe(catchError(handleError));
+  }
+
+  resetPassword(
+    pw: string,
+    pw_confirm: string,
+    uId: string,
+    resetPassToken: string
+  ) {
+    return this.http
+      .post<resDataDTO>(
+        environment.baseUrl +
+          'users/accounts/reset-password/' +
+          uId +
+          '/' +
+          resetPassToken,
+        {
+          _pw: pw,
+          _pwconfirm: pw_confirm,
+        }
+      )
+      .pipe(catchError(handleError));
+  }
+
   private handleAuthentication(data: any) {
     const user = new User(
       data._id,

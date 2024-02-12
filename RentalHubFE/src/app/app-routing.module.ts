@@ -1,15 +1,19 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { PostsResolverService } from './posts/posts-resolver.service';
 import { MainLayoutComponent } from './shared/layout/main-layout/main-layout.component';
 import { AuthGuard } from './auth/auth.guard';
-import { HostComponent } from './host/host.component';
 import { ProfileLayoutComponent } from './shared/layout/profile-layout/profile-layout.component';
+import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
 
 const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+  },
+
+  {
+    path: 'forget-password/:uId/:token',
+    component: ForgetPasswordComponent,
   },
 
   {

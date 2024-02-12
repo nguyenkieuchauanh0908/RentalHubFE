@@ -18,6 +18,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { OtpDialogComponent } from './otp-dialog/otp-dialog.component';
 import { ProfileLayoutComponent } from './layout/profile-layout/profile-layout.component';
 import { ProfileHeaderComponent } from './profile-header/profile-header.component';
+import { SendForgetPwEmailComponent } from './send-forget-pw-email/send-forget-pw-email.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ProfileHeaderComponent } from './profile-header/profile-header.componen
     OtpDialogComponent,
     ProfileLayoutComponent,
     ProfileHeaderComponent,
+    SendForgetPwEmailComponent,
   ],
   imports: [
     CommonModule,

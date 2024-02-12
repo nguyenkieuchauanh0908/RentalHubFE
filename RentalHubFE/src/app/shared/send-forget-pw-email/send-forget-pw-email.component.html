@@ -1,0 +1,52 @@
+<div [ngClass]="isLoading ? 'opacity-70 ' : ''">
+  <div *ngIf="isLoading" class="spinner__loading text-center">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <h2 mat-dialog-title>{{ data.title }}</h2>
+  <mat-dialog-content>
+    <!-- Edit modal -->
+    <div class="p-4 md:p-5">
+      <form #sendForgetPwForm="ngForm" class="space-y-4">
+        <!-- Email  -->
+        <div class="mb-6">
+          <label
+            for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >{{ data.inputLabel }}</label
+          >
+          <input
+            rows="8"
+            type="email"
+            id="email-input"
+            name="email"
+            ngModel
+            required
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            #email="ngModel"
+          />
+        </div>
+        <div
+          *ngIf="email.invalid && (email.dirty || email.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="email.errors?.['required']">Vui lòng nhập mail!</div>
+        </div>
+      </form>
+      <notifier-container></notifier-container>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Hủy</button>
+    <button
+      (click)="saveChanges(sendForgetPwForm.value)"
+      class="bg-blue-700 hover:bg-blue-800"
+      style="color: white; background-color: #1a56db"
+      mat-button
+      type="submit"
+      [disabled]="sendForgetPwForm.invalid"
+    >
+      Nhận mail
+    </button>
+  </mat-dialog-actions>
+</div>
