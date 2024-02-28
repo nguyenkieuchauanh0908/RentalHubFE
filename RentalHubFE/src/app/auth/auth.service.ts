@@ -7,6 +7,8 @@ import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 import { handleError } from '../shared/handle-errors';
 import { User } from './user.model';
 import { AccountService } from '../accounts/accounts.service';
+import { PostService } from '../posts/post.service';
+import { PostItem } from '../posts/posts-list/post-item/post-item.model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +26,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private postService: PostService
   ) {
     this.user.subscribe((user) => {
       if (user) {
@@ -35,6 +38,7 @@ export class AuthService {
 
   login(email: string, pw: string) {
     console.log('Is logging...................');
+    const favoredPostsData = localStorage.getItem('favorite-posts');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/login', {
         _email: email,
@@ -43,6 +47,23 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
+          let favorites: String[] | null = new Array();
+          //Nếu post yêu thích được lưu trong local storage
+          if (favoredPostsData) {
+            favorites = JSON.parse(favoredPostsData);
+            console.log('🚀 ~ AuthService ~ tap ~ favorites:', favorites);
+            this.postService.setCurrentFavoritesId(favorites);
+          }
+          //Nếu không có trong local storage thì lấy từ server rồi lưu vào local storage
+          else {
+            this.postService.getFavoritesId().subscribe();
+            console.log('sạkhfkajsdfhaksd');
+            this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
+              favorites = favoritesId;
+            });
+            localStorage.setItem('favorite-posts', JSON.stringify(favorites));
+          }
+
           this.handleAuthentication(res.data);
         })
       );
@@ -86,6 +107,23 @@ export class AuthService {
       this.autoLogout(expirationDuration, loadedUserData.RFToken);
     } else {
       return;
+    }
+
+    const favoredPostsData = localStorage.getItem('favorite-posts');
+    let favorites: String[] | null = new Array();
+    //Nếu post yêu thích được lưu trong local storage
+    if (favoredPostsData) {
+      favorites = JSON.parse(favoredPostsData);
+      console.log('🚀 ~ AuthService ~ tap ~ favorites:', favorites);
+      this.postService.setCurrentFavoritesId(favorites);
+    }
+    //Nếu không có trong local storage thì lấy từ server
+    else {
+      this.postService.getFavoritesId().subscribe();
+      this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
+        favorites = favoritesId;
+      });
+      localStorage.setItem('favorite-posts', JSON.stringify(favorites));
     }
   }
 

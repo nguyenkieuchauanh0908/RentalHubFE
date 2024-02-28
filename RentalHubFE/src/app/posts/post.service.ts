@@ -20,7 +20,7 @@ export class PostService {
   searchResult: PostItem[] = [];
   searchKeyword: string = '';
   searchKeywordChanged = new Subject<string>();
-
+  private currentFavoritesId = new BehaviorSubject<String[] | null>([]);
   private currentPostingHistory = new BehaviorSubject<PostItem[] | null>([]);
 
   private currentTags = new BehaviorSubject<Tags[]>([]);
@@ -340,6 +340,76 @@ export class PostService {
           if (res.data) {
             console.log('Created tag successfully...', res.data);
           }
+        })
+      );
+  }
+
+  getCurrentFavoritesId = this.currentFavoritesId.asObservable();
+
+  setCurrentFavoritesId(updateFavorites: String[] | null) {
+    this.currentFavoritesId.next(updateFavorites);
+  }
+
+  createFavorite(pId: String) {
+    let updateFavorites: String[];
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'posts/favorite-post', {
+        postId: pId,
+      })
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            this.getCurrentFavoritesId.subscribe((favorites) => {
+              if (favorites) {
+                updateFavorites = favorites;
+              }
+            });
+            let isFavoured = updateFavorites.some((id) => id === pId);
+            if (isFavoured) {
+              updateFavorites = updateFavorites.filter((id) => id !== pId);
+            } else {
+              updateFavorites?.push(pId);
+            }
+
+            this.setCurrentFavoritesId(updateFavorites);
+            localStorage.removeItem('favorite-posts');
+            localStorage.setItem(
+              'favorite-posts',
+              JSON.stringify(updateFavorites)
+            );
+            console.log('Add to favorite successfully!');
+            console.log(
+              '🚀 ~ PostService ~ tap ~ updateFavorites:',
+              updateFavorites
+            );
+          }
+        })
+      );
+  }
+
+  getFavorites(page: number, limit: number) {
+    let queryParams = new HttpParams()
+      .append('page', page)
+      .append('limit', limit);
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/get-favorite-post', {
+        params: queryParams,
+      })
+      .pipe(
+        catchError(handleError),
+        tap((res) => {})
+      );
+  }
+
+  getFavoritesId() {
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/get-array-favorite-post')
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          this.setCurrentFavoritesId(res.data);
+          localStorage.setItem('favorite-posts', JSON.stringify(res.data));
         })
       );
   }

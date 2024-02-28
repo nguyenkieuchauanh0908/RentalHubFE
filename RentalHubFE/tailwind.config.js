@@ -32,6 +32,7 @@ module.exports = {
       "tag-color": "#ff6600",
       "black-color": "#000",
       "text-price-color": "#f50",
+      "green-btn-color": "#10b981",
     },
     fontFamily: {
       sans: ["Graphik", "sans-serif"],
@@ -79,6 +80,9 @@ module.exports = {
       borderRadius: {
         "4xl": "2rem",
       },
+    },
+    container: {
+      center: true,
     },
   },
   plugins: [require("flowbite/plugin")],

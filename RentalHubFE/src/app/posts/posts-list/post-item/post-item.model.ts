@@ -1,6 +1,7 @@
 import { Tags } from 'src/app/shared/tags/tag.model';
 
 export class PostItem {
+  avatarAuthor: any;
   constructor(
     public _id: string,
     public _content: string,

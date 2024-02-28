@@ -6,6 +6,7 @@ import { PostsComponent } from './posts.component';
 import { PostsResolverService } from './posts-resolver.service';
 import { PostsSearchResultComponent } from './posts-search-result/posts-search-result.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { FavoritesPostResolverService } from './favorites-post-resolver.service';
 
 const routes: Routes = [
   {
@@ -19,6 +20,9 @@ const routes: Routes = [
       {
         path: ':id',
         component: PostDetailComponent,
+        resolve: {
+          favoritesPosts: FavoritesPostResolverService,
+        },
       },
       {
         path: '',
