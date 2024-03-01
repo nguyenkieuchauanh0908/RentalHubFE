@@ -1,0 +1,110 @@
+<!-- Container -->
+<div
+  style="min-height: 425px"
+  class="flex flex-col flex-nowrap bg-white-background p-6 rounded-lg"
+>
+  <!-- Title -->
+  <div class="flex flex-row gap-4 align-middle text-justify">
+    <h2 class="text-base font-semibold leading-7 text-gray-900 mb-0">
+      Bài viết yêu thích
+    </h2>
+    <!-- <p>Filter theo thời gian</p> -->
+  </div>
+  <!-- Main content-->
+  <div class="flex flex-col relative">
+    <div
+      *ngIf="isLoading; else postsBlock"
+      class="spinner__loading text-center"
+    >
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+    <!-- Lists of products -->
+    <!-- Item -->
+    <ng-template #postsBlock>
+      <div class="grid grid-rows bg-white-background">
+        <div *ngIf="historyPosts.length > 0; else noPostsBlock">
+          <div
+            *ngFor="let post of historyPosts"
+            class="grid gap-2 grid-cols-12 mb-4 w-full h-max-full"
+          >
+            <!-- Image -->
+            <div class="grid col-span-2" (click)="toPostDetail(post._postId)">
+              <img
+                class="hover:cursor-pointer object-fill max-h-32 w-full"
+                src="{{ post._images[0] }}"
+                alt="hình nhà trọ"
+              />
+            </div>
+            <!-- Info -->
+            <div class="grid col-span-7" (click)="toPostDetail(post._postId)">
+              <!-- Title -->
+              <div class="row flex flex-row items-center mb-0">
+                <a
+                  class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+                >
+                  {{ post._title }}
+                </a>
+              </div>
+              <!-- Price, Area, Assress -->
+              <div
+                class="row flex flex-row gap-4 items-center hover:cursor-pointer text-sm text-sub-text-color"
+              >
+                <p>
+                  Giá:
+                  <span class="text-text-price-color font-medium">
+                    {{ post.roomPrice }}đ</span
+                  >
+                </p>
+
+                <p>
+                  Giá điện:
+                  <span class="text-text-price-color font-medium"
+                    >{{ post.roomElectricPrice }}đ</span
+                  >
+                </p>
+
+                <p>
+                  Giá nước:
+                  <span class="text-text-price-color font-medium"
+                    >{{ post.roomWaterPrice }}đ</span
+                  >
+                </p>
+              </div>
+
+              <!-- Address -->
+              <div
+                class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+              >
+                <p>
+                  Địa chỉ phòng trọ:
+                  <span class="font-medium">{{ post.roomAddress }}</span>
+                </p>
+              </div>
+            </div>
+            <!-- Unfavor button -->
+            <div class="grid col-span-3 p-8 h-10">
+              <button
+                (click)="toUnfavorPost(post._postId)"
+                class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                type="button"
+              >
+                Bó thích
+              </button>
+            </div>
+          </div>
+          <!-- Pagination -->
+          <app-pagination
+            [totalPages]="totalPages"
+            (toPrevPage)="changeCurrentPage($event)"
+            (toNextPage)="changeCurrentPage($event)"
+          ></app-pagination>
+        </div>
+        <ng-template #noPostsBlock>
+          <p class="text-center">Không có bài viết nào!</p>
+        </ng-template>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<!-- <notifier-container></notifier-container> -->

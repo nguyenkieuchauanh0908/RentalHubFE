@@ -4,10 +4,7 @@ import { PostItem } from './posts-list/post-item/post-item.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
-import {
-  Pagination,
-  PaginationService,
-} from '../shared/pagination/pagination.service';
+import { PaginationService } from '../shared/pagination/pagination.service';
 import { handleError } from '../shared/handle-errors';
 import { NotifierService } from 'angular-notifier';
 import { Tags } from '../shared/tags/tag.model';
@@ -21,6 +18,7 @@ export class PostService {
   searchKeyword: string = '';
   searchKeywordChanged = new Subject<string>();
   private currentFavoritesId = new BehaviorSubject<String[] | null>([]);
+  private currentFavorites = new BehaviorSubject<PostItem[] | null | any[]>([]);
   private currentPostingHistory = new BehaviorSubject<PostItem[] | null>([]);
 
   private currentTags = new BehaviorSubject<Tags[]>([]);
@@ -350,6 +348,12 @@ export class PostService {
     this.currentFavoritesId.next(updateFavorites);
   }
 
+  getCurrentFavorites = this.currentFavorites.asObservable();
+
+  setCurrentFavorites(updateFavorites: PostItem[] | null) {
+    this.currentFavorites.next(updateFavorites);
+  }
+
   createFavorite(pId: String) {
     let updateFavorites: String[];
     return this.http
@@ -398,7 +402,10 @@ export class PostService {
       })
       .pipe(
         catchError(handleError),
-        tap((res) => {})
+        tap((res) => {
+          this.setCurrentFavorites(res.data);
+          console.log('Getting favorites sucessfully!', res);
+        })
       );
   }
 

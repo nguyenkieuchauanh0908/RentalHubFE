@@ -72,6 +72,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
+  toMyFavoritePosts() {
+    this.router.navigate(['/profile/favorites-posts', this.myProfile?._id]);
+  }
+
   toPostingHistory() {
     this.router.navigate(['/profile/posting-history', this.myProfile?._id]);
   }
