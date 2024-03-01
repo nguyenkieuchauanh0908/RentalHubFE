@@ -420,4 +420,20 @@ export class PostService {
         })
       );
   }
+
+  reportPosts(postId: String, reportContent: String) {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'posts/report-post', {
+        _postId: postId,
+        _content: reportContent,
+      })
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            console.log('Report post successfully!', res.data);
+          }
+        })
+      );
+  }
 }

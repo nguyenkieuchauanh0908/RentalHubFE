@@ -8,6 +8,7 @@ import { AuthRoutingModule } from '../auth/auth-routing.module';
 import { PostItemComponent } from './posts-list/post-item/post-item.component';
 import { PostCardComponent } from './post-card/post-card.component';
 import { PostsSearchResultComponent } from './posts-search-result/posts-search-result.component';
+import { ReportDialogComponent } from './report-dialog/report-dialog.component';
 
 @NgModule({
   declarations: [

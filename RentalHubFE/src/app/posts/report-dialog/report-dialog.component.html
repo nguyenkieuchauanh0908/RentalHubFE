@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>Báo cáo bài viết</h2>
+<div class="relative w-full">
+  <div *ngIf="isLoading" class="spinner__loading text-center">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <mat-dialog-content class="mat-typography">
+    <span class="example-list-section">
+      <ul>
+        <li *ngFor="let reportCotent of reportContents">
+          <mat-checkbox
+            [(ngModel)]="reportCotent.isChecked"
+            color="#eaeaea"
+            (change)="setOnly($event.checked, reportCotent)"
+          >
+            {{ reportCotent.content }}
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-expansion-panel hideToggle>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-checkbox
+                  color="#eaeaea"
+                  [(ngModel)]="this.otherReportedContent.isChecked"
+                  (change)="setOnly($event.checked, this.otherReportedContent)"
+                >
+                  Nội dung khác
+                </mat-checkbox>
+              </mat-panel-title>
+              <mat-panel-description> </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-form-field>
+              <mat-label>Khác</mat-label>
+              <input matInput [(ngModel)]="this.updatedReportedContent" />
+            </mat-form-field>
+          </mat-expansion-panel>
+        </li>
+      </ul>
+    </span>
+    <!-- <div
+      *ngIf="!updatedReportedContent"
+      class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+      role="alert"
+    >
+      <div>{{ warningMessage }}</div>
+    </div> -->
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Hủy</button>
+    <button
+      mat-button
+      [mat-dialog-close]="false"
+      [disabled]="!updatedReportedContent && !otherReportedContent.content"
+      (click)="submitReport()"
+      cdkFocusInitial
+    >
+      Báo cáo
+    </button>
+  </mat-dialog-actions>
+</div>

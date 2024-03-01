@@ -1,9 +1,10 @@
 import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { PostItem } from '../posts-list/post-item/post-item.model';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { PostService } from '../post.service';
 import { NotifierService } from 'angular-notifier';
-import { DataSource } from '@angular/cdk/collections';
+import { MatDialog } from '@angular/material/dialog';
+import { ReportDialogComponent } from '../report-dialog/report-dialog.component';
 
 @Component({
   selector: 'app-post-detail',
@@ -24,7 +25,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   constructor(
     private postService: PostService,
     private route: ActivatedRoute,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    public dialog: MatDialog
   ) {
     this.postService.getCurrentFavoritesId.subscribe((favorites) => {
       this.favoredPosts = favorites;
@@ -91,10 +93,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
   addPostToFavorites(postId: String) {
     this.isFavoured = !this.isFavoured;
-    console.log(
-      '🚀 ~ PostDetailComponent ~ addPostToFavorites ~ this.isFavoured:',
-      this.isFavoured
-    );
     this.postService.createFavorite(postId).subscribe();
+  }
+
+  openReportDialog(postId: String) {
+    const dialog = this.dialog.open(ReportDialogComponent, {
+      width: '600px',
+      data: postId,
+    });
   }
 }
