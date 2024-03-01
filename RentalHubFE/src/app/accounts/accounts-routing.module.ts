@@ -5,12 +5,18 @@ import { PostingHistoryComponent } from './posting-history/posting-history.compo
 import { PostsEditComponent } from './posts-edit/posts-edit.component';
 import { AuthGuard } from '../auth/auth.guard';
 import { VerifyHostComponent } from './verify-host/verify-host.component';
+import { FavoritePostsComponent } from './favorite-posts/favorite-posts.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AccountsComponent,
     children: [
+      {
+        path: 'favorites-posts/:uId',
+        component: FavoritePostsComponent,
+        canActivate: [AuthGuard],
+      },
       {
         path: 'posting-history/:uId',
         component: PostingHistoryComponent,
