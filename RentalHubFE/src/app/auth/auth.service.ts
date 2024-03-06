@@ -8,7 +8,7 @@ import { handleError } from '../shared/handle-errors';
 import { User } from './user.model';
 import { AccountService } from '../accounts/accounts.service';
 import { PostService } from '../posts/post.service';
-import { PostItem } from '../posts/posts-list/post-item/post-item.model';
+import { NotificationService } from '../shared/notifications/notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +27,8 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
     private accountService: AccountService,
-    private postService: PostService
+    private postService: PostService,
+    private notiService: NotificationService
   ) {
     this.user.subscribe((user) => {
       if (user) {
@@ -37,8 +38,7 @@ export class AuthService {
   }
 
   login(email: string, pw: string) {
-    console.log('Is logging...................');
-    const favoredPostsData = localStorage.getItem('favorite-posts');
+    console.log('On log in........');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/login', {
         _email: email,
@@ -47,24 +47,9 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          let favorites: String[] | null = new Array();
-          //Nếu post yêu thích được lưu trong local storage
-          if (favoredPostsData) {
-            favorites = JSON.parse(favoredPostsData);
-            console.log('🚀 ~ AuthService ~ tap ~ favorites:', favorites);
-            this.postService.setCurrentFavoritesId(favorites);
-          }
-          //Nếu không có trong local storage thì lấy từ server rồi lưu vào local storage
-          else {
-            this.postService.getFavoritesId().subscribe();
-            console.log('sạkhfkajsdfhaksd');
-            this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
-              favorites = favoritesId;
-            });
-            localStorage.setItem('favorite-posts', JSON.stringify(favorites));
-          }
-
           this.handleAuthentication(res.data);
+          this.getFavoredPostLogin();
+          this.getPostsNotifictionsLogin();
         })
       );
   }
@@ -105,25 +90,12 @@ export class AuthService {
       }
       console.log('expiration duration:', expirationDuration);
       this.autoLogout(expirationDuration, loadedUserData.RFToken);
+      if (expirationDuration !== 0) {
+        this.getFavoredPostLogin();
+        this.getPostsNotifictionsLogin();
+      }
     } else {
       return;
-    }
-
-    const favoredPostsData = localStorage.getItem('favorite-posts');
-    let favorites: String[] | null = new Array();
-    //Nếu post yêu thích được lưu trong local storage
-    if (favoredPostsData) {
-      favorites = JSON.parse(favoredPostsData);
-      console.log('🚀 ~ AuthService ~ tap ~ favorites:', favorites);
-      this.postService.setCurrentFavoritesId(favorites);
-    }
-    //Nếu không có trong local storage thì lấy từ server
-    else {
-      this.postService.getFavoritesId().subscribe();
-      this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
-        favorites = favoritesId;
-      });
-      localStorage.setItem('favorite-posts', JSON.stringify(favorites));
     }
   }
 
@@ -160,6 +132,7 @@ export class AuthService {
     console.log('On loging out ...');
     this.router.navigate(['/auth/login']);
     localStorage.removeItem('userData');
+    localStorage.removeItem('favorite-posts');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
@@ -182,8 +155,12 @@ export class AuthService {
     this.tokenExpirationTimer = setTimeout(() => {
       this.logout(refreshToken);
       this.isUser = false;
-      if (localStorage.getItem('userData')) {
+      if (
+        localStorage.getItem('userData') ||
+        localStorage.getItem('favorite-posts')
+      ) {
         localStorage.removeItem('userData');
+        localStorage.removeItem('favorite-posts');
       }
     }, expirationDuration);
   }
@@ -303,10 +280,32 @@ export class AuthService {
     this.accountService.setCurrentUser(user);
     this.isUser = true;
     this.isHost = user._isHost;
-    console.log('After login, isHost: ', this.isHost);
     localStorage.setItem('userData', JSON.stringify(user));
     const expirationDuration = user._RFExpiredTime - Date.now();
-    console.log('expiration duration:', expirationDuration);
+    console.log('Expiration duration:', expirationDuration);
     this.autoLogout(expirationDuration, user.RFToken);
+  }
+
+  getFavoredPostLogin() {
+    const favoredPostsData = localStorage.getItem('favorite-posts');
+    let favorites: String[] | null = new Array();
+    //Nếu post yêu thích được lưu trong local storage
+    if (favoredPostsData) {
+      favorites = JSON.parse(favoredPostsData);
+      console.log('🚀 ~ AuthService ~ tap ~ favorites:', favorites);
+      this.postService.setCurrentFavoritesId(favorites);
+    }
+    //Nếu không có trong local storage thì lấy từ server rồi lưu vào local storage
+    else {
+      this.postService.getFavoritesId().subscribe();
+      this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
+        favorites = favoritesId;
+      });
+      localStorage.setItem('favorite-posts', JSON.stringify(favorites));
+    }
+  }
+
+  getPostsNotifictionsLogin() {
+    this.notiService.getPostNotifications().subscribe();
   }
 }

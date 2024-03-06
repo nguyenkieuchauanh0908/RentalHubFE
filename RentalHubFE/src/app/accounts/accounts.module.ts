@@ -16,6 +16,7 @@ import { AccountEditDialogComponent } from './account-edit-dialog/account-edit-d
 import { UpdateAvatarDialogComponent } from './update-avatar-dialog/update-avatar-dialog.component';
 import { VerifyHostComponent } from './verify-host/verify-host.component';
 import { FavoritePostsComponent } from './favorite-posts/favorite-posts.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { FavoritePostsComponent } from './favorite-posts/favorite-posts.componen
     UpdateAvatarDialogComponent,
     VerifyHostComponent,
     FavoritePostsComponent,
+    NotificationsComponent,
   ],
   imports: [
     CommonModule,

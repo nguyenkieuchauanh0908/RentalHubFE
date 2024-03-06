@@ -19,7 +19,10 @@ import {
   ProgressSpinnerMode,
   MatProgressSpinnerModule,
 } from '@angular/material/progress-spinner';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 @NgModule({
   declarations: [],
   imports: [
@@ -40,13 +43,15 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatExpansionModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    MatMenuModule,
   ],
   exports: [
     MatDividerModule,
     MatIconModule,
     MatDatepickerModule,
     MatCardModule,
-    MatToolbarModule,
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
@@ -59,6 +64,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatExpansionModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    MatMenuModule,
   ],
 })
 export class NgMaterialsModule {}

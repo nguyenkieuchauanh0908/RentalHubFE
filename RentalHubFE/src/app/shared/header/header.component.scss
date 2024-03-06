@@ -1,0 +1,22 @@
+:host ::ng-deep mat-icon,
+mat-icon.mat-primary,
+mat-icon.mat-accent,
+mat-icon.mat-warn {
+  color: #ffff;
+}
+// .tooltip-block {
+//   display: block;
+//   margin: 80px auto 400px;
+// }
+
+::ng-deep .mat-mdc-tooltip {
+  --mdc-plain-tooltip-container-color: #f6f9fc;
+  --mdc-plain-tooltip-supporting-text-color: #434657;
+  --mdc-plain-tooltip-supporting-text-font: Roboto, sans-serif;
+  --mdc-plain-tooltip-supporting-text-size: 12px;
+  --mdc-plain-tooltip-supporting-text-weight: 400;
+}
+
+::ng-deep .mdc-tooltip__surface .mdc-tooltip__surface-animation {
+  margin-right: 6px !important;
+}

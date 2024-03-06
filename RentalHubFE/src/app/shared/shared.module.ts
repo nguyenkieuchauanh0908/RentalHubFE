@@ -20,6 +20,9 @@ import { ProfileLayoutComponent } from './layout/profile-layout/profile-layout.c
 import { ProfileHeaderComponent } from './profile-header/profile-header.component';
 import { SendForgetPwEmailComponent } from './send-forget-pw-email/send-forget-pw-email.component';
 import { ReportDialogComponent } from '../posts/report-dialog/report-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [

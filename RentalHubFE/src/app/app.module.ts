@@ -13,6 +13,14 @@ import { CommonModule } from '@angular/common';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { AuthGuard } from './auth/auth.guard';
 import { NotifierModule } from 'angular-notifier';
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
+import {
+  MAT_DIALOG_SCROLL_STRATEGY,
+  MAT_DIALOG_SCROLL_STRATEGY_PROVIDER_FACTORY,
+  MatDialogRef,
+} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,6 +38,18 @@ import { NotifierModule } from 'angular-notifier';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
       multi: true,
+    },
+    {
+      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
+      useFactory: (scrollStrategyOptions: ScrollStrategyOptions) =>
+        scrollStrategyOptions.noop,
+      deps: [ScrollStrategyOptions],
+    },
+    {
+      provide: MAT_MENU_SCROLL_STRATEGY,
+      useFactory: (scrollStrategyOptions: ScrollStrategyOptions) =>
+        scrollStrategyOptions.noop,
+      deps: [ScrollStrategyOptions],
     },
     AuthGuard,
   ],

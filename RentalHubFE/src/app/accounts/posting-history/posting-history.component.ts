@@ -279,7 +279,7 @@ export class PostingHistoryComponent {
   }
 
   toEditPostDialog(post: any) {
-    this, this.postService.setCurrentChosenTags(post._tags);
+    this.postService.setCurrentChosenTags(post._tags);
     const dialogRef = this.dialog.open(PostEditDialogComponent, {
       width: '1000px',
       data: post,

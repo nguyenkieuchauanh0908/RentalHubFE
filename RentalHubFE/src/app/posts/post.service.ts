@@ -436,4 +436,23 @@ export class PostService {
         })
       );
   }
+
+  getReportPostDetails(reportedId: any) {
+    let queryParams = new HttpParams().append('notiId', reportedId);
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/get-report-post-user/', {
+        params: queryParams,
+      })
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            console.log(
+              'Getting reported post details successfully!',
+              res.data
+            );
+          }
+        })
+      );
+  }
 }
