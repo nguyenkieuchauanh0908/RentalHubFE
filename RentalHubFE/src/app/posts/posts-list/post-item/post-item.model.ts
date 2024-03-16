@@ -5,7 +5,7 @@ export class PostItem {
   constructor(
     public _id: string,
     public _content: string,
-    public _postingDate: Date,
+    public _postingDateLocal: String,
     public _tags: Tags[],
     public _videos: string[],
     public _images: string[],

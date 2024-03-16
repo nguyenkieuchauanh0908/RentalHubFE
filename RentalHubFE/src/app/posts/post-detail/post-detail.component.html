@@ -18,9 +18,18 @@
       <div class="mb-8">
         <!-- Title -->
         <div class="row flex justify-between mb-0">
-          <p class="text-lg font-medium mb-0">
-            {{ post._title }}
-          </p>
+          <div class="flex flex-row justify-between">
+            <p class="text-lg font-medium mb-0 mr-1">
+              {{ post._title }}
+            </p>
+            <p
+              class="relative top-1 text-sm font-normal italic mb-0"
+              style="margin-left: 6px"
+            >
+              &#40;Ngày cập nhật gần nhất: {{ post._postingDateLocal }} &#41;
+            </p>
+          </div>
+
           <div class="flex justify-between p-2">
             <!-- Add to favorites -->
             <div class="mr-1" (click)="addPostToFavorites(this.post._id)">
