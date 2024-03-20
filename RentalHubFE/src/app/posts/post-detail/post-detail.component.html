@@ -4,21 +4,19 @@
   "
 >
   <div *ngIf="isLoading" class="spinner__loading">
-    <!-- <mat-progress-spinner diameter="40" [value]="value" mode="determinate">
-    </mat-progress-spinner> -->
     <mat-spinner diameter="30"></mat-spinner>
   </div>
   <!-- Post content -->
   <div
     *ngIf="post"
-    class="grid col-span-9 bg-white-background py-4 px-8 mt-8 mb-8 rounded-lg"
+    class="xs:flex xs:flex-col xs:col-span-12 lg:grid lg:col-span-9 bg-white-background py-4 px-8 mt-8 mb-8 rounded-lg"
   >
     <div class="flex flex-col">
       <!-- General Information -->
       <div class="mb-8">
-        <!-- Title -->
-        <div class="row flex justify-between mb-0">
-          <div class="flex flex-row justify-between">
+        <!-- Title, time, like, report -->
+        <div class="row flex justify-between mb-0 flex-wrap">
+          <div class="flex flex-row justify-between flex-wrap">
             <p class="text-lg font-medium mb-0 mr-1">
               {{ post._title }}
             </p>
@@ -69,7 +67,7 @@
         </div>
         <!-- Price, Area -->
         <div
-          class="row flex flex-row gap-4 items-center justify-between text-sm text-sub-text-color"
+          class="row flex flex-row flex-wrap gap-4 items-center justify-between text-sm text-sub-text-color"
         >
           <p>
             Giá:
@@ -204,14 +202,20 @@
   </div>
 
   <!-- Side Content -->
-  <div class="grid col-span-3 rounded-lg px-5 mt-8 mb-12 bg-light-blue-color">
+  <div
+    class="xs:flex xs:flex-col xs:col-span-12 lg:grid lg:col-span-3 rounded-lg px-5 mt-8 mb-12 bg-light-blue-color"
+  >
     <div class="flex flex-col gap-4">
       <!-- Host's Card -->
-      <app-host-card [host]="host"></app-host-card>
+      <div class="w-72 h-36 self-center">
+        <app-host-card [host]="host"></app-host-card>
+      </div>
 
+      <p class="font-medium text-lg text-center">Tìm kiếm liên quan</p>
       <!-- Related rooms -->
-      <div flex flex-col gap-4>
-        <p class="font-medium text-lg text-center">Tìm kiếm liên quan</p>
+      <div
+        class="flex lg:flex-col lg:gap-4 xs:flex-row xs:flex-wrap xs:gap-2 xs:justify-evenly"
+      >
         <!-- Room n -->
         <div
           *ngIf="relatedPosts.length === 0; else similarPostsBlock"
@@ -221,7 +225,7 @@
         </div>
         <ng-template #similarPostsBlock>
           <div *ngFor="let post of relatedPosts">
-            <app-post-card [post]="post"></app-post-card>
+            <app-post-card [post]="post" class="max-h-60 w-30"></app-post-card>
           </div>
         </ng-template>
       </div>
