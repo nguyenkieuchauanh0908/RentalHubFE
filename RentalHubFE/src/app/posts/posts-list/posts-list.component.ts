@@ -9,20 +9,31 @@ import {
   Pagination,
   PaginationService,
 } from 'src/app/shared/pagination/pagination.service';
+import { FormsModule } from '@angular/forms';
 
+export interface PriceCriteria {
+  lowToHigh: boolean;
+  highToLow: boolean;
+}
+
+export interface FilterCriteria {
+  roomPrice: PriceCriteria;
+  electricityPrice: PriceCriteria;
+  waterPrice: PriceCriteria;
+}
 @Component({
   standalone: true,
-  imports: [SharedModule, PostItemComponent],
+  imports: [SharedModule, PostItemComponent, FormsModule],
   selector: 'app-posts-list',
   templateUrl: './posts-list.component.html',
   styleUrls: ['./posts-list.component.scss'],
 })
 export class PostsListComponent implements OnInit, OnDestroy {
-  constructor(
-    private postService: PostService,
-    private paginationService: PaginationService,
-    private router: Router
-  ) {}
+  filterCriteria: FilterCriteria = {
+    roomPrice: { lowToHigh: false, highToLow: false },
+    electricityPrice: { lowToHigh: false, highToLow: false },
+    waterPrice: { lowToHigh: false, highToLow: false },
+  };
 
   isLoading: boolean = false;
   postList!: PostItem[];
@@ -31,6 +42,13 @@ export class PostsListComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
   pageItemLimit: number = 10;
   totalPages: number = this.paginationService.pagination?.total;
+  constructor(
+    private postService: PostService,
+    private paginationService: PaginationService,
+    private router: Router
+  ) {
+    this.resetFilter();
+  }
 
   ngOnInit() {
     this.isLoading = true;
@@ -56,6 +74,47 @@ export class PostsListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.postListChangedSub.unsubscribe();
+  }
+
+  checkPriceFilter(checked: boolean, type: string, criteria: string) {
+    if (checked === true) {
+      switch (type) {
+        case 'roomPrice':
+          if (criteria === 'lowToHigh') {
+            this.filterCriteria.roomPrice.highToLow = !checked;
+          } else {
+            this.filterCriteria.roomPrice.lowToHigh = !checked;
+          }
+          break;
+        case 'electricityPrice':
+          if (criteria === 'lowToHigh') {
+            this.filterCriteria.electricityPrice.highToLow = !checked;
+          } else {
+            this.filterCriteria.electricityPrice.lowToHigh = !checked;
+          }
+          break;
+        case 'waterPrice':
+          if (criteria === 'lowToHigh') {
+            this.filterCriteria.waterPrice.highToLow = !checked;
+          } else {
+            this.filterCriteria.waterPrice.lowToHigh = !checked;
+          }
+          break;
+        default:
+      }
+    }
+  }
+
+  resetFilter() {
+    this.filterCriteria = {
+      roomPrice: { lowToHigh: false, highToLow: false },
+      electricityPrice: { lowToHigh: false, highToLow: false },
+      waterPrice: { lowToHigh: false, highToLow: false },
+    };
+  }
+
+  applyFilter() {
+    console.log('On applying filter...');
   }
 
   //position can be either 1 (navigate to next page) or -1 (to previous page)

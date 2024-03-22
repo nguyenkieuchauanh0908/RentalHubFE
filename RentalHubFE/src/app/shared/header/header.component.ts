@@ -19,7 +19,6 @@ import { MatDialog } from '@angular/material/dialog';
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input('matBadge')
   content: string | number | undefined | null;
-
   @Input('matTooltipClass')
   tooltipClass: any;
 
@@ -39,7 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private notifierService: NotifierService,
     private notificationService: NotificationService,
-    private authService: AuthService // private dialog: MatDialog
+    private authService: AuthService
   ) {
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
