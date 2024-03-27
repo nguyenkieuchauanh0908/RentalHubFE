@@ -1,4 +1,13 @@
 <div class="flex flex-row justify-end gap-1 mt-4">
+  <!-- 1st page Button -->
+  <button
+    (click)="firstPage()"
+    [disabled]="currentPage === 1 ? true : false"
+    [ngStyle]="{ cursor: currentPage === 1 ? 'default' : 'pointer' }"
+    class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+  >
+    Trang đầu
+  </button>
   <!-- Previous Button -->
   <button
     (click)="prevPage()"
@@ -26,5 +35,14 @@
     class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
   >
     Sau
+  </button>
+  <!-- last page Button -->
+  <button
+    (click)="lastPage()"
+    [disabled]="currentPage === totalPages ? true : false"
+    [ngStyle]="{ cursor: currentPage === totalPages ? 'default' : 'pointer' }"
+    class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+  >
+    Trang cuối
   </button>
 </div>

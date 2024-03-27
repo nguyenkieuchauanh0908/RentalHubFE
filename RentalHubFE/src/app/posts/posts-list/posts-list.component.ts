@@ -41,7 +41,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
 
   currentPage: number = this.paginationService.currentPage;
   pageItemLimit: number = 10;
-  totalPages: number = this.paginationService.pagination?.total;
+  totalPages!: number;
   constructor(
     private postService: PostService,
     private paginationService: PaginationService,
@@ -115,13 +115,23 @@ export class PostsListComponent implements OnInit, OnDestroy {
   }
 
   //position can be either 1 (navigate to next page) or -1 (to previous page)
-  changeCurrentPage(position: number) {
+  changeCurrentPage(
+    position: number,
+    toFirstPage: boolean,
+    toLastPage: boolean
+  ) {
     this.isLoading = true;
-    console.log(this.currentPage);
-    this.currentPage = this.paginationService.navigatePage(
-      position,
-      this.currentPage
-    );
+    if (position === 1 || position === -1) {
+      this.currentPage = this.paginationService.navigatePage(
+        position,
+        this.currentPage
+      );
+    }
+    if (toFirstPage) {
+      this.currentPage = 1;
+    } else if (toLastPage) {
+      this.currentPage = this.totalPages;
+    }
     this.postService.getPostList(this.currentPage, this.pageItemLimit);
     this.postListChangedSub = this.postService.postListChanged.subscribe(
       (posts: PostItem[]) => {

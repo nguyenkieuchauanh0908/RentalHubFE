@@ -73,12 +73,23 @@ export class HostPostingHistoryComponent implements OnInit {
 
   ngOnDestroy(): void {}
 
-  changeCurrentPage(position: number) {
+  changeCurrentPage(
+    position: number,
+    toFirstPage: boolean,
+    toLastPage: boolean
+  ) {
     this.historyPosts = [];
-    this.currentPage = this.paginationService.navigatePage(
-      position,
-      this.currentPage
-    );
+    if (position === 1 || position === -1) {
+      this.currentPage = this.paginationService.navigatePage(
+        position,
+        this.currentPage
+      );
+    }
+    if (toFirstPage) {
+      this.currentPage = 1;
+    } else if (toLastPage) {
+      this.currentPage = this.totalPages;
+    }
 
     if (this.currentUid) {
       this.getPostHistorySub = this.postService
@@ -90,8 +101,8 @@ export class HostPostingHistoryComponent implements OnInit {
           } else {
             this.historyPosts = [];
           }
-          console.log(this.historyPosts);
-          console.log(this.currentActiveStatus.status);
+          // console.log(this.historyPosts);
+          // console.log(this.currentActiveStatus.status);
         });
     }
   }

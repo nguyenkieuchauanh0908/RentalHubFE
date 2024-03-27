@@ -13,8 +13,10 @@
     <app-pagination
       [currentPage]="currentPage"
       [totalPages]="totalPages"
-      (toPrevPage)="changeCurrentPage($event)"
-      (toNextPage)="changeCurrentPage($event)"
+      (toPrevPage)="changeCurrentPage($event, false, false)"
+      (toNextPage)="changeCurrentPage($event, false, false)"
+      (toFirstPage)="changeCurrentPage(0, $event, false)"
+      (toLastPage)="changeCurrentPage(0, false, $event)"
     ></app-pagination>
   </div>
   <div class="relative grid col-span-2 max-h-72 mt-6">

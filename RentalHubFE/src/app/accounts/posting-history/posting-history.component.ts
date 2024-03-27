@@ -249,18 +249,24 @@ export class PostingHistoryComponent {
     this.paginationService.currentPage = 1;
   }
 
-  changeCurrentPage(position: number) {
+  changeCurrentPage(
+    position: number,
+    toFirstPage: boolean,
+    toLastPage: boolean
+  ) {
     this.isLoading = true;
     this.historyPosts = [];
-    // this.currentPage = this.paginationService.pagination.page;
-    this.currentPage = this.paginationService.navigatePage(
-      position,
-      this.currentPage
-    );
-    console.log(
-      '🚀 ~ file: posting-history.component.ts:249 ~ PostingHistoryComponent ~ changeCurrentPage ~ this.currentPage:',
-      this.currentPage
-    );
+    if (position === 1 || position === -1) {
+      this.currentPage = this.paginationService.navigatePage(
+        position,
+        this.currentPage
+      );
+    }
+    if (toFirstPage) {
+      this.currentPage = 1;
+    } else if (toLastPage) {
+      this.currentPage = this.totalPages;
+    }
     this.getPostHistorySub = this.postService
       .getPostsHistory(this.currentActiveStatus.status, this.currentPage, 5)
       .subscribe(
@@ -273,7 +279,6 @@ export class PostingHistoryComponent {
             this.historyPosts = [];
             this.isLoading = false;
           }
-          //console.log(this.historyPosts);
           console.log(this.historyPosts);
           console.log(this.currentActiveStatus.status);
         },

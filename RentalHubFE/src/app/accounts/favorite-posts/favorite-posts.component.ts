@@ -123,18 +123,25 @@ export class FavoritePostsComponent {
       );
   }
 
-  changeCurrentPage(position: number) {
+  changeCurrentPage(
+    position: number,
+    toFirstPage: boolean,
+    toLastPage: boolean
+  ) {
     this.isLoading = true;
     this.historyPosts = [];
-    this.currentPage = this.paginationService.pagination.page;
-    this.currentPage = this.paginationService.navigatePage(
-      position,
-      this.currentPage
-    );
-    console.log(
-      '🚀 ~ file: posting-history.component.ts:249 ~ PostingHistoryComponent ~ changeCurrentPage ~ this.currentPage:',
-      this.currentPage
-    );
+    if (position === 1 || position === -1) {
+      this.currentPage = this.paginationService.navigatePage(
+        position,
+        this.currentPage
+      );
+    }
+    if (toFirstPage) {
+      this.currentPage = 1;
+    } else if (toLastPage) {
+      this.currentPage = this.totalPages;
+    }
+
     this.getPostHistorySub = this.postService
       .getFavorites(this.currentPage, this.pageItemLimit)
       .subscribe(

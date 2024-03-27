@@ -22,6 +22,8 @@ export class PaginationComponent implements OnInit, OnDestroy {
   @Input() currentPage!: number;
   @Output() toPrevPage: EventEmitter<number> = new EventEmitter();
   @Output() toNextPage: EventEmitter<number> = new EventEmitter();
+  @Output() toFirstPage: EventEmitter<boolean> = new EventEmitter();
+  @Output() toLastPage: EventEmitter<boolean> = new EventEmitter();
 
   currentPageChangedSub: Subscription = new Subscription();
   reachPrevPaginationLimit: boolean = false;
@@ -30,13 +32,8 @@ export class PaginationComponent implements OnInit, OnDestroy {
   constructor(private paginationService: PaginationService) {}
 
   ngOnInit() {
-    // console.log(
-    //   '🚀 ~ file: pagination.component.ts:34 ~ PaginationComponent ~ ngOnInit ~ this.paginationService.pagination.page:',
-    //   this.paginationService.pagination.page
-    // );
-    // console.log('On getting current page index from param...');
-    // this.currentPage = this.paginationService.getCurrentPageIndexFromParam();
     console.log('Current page: ' + this.currentPage);
+    console.log('🚀 ~ PaginationComponent ~ totalPages:', this.totalPages);
   }
 
   ngOnDestroy(): void {
@@ -44,15 +41,10 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   prevPage() {
-    // this.currentPage = this.paginationService.currentPage;
-    console.log(
-      '🚀 ~ file: pagination.component.ts:44 ~ PaginationComponent ~ prevPage ~ this.currentPage:',
-      this.currentPage
-    );
     this.reachPrevPaginationLimit = false;
     if (this.totalPages && this.currentPage === 1) {
       this.reachPrevPaginationLimit = true;
-      console.log('prev pagination limit: ', this.reachPrevPaginationLimit);
+      // console.log('prev pagination limit: ', this.reachPrevPaginationLimit);
     } else {
       if (this.reachPrevPaginationLimit === false) {
         this.toPrevPage.emit(-1);
@@ -70,7 +62,7 @@ export class PaginationComponent implements OnInit, OnDestroy {
     this.reachNextPaginationLimit = false;
     if (this.totalPages && this.currentPage === this.totalPages) {
       this.reachNextPaginationLimit = true;
-      console.log('next pagination limit: ', this.reachNextPaginationLimit);
+      // console.log('next pagination limit: ', this.reachNextPaginationLimit);
     } else {
       if (this.reachNextPaginationLimit === false) {
         this.toNextPage.emit(1);
@@ -83,5 +75,12 @@ export class PaginationComponent implements OnInit, OnDestroy {
       'total page: ' + this.totalPages,
       ', current page: ' + this.currentPage
     );
+  }
+
+  firstPage() {
+    this.toFirstPage.emit(true);
+  }
+  lastPage() {
+    this.toLastPage.emit(true);
   }
 }
