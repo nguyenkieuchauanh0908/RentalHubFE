@@ -9,7 +9,7 @@
         <h2
           class="mb-6 text-sm font-semibold text-900 uppercase dark:text-white"
         >
-          Công ty
+          <mat-icon class="relative top-1">home</mat-icon> Công ty
         </h2>
         <ul class="text-white-text-color dark:text-gray-400 font-medium">
           <li class="mb-4">
@@ -31,20 +31,28 @@
         <h2
           class="mb-6 text-sm font-semibold text-900 uppercase dark:text-white"
         >
-          Trợ giúp
+          <mat-icon class="relative top-1">help</mat-icon> Trợ giúp
         </h2>
         <ul class="text-500 dark:text-gray-400 font-medium">
           <li class="mb-4">
-            <a href="#" class="hover:underline">Hotline</a>
+            <i class="fa-solid fa-phone"></i>
+            Hotline: {{ contactPhone }}
           </li>
           <li class="mb-4">
-            <a href="#" class="hover:underline">Twitter</a>
+            <a href="#" class="hover:underline"
+              ><i class="fa-brands fa-twitter"></i> Twitter</a
+            >
           </li>
           <li class="mb-4">
-            <a href="#" class="hover:underline">Facebook</a>
+            <a href="#" class="hover:underline"
+              ><i class="fa-brands fa-facebook"></i> Facebook</a
+            >
           </li>
           <li class="mb-4">
-            <a href="#" class="hover:underline">Contact Us</a>
+            <a href="#" class="hover:underline"
+              ><i class="fa-regular fa-envelope"></i> Contact Us:
+              {{ contactEmail }}</a
+            >
           </li>
         </ul>
       </div>
@@ -53,7 +61,7 @@
         <h2
           class="mb-6 text-sm font-semibold text-900 uppercase dark:text-white"
         >
-          Pháp lý
+          <mat-icon class="relative top-1">apps</mat-icon> Pháp lý
         </h2>
         <ul class="text-500 dark:text-gray-400 font-medium">
           <li class="mb-4">
@@ -69,25 +77,10 @@
       </div>
       <!-- Follow us -->
       <div>
-        <h2
-          class="mb-6 text-sm font-semibold text-900 uppercase dark:text-white"
-        >
-          Mạng xã hội
-        </h2>
-        <ul class="text-500 dark:text-gray-400 font-medium">
-          <li class="mb-4">
-            <a href="#" class="hover:underline">Facebook</a>
-          </li>
-          <li class="mb-4">
-            <a href="#" class="hover:underline">Instagram</a>
-          </li>
-          <li class="mb-4">
-            <a href="#" class="hover:underline">Zalo</a>
-          </li>
-          <li class="mb-4">
-            <a href="#" class="hover:underline">Twitter</a>
-          </li>
-        </ul>
+        <img
+          src="http://online.gov.vn/PublicImages/2015/08/27/11/20150827110756-dathongbao.png"
+          alt="Đã thông báo Bộ công thương"
+        />
       </div>
     </div>
     <!-- All right reserved and social media channels -->
