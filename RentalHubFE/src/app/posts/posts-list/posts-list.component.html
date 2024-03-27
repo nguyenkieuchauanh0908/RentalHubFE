@@ -3,7 +3,7 @@
     <mat-spinner diameter="30"></mat-spinner>
   </div>
   <!-- Lists of products -->
-  <div class="grid col-span-9 gap-3 mt-6 mb-12">
+  <div class="grid col-span-10 gap-3 mt-6 mb-12">
     <!-- Item list -->
     <div *ngFor="let post of postList">
       <app-post-item [item]="post"></app-post-item>
@@ -16,7 +16,7 @@
       (toNextPage)="changeCurrentPage($event)"
     ></app-pagination>
   </div>
-  <div class="relative grid col-span-3 max-h-72 mt-6">
+  <div class="relative grid col-span-2 max-h-72 mt-6">
     <!-- Filter -->
     <div class="bg-white-background rounded-lg fixed top-22">
       <!-- Title -->
