@@ -33,7 +33,7 @@ export class HostPostingHistoryComponent implements OnInit {
   seeMyProfile = false;
   historyPosts: PostItem[] = new Array<PostItem>();
   totalPages: number = 1;
-  currentPage: number = 1;
+  currentPage: number = this.paginationService.currentPage;
   pageItemLimit: number = 5;
 
   currentActiveStatus = {
@@ -50,14 +50,11 @@ export class HostPostingHistoryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.currentPage = 1;
     this.currentUid = '';
     this.currentUid = this.route.snapshot.paramMap.get('id');
     this.isLoading = true;
     if (this.currentUid) {
-      console.log(
-        '🚀 ~ file: host-posting-history.component.ts:52 ~ HostPostingHistoryComponent ~ ngOnInit ~ this.currentUid:',
-        this.currentUid
-      );
       this.getPostHistorySub = this.postService
         .getPostsHistoryOfAUser(this.currentUid, 1, 5)
         .subscribe((res) => {
@@ -74,17 +71,18 @@ export class HostPostingHistoryComponent implements OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    // this.getPostHistorySub.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   changeCurrentPage(position: number) {
     this.historyPosts = [];
-    this.currentPage = this.paginationService.caculateCurrentPage(position);
+    this.currentPage = this.paginationService.navigatePage(
+      position,
+      this.currentPage
+    );
 
     if (this.currentUid) {
       this.getPostHistorySub = this.postService
-        .getPostsHistoryOfAUser(this.currentUid, 1, 5)
+        .getPostsHistoryOfAUser(this.currentUid, this.currentPage, 5)
         .subscribe((res) => {
           if (res.data) {
             this.historyPosts = res.data;

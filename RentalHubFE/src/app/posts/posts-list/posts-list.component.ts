@@ -39,7 +39,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   postList!: PostItem[];
   postListChangedSub: Subscription = new Subscription();
 
-  currentPage: number = 1;
+  currentPage: number = this.paginationService.currentPage;
   pageItemLimit: number = 10;
   totalPages: number = this.paginationService.pagination?.total;
   constructor(
@@ -52,14 +52,11 @@ export class PostsListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.paginationService.currentPage = 1;
-    this.postList = this.postService.posts;
-    if (this.postList.length === 0) {
-      this.postService.getPostList(this.currentPage, this.pageItemLimit);
-      this.isLoading = false;
-    } else {
-      this.isLoading = false;
-    }
+    this.currentPage = 1;
+
+    this.postService.getPostList(this.currentPage, this.pageItemLimit);
+    this.isLoading = false;
+
     this.postService.postListChanged.subscribe((posts: PostItem[]) => {
       this.postList = posts;
       this.isLoading = false;
@@ -120,6 +117,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   //position can be either 1 (navigate to next page) or -1 (to previous page)
   changeCurrentPage(position: number) {
     this.isLoading = true;
+    console.log(this.currentPage);
     this.currentPage = this.paginationService.navigatePage(
       position,
       this.currentPage

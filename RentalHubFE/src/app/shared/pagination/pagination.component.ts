@@ -19,25 +19,23 @@ import { PaginationService } from './pagination.service';
 })
 export class PaginationComponent implements OnInit, OnDestroy {
   @Input() totalPages!: number;
+  @Input() currentPage!: number;
   @Output() toPrevPage: EventEmitter<number> = new EventEmitter();
   @Output() toNextPage: EventEmitter<number> = new EventEmitter();
 
   currentPageChangedSub: Subscription = new Subscription();
   reachPrevPaginationLimit: boolean = false;
   reachNextPaginationLimit: boolean = false;
-  currentPage: number = 1;
 
   constructor(private paginationService: PaginationService) {}
 
   ngOnInit() {
-    this.currentPage = this.paginationService.pagination.page;
-    console.log(
-      '🚀 ~ file: pagination.component.ts:34 ~ PaginationComponent ~ ngOnInit ~ this.paginationService.pagination.page:',
-      this.paginationService.pagination.page
-    );
+    // console.log(
+    //   '🚀 ~ file: pagination.component.ts:34 ~ PaginationComponent ~ ngOnInit ~ this.paginationService.pagination.page:',
+    //   this.paginationService.pagination.page
+    // );
     // console.log('On getting current page index from param...');
     // this.currentPage = this.paginationService.getCurrentPageIndexFromParam();
-    console.log('sdrftgskdfgjsdk');
     console.log('Current page: ' + this.currentPage);
   }
 

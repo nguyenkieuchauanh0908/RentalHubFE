@@ -25,21 +25,12 @@ export class PaginationService {
     return this.currentPage;
   }
 
-  caculateCurrentPage(position: number) {
-    console.log('On caculating current page...');
-    if (position > 0 || position < 0) {
-      this.currentPage = this.currentPage + position;
-    }
-    console.log('Current page: ' + this.currentPage);
-    return this.currentPage;
-  }
-
   navigatePage(position: number, currentPage: number) {
     console.log('Position: ' + position);
     if (position > 0 || position < 0) {
       this.currentPage = currentPage + position;
       console.log(
-        '🚀 ~ file: qưeqewqpagination.service.ts:42 ~ PaginationService ~ navigatePage ~ this.currentPage:',
+        '🚀 ~ PaginationService ~ navigatePage ~ this.currentPage:',
         this.currentPage
       );
     }

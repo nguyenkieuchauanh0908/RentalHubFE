@@ -94,6 +94,7 @@
           </div>
           <!-- Pagination -->
           <app-pagination
+            [currentPage]="currentPage"
             [totalPages]="totalPages"
             (toPrevPage)="changeCurrentPage($event)"
             (toNextPage)="changeCurrentPage($event)"

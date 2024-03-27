@@ -71,6 +71,7 @@ export class PostingHistoryComponent {
     public dialog: MatDialog,
     private notifierService: NotifierService
   ) {
+    this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.currentUid = this.accountService.getCurrentUserId();
@@ -115,6 +116,7 @@ export class PostingHistoryComponent {
   }
 
   toAllPostHistory() {
+    this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
@@ -141,6 +143,7 @@ export class PostingHistoryComponent {
   }
 
   toStackPostsHistory() {
+    this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
@@ -167,6 +170,7 @@ export class PostingHistoryComponent {
   }
 
   toOnWallPostsHistory() {
+    this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
@@ -193,6 +197,7 @@ export class PostingHistoryComponent {
   }
 
   toUnSensoredPostsHistory() {
+    this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
@@ -247,7 +252,7 @@ export class PostingHistoryComponent {
   changeCurrentPage(position: number) {
     this.isLoading = true;
     this.historyPosts = [];
-    this.currentPage = this.paginationService.pagination.page;
+    // this.currentPage = this.paginationService.pagination.page;
     this.currentPage = this.paginationService.navigatePage(
       position,
       this.currentPage

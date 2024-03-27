@@ -54,6 +54,7 @@ export class FavoritePostsComponent {
     public dialog: MatDialog,
     private router: Router
   ) {
+    this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.currentUid = this.accountService.getCurrentUserId();
@@ -68,10 +69,6 @@ export class FavoritePostsComponent {
             this.historyPosts = postingHistory!;
           });
           this.paginationService.pagination = res.pagination;
-          console.log(
-            '🚀 ~ FavoritePostsComponent ~ res.pagination:',
-            res.pagination
-          );
           this.totalPages = res.pagination.total;
           this.isLoading = false;
         },
