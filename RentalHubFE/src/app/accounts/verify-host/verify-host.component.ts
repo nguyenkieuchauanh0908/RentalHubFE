@@ -14,6 +14,7 @@ export class VerifyHostComponent implements OnInit {
   isEditable = false;
   isLoading = false;
   error: string = '';
+  phone: string | null | undefined;
   otpSent: boolean = false;
   phoneVerified: boolean = false;
   otpVerified: boolean = false;
@@ -44,21 +45,19 @@ export class VerifyHostComponent implements OnInit {
     this.phoneVerified = false;
     this.otpSent = false;
     this.isLoading = true;
-    let phone = this.firstFormGroup.value.firstCtrl;
-    this.accountService.verifyAccount(phone!).subscribe(
+    this.phone = this.firstFormGroup.value.firstCtrl;
+    this.accountService.verifyAccount(this.phone!).subscribe(
       (res) => {
         if (res.data) {
           this.isLoading = false;
           this.otpSent = res.data;
           console.log('otp sent: ', this.otpSent);
           if (this.otpSent === true) {
-            console.log(
-              'Please check your registered mail to get otp code ...'
-            );
-            console.log(
-              'There is one more step, please provide correct otp code to become host...'
-            );
             this.phoneVerified = true;
+            this.notifierService.notify(
+              'success',
+              'OTP đã được gửi tới điện thoại!'
+            );
             stepper.next();
           }
         }
@@ -66,10 +65,6 @@ export class VerifyHostComponent implements OnInit {
       (errorMsg) => {
         this.isLoading = false;
         this.error = errorMsg;
-        console.log(
-          '🚀 ~ file: verify-account.component.ts:48 ~ VerifyAccountComponent ~ onSubmitUserPhone ~ this.error:',
-          this.error
-        );
         this.notifierService.notify('error', errorMsg);
       }
     );
@@ -79,7 +74,7 @@ export class VerifyHostComponent implements OnInit {
     this.otpVerified = false;
     this.isLoading = true;
     let otp = this.secondFormGroup.value.secondCtrl!;
-    this.accountService.confirmOtp(otp).subscribe(
+    this.accountService.confirmOtp(otp, this.phone).subscribe(
       (res) => {
         if (res.data) {
           this.isLoading = false;
@@ -94,7 +89,6 @@ export class VerifyHostComponent implements OnInit {
       (errorMsg) => {
         this.isLoading = false;
         this.error = errorMsg;
-        console.log(this.error);
         this.notifierService.notify('error', errorMsg);
       }
     );

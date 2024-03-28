@@ -104,10 +104,11 @@ export class AccountService {
       .pipe(catchError(handleError));
   }
 
-  confirmOtp(otp: string) {
+  confirmOtp(otp: string, phone: any) {
     console.log('On verify otp...', otp);
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/verify-host', {
+        phone: phone,
         otp: otp,
       })
       .pipe(
@@ -117,10 +118,10 @@ export class AccountService {
           this.getCurrentUser.subscribe((user) => {
             user!._isHost = true;
             updatedtUser = user!;
-            console.log(
-              '🚀 ~ file: accounts.service.ts:116 ~ AccountService ~ this.getCurrentUser.subscribe ~ user:',
-              user
-            );
+            // console.log(
+            //   '🚀 ~ file: accounts.service.ts:116 ~ AccountService ~ this.getCurrentUser.subscribe ~ user:',
+            //   user
+            // );
           });
           this.setCurrentUser(updatedtUser!);
         })

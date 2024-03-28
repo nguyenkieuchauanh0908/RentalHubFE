@@ -109,29 +109,30 @@
           </div>
         </div>
       </div>
-      <!-- Street -->
+      <!-- City -->
       <div class="mb-6">
         <label
           for="base-input"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Đường</label
+          >Tỉnh/Thành phố</label
         >
         <input
           type="text"
-          id="street-input"
-          name="street"
+          id="city-input"
+          name="city"
+          disabled
           ngModel
-          required
+          value="Hồ Chí Minh"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #street="ngModel"
+          #city="ngModel"
         />
         <div
-          *ngIf="street.invalid && (street.dirty || street.touched)"
+          *ngIf="city.invalid && (city.dirty || city.touched)"
           class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
           role="alert"
         >
-          <div *ngIf="street.errors?.['required']">
-            Mô tả không được bỏ trống.
+          <div *ngIf="desc.errors?.['required']">
+            Thành phố không được bỏ trống.
           </div>
         </div>
       </div>
@@ -140,7 +141,7 @@
         <label
           for="base-input"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Quận</label
+          >Quận/Huyện</label
         >
         <input
           type="text"
@@ -157,35 +158,62 @@
           role="alert"
         >
           <div *ngIf="desc.errors?.['required']">
-            Nội dung bài viết không được bỏ trống.
+            Quận/huyện không được bỏ trống.
           </div>
         </div>
       </div>
-
-      <!-- City -->
+      <!-- Ward -->
       <div class="mb-6">
         <label
           for="base-input"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Thành phố</label
+          >Quận/Huyện</label
         >
         <input
           type="text"
-          id="city-input"
-          name="city"
-          disabled
-          value="Hồ Chí Minh"
+          id="ward-input"
+          name="ward"
+          ngModel
+          required
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #ward="ngModel"
         />
-        <!-- <div
-          *ngIf="city.invalid && (city.dirty || city.touched)"
+        <div
+          *ngIf="ward.invalid && (ward.dirty || ward.touched)"
           class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
           role="alert"
         >
           <div *ngIf="desc.errors?.['required']">
-            Nội dung bài viết không được bỏ trống.
+            Phường/xã không được bỏ trống.
           </div>
-        </div> -->
+        </div>
+      </div>
+
+      <!-- Street -->
+      <div class="mb-6">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Số nhà</label
+        >
+        <input
+          type="text"
+          id="street-input"
+          name="street"
+          ngModel
+          required
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #street="ngModel"
+        />
+        <div
+          *ngIf="street.invalid && (street.dirty || street.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="street.errors?.['required']">
+            Địa chỉ nhà không được bỏ trống.
+          </div>
+        </div>
       </div>
 
       <!-- Area -->
