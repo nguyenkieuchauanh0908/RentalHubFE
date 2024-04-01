@@ -281,9 +281,15 @@ export class PostService {
       );
   }
 
-  searchPostByTags(tags: [string], page: number, limit: number) {
+  searchPostByTags(
+    tags: string[],
+    tagName: string,
+    page: number,
+    limit: number
+  ) {
     console.log('On searching posts by tags...');
-
+    this.searchKeyword = tagName;
+    this.searchKeywordChanged.next(this.searchKeyword);
     let queryParams = new HttpParams()
       .append('tags', tags.join())
       .append('page', page)

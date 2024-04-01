@@ -1,10 +1,12 @@
 import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { PostItem } from '../posts-list/post-item/post-item.model';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PostService } from '../post.service';
 import { NotifierService } from 'angular-notifier';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../report-dialog/report-dialog.component';
+import { Tags } from '../../shared/tags/tag.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-post-detail',
@@ -21,11 +23,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   id!: string;
   favoredPosts!: String[] | null | any[];
   isFavoured!: boolean;
+  $destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private postService: PostService,
     private route: ActivatedRoute,
     private notifierService: NotifierService,
+    private router: Router,
     public dialog: MatDialog
   ) {
     this.postService.getCurrentFavoritesId.subscribe((favorites) => {
@@ -101,5 +105,40 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       width: '600px',
       data: postId,
     });
+  }
+
+  toRelatedPosts(tag: Tags) {
+    let tags: string[] = [];
+    tags.push(tag._id);
+    this.postService
+      .searchPostByTags(tags, tag._tag, 1, 5)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(
+        (res) => {
+          this.postService.searchResultsChanged.next([...res.data]);
+          console.log('On navigating to search result page...');
+          this.router.navigate(
+            [
+              '/posts/search',
+              {
+                keyword: tag._tag,
+              },
+            ],
+            {
+              state: {
+                searchResult: res.data,
+                pagination: res.pagination,
+                keyword: tag._tag,
+              },
+            }
+          );
+        },
+        (errorMsg) => {
+          this.isLoading = false;
+          this.error = errorMsg;
+          console.log(this.error);
+          this.notifierService.notify('error', errorMsg);
+        }
+      );
   }
 }

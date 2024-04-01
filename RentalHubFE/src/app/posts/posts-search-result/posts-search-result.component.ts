@@ -34,7 +34,9 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
             '🚀 ~ file: posts-search-result.component.ts:35 ~ PostsSearchResultComponent ~ ngOnInit ~ this.currentPage:',
             this.currentPage
           );
-          this.currentKeyword = this.postService.searchKeyword;
+          this.postService.searchKeywordChanged.subscribe((keyword) => {
+            this.currentKeyword = keyword;
+          });
           this.totalPages = this.paginationService.pagination.total;
         }
       );
@@ -65,7 +67,10 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
         '🚀 ~ file: posts-search-result.component.ts:63 ~ PostsSearchResultComponent ~ this.currentPage:',
         this.currentPage
       );
-      this.currentKeyword = this.postService.searchKeyword;
+      // this.currentKeyword = this.postService.searchKeyword;
+      this.postService.searchKeywordChanged.subscribe((keyword: string) => {
+        this.currentKeyword = keyword;
+      });
       this.totalPages = this.paginationService.pagination.total;
     }
   }

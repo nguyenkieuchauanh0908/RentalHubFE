@@ -107,13 +107,13 @@
 
         <!-- Tags -->
         <div *ngIf="post._tags">
-          <p class="text-base font-medium">Tag bài viết</p>
-          <div class="flex flex-row flex-wrap cursor-pointer">
+          <p class="text-base font-medium">Thẻ bài viết</p>
+          <div class="flex flex-row flex-wrap">
             <div
               class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
               *ngFor="let tag of post._tags"
             >
-              <span class="tag">
+              <span class="tag cursor-pointer" (click)="toRelatedPosts(tag)">
                 {{ tag._tag }}
               </span>
             </div>
@@ -131,7 +131,7 @@
               class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
               *ngFor="let tag of post.roomServices"
             >
-              <span class="tag">
+              <span class="tag cursor-pointer">
                 {{ tag }}
               </span>
             </div>
@@ -152,7 +152,7 @@
               class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
               *ngFor="let tag of post.roomUtilities"
             >
-              <span class="tag">
+              <span class="tag cursor-pointer">
                 {{ tag }}
               </span>
             </div>
