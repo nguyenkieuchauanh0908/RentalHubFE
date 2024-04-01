@@ -37,9 +37,12 @@ export class AuthInterceptorService implements HttpInterceptor {
             console.log('You need to login again!');
             this.router.navigate(['/auth/login']);
           } else {
-            if (user.ACToken && user.RFToken) {
+            if (req.url.startsWith('https://esgoo.net/api-tinhthanh')) {
+              return next.handle(req);
+            } else if (user.ACToken && user.RFToken) {
               console.log('ACToken in interceptor: ', user.ACToken);
               console.log('On adding ACToken to request header...');
+
               const headers = new HttpHeaders({
                 Authorization: `Bearer ${user.ACToken}`,
               });
