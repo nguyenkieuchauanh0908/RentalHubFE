@@ -21,25 +21,22 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
   stateData: any;
   searchResult!: PostItem[];
   searchResultChangedSub: Subscription = new Subscription();
-  currentPage: number = 1;
+  currentPage: number = this.paginationService.currentPage;
   pageItemLimit: number = 5;
   totalPages: number = this.paginationService.pagination?.total;
   currentKeyword: string = this.postService.searchKeyword;
   ngOnInit() {
+    this.currentPage = 1;
     this.searchResultChangedSub =
       this.postService.searchResultsChanged.subscribe(
         (searchResult: PostItem[]) => {
           this.searchResult = searchResult;
-          console.log(
-            '🚀 ~ file: posts-search-result.component.ts:35 ~ PostsSearchResultComponent ~ ngOnInit ~ this.currentPage:',
-            this.currentPage
-          );
-          this.postService.searchKeywordChanged.subscribe((keyword) => {
-            this.currentKeyword = keyword;
-          });
-          this.totalPages = this.paginationService.pagination.total;
         }
       );
+    this.postService.searchKeywordChanged.subscribe((keyword) => {
+      this.currentKeyword = keyword;
+    });
+    this.totalPages = this.paginationService.pagination.total;
     this.postService.searchKeywordChanged.subscribe((keyword: string) => {
       this.currentKeyword = keyword;
     });
@@ -76,17 +73,24 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
   }
 
   //position can be either 1 (navigate to next page) or -1 (to previous page)
-  changeCurrentPage(position: number) {
+  changeCurrentPage(
+    position: number,
+    toFirstPage: boolean,
+    toLastPage: boolean
+  ) {
     console.log('On changing page...');
-    console.log('Your keyword is: ', this.currentKeyword);
-    this.currentPage = this.paginationService.navigatePage(
-      position,
-      this.currentPage
-    );
-    console.log(
-      '🚀 ~ file: posts-search-result.component.ts:80 ~ PostsSearchResultComponent ~ changeCurrentPage ~ this.currentPage:',
-      this.currentPage
-    );
+    this.isLoading = true;
+    if (position === 1 || position === -1) {
+      this.currentPage = this.paginationService.navigatePage(
+        position,
+        this.currentPage
+      );
+    }
+    if (toFirstPage) {
+      this.currentPage = 1;
+    } else if (toLastPage) {
+      this.currentPage = this.totalPages;
+    }
     this.postService
       .searchPostsByKeyword(
         this.currentKeyword!,

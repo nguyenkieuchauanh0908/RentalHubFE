@@ -15,8 +15,11 @@
     <!-- Pagination -->
     <app-pagination
       [totalPages]="totalPages"
-      (toPrevPage)="changeCurrentPage($event)"
-      (toNextPage)="changeCurrentPage($event)"
+      [currentPage]="currentPage"
+      (toPrevPage)="changeCurrentPage($event, false, false)"
+      (toNextPage)="changeCurrentPage($event, false, false)"
+      (toFirstPage)="changeCurrentPage(0, $event, false)"
+      (toLastPage)="changeCurrentPage(0, false, $event)"
     ></app-pagination>
   </div>
 
