@@ -23,7 +23,7 @@
         <form
           #searchForm="ngForm"
           (keyup.enter)="onSearchByKeyword(searchForm.value)"
-          (ngSubmit)="onSearchByKeyword(searchForm.value)"
+          (ngSubmit)="onSearchByKeyword(searchForm.value); searchForm.reset()"
         >
           <label
             for="default-search"

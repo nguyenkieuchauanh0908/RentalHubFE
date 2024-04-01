@@ -44,7 +44,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         console.log('On rendering headers...');
-        console.log(user);
         this.isAuthenticatedUser = !!user;
         console.log('User is authenticated: ', this.isAuthenticatedUser);
         this.user = user;
@@ -61,10 +60,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       );
       this.notificationService.getTotalNotifications.subscribe(
         (notificationTotal) => {
-          console.log(
-            '🚀 ~ HeaderComponent ~ .subscribe ~ notificationTotal:',
-            notificationTotal
-          );
+          // console.log(
+          //   '🚀 ~ HeaderComponent ~ .subscribe ~ notificationTotal:',
+          //   notificationTotal
+          // );
           this.notificationTotals = notificationTotal;
         }
       );
