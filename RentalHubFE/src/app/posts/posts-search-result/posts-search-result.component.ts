@@ -29,9 +29,7 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
     this.searchResultChangedSub =
       this.postService.searchResultsChanged.subscribe(
         (searchResult: PostItem[]) => {
-          console.log('Detecting search results changed...');
           this.searchResult = searchResult;
-          // this.currentPage = this.paginationService.pagination.page;
           console.log(
             '🚀 ~ file: posts-search-result.component.ts:35 ~ PostsSearchResultComponent ~ ngOnInit ~ this.currentPage:',
             this.currentPage

@@ -1,6 +1,12 @@
 <div class="grid grid-cols-12 gap-6">
   <!-- Lists of products -->
   <div class="grid col-span-12 mt-6 mb-12 w-full h-max-full">
+    <div>
+      <span class="line-clamp-1"
+        >Từ khóa tìm kiếm: {{ this.currentKeyword }}</span
+      >
+    </div>
+
     <!-- Item list -->
     <div *ngFor="let post of searchResult">
       <app-post-item [item]="post"></app-post-item>
