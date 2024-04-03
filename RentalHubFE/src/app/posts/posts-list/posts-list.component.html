@@ -33,17 +33,17 @@
         <div class="flex flex-row">
           <mat-checkbox
             class="example-margin"
-            [(ngModel)]="filterCriteria.roomPrice.highToLow"
+            [(ngModel)]="filterCriteria.roomPrice.lowToHigh"
             (change)="
-              checkPriceFilter($event.checked, 'roomPrice', 'highToLow')
+              checkPriceFilter($event.checked, 'roomPrice', 'lowToHigh')
             "
             >Cao dần</mat-checkbox
           >
           <mat-checkbox
             class="example-margin"
-            [(ngModel)]="filterCriteria.roomPrice.lowToHigh"
+            [(ngModel)]="filterCriteria.roomPrice.highToLow"
             (change)="
-              checkPriceFilter($event.checked, 'roomPrice', 'lowToHigh')
+              checkPriceFilter($event.checked, 'roomPrice', 'highToLow')
             "
             >Thấp dần</mat-checkbox
           >
@@ -56,17 +56,17 @@
         <div class="flex flex-row">
           <mat-checkbox
             class="example-margin"
-            [(ngModel)]="filterCriteria.electricityPrice.highToLow"
+            [(ngModel)]="filterCriteria.electricityPrice.lowToHigh"
             (change)="
-              checkPriceFilter($event.checked, 'electricityPrice', 'highToLow')
+              checkPriceFilter($event.checked, 'electricityPrice', 'lowToHigh')
             "
             >Cao dần</mat-checkbox
           >
           <mat-checkbox
             class="example-margin"
-            [(ngModel)]="filterCriteria.electricityPrice.lowToHigh"
+            [(ngModel)]="filterCriteria.electricityPrice.highToLow"
             (change)="
-              checkPriceFilter($event.checked, 'electricityPrice', 'lowToHigh')
+              checkPriceFilter($event.checked, 'electricityPrice', 'highToLow')
             "
             >Thấp dần</mat-checkbox
           >
@@ -79,17 +79,17 @@
         <div class="flex flex-row">
           <mat-checkbox
             class="example-margin"
-            [(ngModel)]="filterCriteria.waterPrice.highToLow"
+            [(ngModel)]="filterCriteria.waterPrice.lowToHigh"
             (change)="
-              checkPriceFilter($event.checked, 'waterPrice', 'highToLow')
+              checkPriceFilter($event.checked, 'waterPrice', 'lowToHigh')
             "
             >Cao dần</mat-checkbox
           >
           <mat-checkbox
             class="example-margin"
-            [(ngModel)]="filterCriteria.waterPrice.lowToHigh"
+            [(ngModel)]="filterCriteria.waterPrice.highToLow"
             (change)="
-              checkPriceFilter($event.checked, 'waterPrice', 'lowToHigh')
+              checkPriceFilter($event.checked, 'waterPrice', 'highToLow')
             "
             >Thấp dần</mat-checkbox
           >

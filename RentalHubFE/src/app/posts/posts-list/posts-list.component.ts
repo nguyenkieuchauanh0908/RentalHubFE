@@ -164,7 +164,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
         default:
       }
     }
-    // console.log(this.filterCriteria);
+    console.log(this.filterCriteria);
   }
 
   resetFilter() {
