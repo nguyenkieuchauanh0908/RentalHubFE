@@ -11,12 +11,7 @@ import { PostsSearchResultComponent } from './posts-search-result/posts-search-r
 import { ReportDialogComponent } from './report-dialog/report-dialog.component';
 
 @NgModule({
-  declarations: [
-    PostsComponent,
-    PostDetailComponent,
-    PostCardComponent,
-    PostsSearchResultComponent,
-  ],
+  declarations: [PostsComponent, PostsSearchResultComponent],
   imports: [
     PostsRoutingModule,
     AuthRoutingModule,

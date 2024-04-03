@@ -20,6 +20,7 @@ const routes: Routes = [
       {
         path: ':id',
         component: PostDetailComponent,
+        canActivate: [AuthGuard],
         resolve: {
           favoritesPosts: FavoritesPostResolverService,
         },

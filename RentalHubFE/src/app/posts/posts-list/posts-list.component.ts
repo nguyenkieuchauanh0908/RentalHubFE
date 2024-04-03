@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PostItemComponent } from './post-item/post-item.component';
 import { PostItem } from './post-item/post-item.model';
@@ -10,6 +10,7 @@ import {
   PaginationService,
 } from 'src/app/shared/pagination/pagination.service';
 import { FormsModule } from '@angular/forms';
+import { PostCardComponent } from '../post-card/post-card.component';
 
 export interface PriceCriteria {
   lowToHigh: boolean;
@@ -27,7 +28,7 @@ export interface FilterCriteria {
 }
 @Component({
   standalone: true,
-  imports: [SharedModule, PostItemComponent, FormsModule],
+  imports: [SharedModule, PostItemComponent, FormsModule, PostCardComponent],
   selector: 'app-posts-list',
   templateUrl: './posts-list.component.html',
   styleUrls: ['./posts-list.component.scss'],
@@ -63,17 +64,23 @@ export class PostsListComponent implements OnInit, OnDestroy {
   postListChangedSub: Subscription = new Subscription();
 
   currentPage: number = this.paginationService.currentPage;
-  pageItemLimit: number = 10;
+  pageItemLimit: number = 16;
   totalPages!: number;
+
+  private fragment: string = '';
   constructor(
     private postService: PostService,
     private paginationService: PaginationService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.resetFilter();
   }
 
   ngOnInit() {
+    this.route.fragment.subscribe((fragment) => {
+      this.fragment = fragment!;
+    });
     this.isLoading = true;
     this.currentPage = 1;
 
@@ -94,6 +101,17 @@ export class PostsListComponent implements OnInit, OnDestroy {
         this.totalPages = pagination.total;
       }
     );
+  }
+
+  // ngAfterViewInit(): void {
+  //   // try {
+  //   //   document.querySelector('start' + this.fragment).scrollIntoView();
+  //   // } catch (e) { }
+  // }
+
+  forceNavigate(name: string) {
+    console.log('forceNavigate', name);
+    this.router.navigate(['/posts'], { fragment: name });
   }
 
   ngOnDestroy() {

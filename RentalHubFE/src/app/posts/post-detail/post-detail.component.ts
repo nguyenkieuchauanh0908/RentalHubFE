@@ -7,8 +7,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../report-dialog/report-dialog.component';
 import { Tags } from '../../shared/tags/tag.model';
 import { Subject, takeUntil } from 'rxjs';
+import { PostCardComponent } from '../post-card/post-card.component';
+import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
+  standalone: true,
+  imports: [SharedModule, FormsModule, PostCardComponent],
   selector: 'app-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss'],

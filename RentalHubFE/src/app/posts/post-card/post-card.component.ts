@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 
 @Component({
+  standalone: true,
   selector: 'app-post-card',
   templateUrl: './post-card.component.html',
   styleUrls: ['./post-card.component.scss'],

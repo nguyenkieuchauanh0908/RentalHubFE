@@ -1,6 +1,8 @@
 <div
   [ngClass]="
-    isLoading ? 'opacity-70 grid grid-cols-12 gap-1' : 'grid grid-cols-12 gap-1'
+    isLoading
+      ? 'opacity-70 grid grid-cols-12 gap-1'
+      : 'grid grid-cols-12 gap-1 px-4 lg:px-20'
   "
 >
   <div *ngIf="isLoading" class="spinner__loading">

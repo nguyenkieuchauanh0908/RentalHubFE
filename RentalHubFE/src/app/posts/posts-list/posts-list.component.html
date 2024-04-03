@@ -1,12 +1,42 @@
-<div class="grid grid-cols-12 gap-6">
+<!-- Background landing images slider -->
+<div
+  id="landing"
+  class="relative bg-cover bg-no-repeat bg-center min-h-screen mx-0 my-0 p-0"
+  style="
+    background: linear-gradient(rgba(4, 9, 30, 0.5), rgba(4, 9, 30, 0.5)),
+      url(../../../assets/images/background_3.jpg);
+  "
+>
+  <div
+    class="absolute flex flex-col top-1/2 right-1/2 -translate-y-full translate-x-1/2 text-white-text-color text-lg"
+  >
+    <p class="text-center">Make your life a wonderful journey!</p>
+    <a
+      routerLink="./"
+      fragment="start"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-full text-sm py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700"
+    >
+      Bắt đầu
+    </a>
+  </div>
+</div>
+<!-- Main content -->
+<div id="start" class="grid grid-cols-12 gap-2 px-4 lg:px-20">
   <div *ngIf="isLoading" class="spinner__loading">
     <mat-spinner diameter="30"></mat-spinner>
   </div>
   <!-- Lists of products -->
-  <div class="grid col-span-10 gap-3 mt-6 mb-12">
+  <div class="grid col-span-12 md:col-span-9 gap-3 mt-6 mb-12">
     <!-- Item list -->
-    <div *ngFor="let post of postList">
-      <app-post-item [item]="post"></app-post-item>
+    <div class="grid grid-flow-row auto-rows-max">
+      <div class="grid grid-cols-12 gap-1">
+        <div
+          *ngFor="let post of postList"
+          class="xs:col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-3"
+        >
+          <app-post-card [post]="post" class="h-60 w-30"></app-post-card>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination -->
@@ -20,9 +50,9 @@
     ></app-pagination>
   </div>
   <!-- Filter panel -->
-  <div class="relative grid col-span-2 max-h-72 mt-6">
+  <div class="grid md:col-span-3 max-h-72 mt-6 mb-8 z-40 sticky top-24">
     <!-- Filter -->
-    <div class="bg-white-background rounded-lg fixed top-22">
+    <div class="xs:hidden md:block bg-white-background rounded-lg">
       <!-- Title -->
       <p class="text-black-color font-medium text-center">
         <mat-icon class="relative top-1.5 mr-1"> filter_list</mat-icon>Bộ lọc

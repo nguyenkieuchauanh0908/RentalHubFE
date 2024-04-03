@@ -1,6 +1,6 @@
 <div
   (click)="goToPost()"
-  class="max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2 cursor-pointer"
+  class="max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2 cursor-pointer hover:-translate-y-0.5 hover:shadow-primary-200"
 >
   <a (click)="goToPost()">
     <img
@@ -12,7 +12,7 @@
   <div class="p-2">
     <a (click)="goToPost()">
       <p
-        class="text-md font-medium tracking-tight text-black-color dark:text-white hover:text-primary-600 line-clamp-2"
+        class="text-md font-medium tracking-tight text-black-color dark:text-white hover:text-primary-600 line-clamp-1"
       >
         {{ post._title }}
       </p>

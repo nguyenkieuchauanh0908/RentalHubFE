@@ -4,12 +4,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
+  Router,
   RouterModule,
   provideRouter,
   withComponentInputBinding,
 } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { AuthGuard } from './auth/auth.guard';
 import { NotifierModule } from 'angular-notifier';
@@ -32,6 +33,9 @@ import {
     BrowserAnimationsModule,
     AppRoutingModule,
     NotifierModule,
+    // RouterModule.forRoot(routes, {
+    //   anchorScrolling: 'enabled',
+    // }),
   ],
   providers: [
     {
@@ -55,4 +59,6 @@ import {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(router: Router, viewportScroller: ViewportScroller) {}
+}
