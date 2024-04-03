@@ -14,12 +14,16 @@ import { FormsModule } from '@angular/forms';
 export interface PriceCriteria {
   lowToHigh: boolean;
   highToLow: boolean;
+  greaterThan: number;
+  lowerThan: number;
+  checked: boolean;
 }
 
 export interface FilterCriteria {
   roomPrice: PriceCriteria;
   electricityPrice: PriceCriteria;
   waterPrice: PriceCriteria;
+  priorities: String[];
 }
 @Component({
   standalone: true,
@@ -30,9 +34,28 @@ export interface FilterCriteria {
 })
 export class PostsListComponent implements OnInit, OnDestroy {
   filterCriteria: FilterCriteria = {
-    roomPrice: { lowToHigh: false, highToLow: false },
-    electricityPrice: { lowToHigh: false, highToLow: false },
-    waterPrice: { lowToHigh: false, highToLow: false },
+    roomPrice: {
+      lowToHigh: false,
+      highToLow: false,
+      greaterThan: 0,
+      lowerThan: 10000000,
+      checked: false,
+    },
+    electricityPrice: {
+      lowToHigh: false,
+      highToLow: false,
+      greaterThan: 0,
+      lowerThan: 10000000,
+      checked: false,
+    },
+    waterPrice: {
+      lowToHigh: false,
+      highToLow: false,
+      greaterThan: 0,
+      lowerThan: 10000000,
+      checked: false,
+    },
+    priorities: new Array<String>(),
   };
 
   isLoading: boolean = false;
@@ -54,7 +77,11 @@ export class PostsListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.currentPage = 1;
 
-    this.postService.getPostList(this.currentPage, this.pageItemLimit);
+    this.postService.getPostList(
+      this.currentPage,
+      this.pageItemLimit,
+      this.filterCriteria
+    );
     this.isLoading = false;
 
     this.postService.postListChanged.subscribe((posts: PostItem[]) => {
@@ -77,6 +104,8 @@ export class PostsListComponent implements OnInit, OnDestroy {
     if (checked === true) {
       switch (type) {
         case 'roomPrice':
+          this.filterCriteria.roomPrice.checked = true;
+          this.filterCriteria.priorities.push('rental');
           if (criteria === 'lowToHigh') {
             this.filterCriteria.roomPrice.highToLow = !checked;
           } else {
@@ -84,6 +113,8 @@ export class PostsListComponent implements OnInit, OnDestroy {
           }
           break;
         case 'electricityPrice':
+          this.filterCriteria.electricityPrice.checked = true;
+          this.filterCriteria.priorities.push('electric');
           if (criteria === 'lowToHigh') {
             this.filterCriteria.electricityPrice.highToLow = !checked;
           } else {
@@ -91,6 +122,8 @@ export class PostsListComponent implements OnInit, OnDestroy {
           }
           break;
         case 'waterPrice':
+          this.filterCriteria.waterPrice.checked = true;
+          this.filterCriteria.priorities.push('water');
           if (criteria === 'lowToHigh') {
             this.filterCriteria.waterPrice.highToLow = !checked;
           } else {
@@ -99,19 +132,107 @@ export class PostsListComponent implements OnInit, OnDestroy {
           break;
         default:
       }
+    } else {
+      switch (type) {
+        case 'roomPrice':
+          if (this.filterCriteria.roomPrice.checked) {
+            this.filterCriteria.roomPrice.checked = false;
+            this.filterCriteria.priorities =
+              this.filterCriteria.priorities.filter(
+                (priority) => priority !== 'rental'
+              );
+          }
+          break;
+        case 'electricityPrice':
+          if (this.filterCriteria.electricityPrice.checked) {
+            this.filterCriteria.electricityPrice.checked = false;
+            this.filterCriteria.priorities =
+              this.filterCriteria.priorities.filter(
+                (priority) => priority !== 'electric'
+              );
+          }
+          break;
+        case 'waterPrice':
+          if (this.filterCriteria.waterPrice.checked) {
+            this.filterCriteria.waterPrice.checked = false;
+            this.filterCriteria.priorities =
+              this.filterCriteria.priorities.filter(
+                (priority) => priority !== 'water'
+              );
+          }
+          break;
+        default:
+      }
     }
+    // console.log(this.filterCriteria);
   }
 
   resetFilter() {
     this.filterCriteria = {
-      roomPrice: { lowToHigh: false, highToLow: false },
-      electricityPrice: { lowToHigh: false, highToLow: false },
-      waterPrice: { lowToHigh: false, highToLow: false },
+      roomPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      electricityPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      waterPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      priorities: new Array<String>(),
     };
+    this.postService.getPostList(
+      this.currentPage,
+      this.pageItemLimit,
+      this.filterCriteria
+    );
+    this.isLoading = false;
+
+    this.postService.postListChanged.subscribe((posts: PostItem[]) => {
+      this.postList = posts;
+      this.isLoading = false;
+    });
+
+    this.paginationService.paginationChanged.subscribe(
+      (pagination: Pagination) => {
+        this.totalPages = pagination.total;
+      }
+    );
   }
 
   applyFilter() {
     console.log('On applying filter...');
+    this.isLoading = true;
+    this.currentPage = 1;
+
+    this.postService.getPostList(
+      this.currentPage,
+      this.pageItemLimit,
+      this.filterCriteria
+    );
+    this.isLoading = false;
+
+    this.postService.postListChanged.subscribe((posts: PostItem[]) => {
+      this.postList = posts;
+      this.isLoading = false;
+    });
+
+    this.paginationService.paginationChanged.subscribe(
+      (pagination: Pagination) => {
+        this.totalPages = pagination.total;
+      }
+    );
   }
 
   //position can be either 1 (navigate to next page) or -1 (to previous page)
@@ -132,7 +253,11 @@ export class PostsListComponent implements OnInit, OnDestroy {
     } else if (toLastPage) {
       this.currentPage = this.totalPages;
     }
-    this.postService.getPostList(this.currentPage, this.pageItemLimit);
+    this.postService.getPostList(
+      this.currentPage,
+      this.pageItemLimit,
+      this.filterCriteria
+    );
     this.postListChangedSub = this.postService.postListChanged.subscribe(
       (posts: PostItem[]) => {
         this.postList = posts;

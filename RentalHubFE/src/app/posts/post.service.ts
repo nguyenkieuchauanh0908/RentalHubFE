@@ -8,6 +8,7 @@ import { PaginationService } from '../shared/pagination/pagination.service';
 import { handleError } from '../shared/handle-errors';
 import { NotifierService } from 'angular-notifier';
 import { Tags } from '../shared/tags/tag.model';
+import { FilterCriteria } from './posts-list/posts-list.component';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -37,8 +38,52 @@ export class PostService {
     this.currentPostingHistory.next(updatedPostingHistory);
   }
 
-  getPostList(page: number, limit: number) {
-    const queryParams = { page: page, limit: limit };
+  getPostList(page: number, limit: number, filter: FilterCriteria) {
+    console.log(
+      '🚀 ~ PostService ~ filter.priorities.forEach ~ filter.priorities:',
+      filter.priorities
+    );
+    let queryParams = new HttpParams();
+    //Params filter
+    filter.priorities.forEach((priority) => {
+      switch (priority) {
+        case 'rental':
+          //Ascending order
+          if (filter.roomPrice.highToLow) {
+            queryParams = queryParams.append('rental', -1);
+          }
+          //Descending order
+          else {
+            queryParams = queryParams.append('rental', 1);
+          }
+          break;
+        case 'electric':
+          //Ascending order
+          if (filter.electricityPrice.highToLow) {
+            queryParams = queryParams.append('electric', -1);
+          }
+          //Descending order
+          else {
+            queryParams = queryParams.append('electric', 1);
+          }
+          break;
+        case 'water':
+          //Ascending order
+          if (filter.waterPrice.highToLow) {
+            queryParams = queryParams.append('water', -1);
+          }
+          //Descending order
+          else {
+            queryParams = queryParams.append('water', 1);
+          }
+          break;
+        default:
+      }
+    });
+
+    //Params pagination
+    queryParams = queryParams.append('page', page);
+    queryParams = queryParams.append('limit', limit);
     this.http
       .get<resDataDTO>(environment.baseUrl + 'posts', {
         params: queryParams,
