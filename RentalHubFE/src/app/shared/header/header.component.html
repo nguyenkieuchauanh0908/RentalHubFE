@@ -84,37 +84,39 @@
           >
             <mat-icon> notifications</mat-icon>
           </button>
-          <mat-menu #menu="matMenu" yPosition="below" class="pt-3">
-            <div
-              *ngFor="let noti of notificationList; index as i"
-              class="flex flex-col text-sm pr-3 pl-3"
-            >
-              <p class="text-primary-text-color font-medium mb-0">
-                {{ noti._title }}
-              </p>
+          <mat-menu #menu="matMenu" yPosition="below">
+            <a (click)="$event.stopPropagation(); $event.preventDefault()">
+              <div
+                *ngFor="let noti of notificationList; index as i"
+                class="flex flex-col text-sm pr-3 pl-3 pt-3"
+              >
+                <p class="text-primary-text-color font-medium mb-0">
+                  {{ noti._title }}
+                </p>
+                <p
+                  mat-raised-button
+                  class="text-sub-text-color line-clamp-2"
+                  [matTooltip]="noti._message"
+                  [matTooltipPosition]="'left'"
+                  [matTooltipClass]="'mr-3'"
+                  matTooltipHideDelay="400"
+                >
+                  {{ noti._message }}
+                </p>
+              </div>
+              <mat-divider *ngIf="notificationList.length > 0"></mat-divider>
               <p
-                mat-raised-button
-                class="text-sub-text-color line-clamp-2"
-                [matTooltip]="noti._message"
-                [matTooltipPosition]="'left'"
-                [matTooltipClass]="'mr-3'"
-                matTooltipHideDelay="400"
+                class="text-sm text-sub-text-color p-3"
+                style="margin-bottom: 2px"
               >
-                {{ noti._message }}
-              </p>
-            </div>
-            <mat-divider *ngIf="notificationList.length > 0"></mat-divider>
-            <p
-              class="text-sm text-sub-text-color p-3"
-              style="margin-bottom: 2px"
+                {{ notificationTotals }} thông báo chưa đọc
+                <span
+                  (click)="toSeeAllNotifications()"
+                  class="text-blue-500 cursor-pointer hover:text-blue-600 ml-1"
+                  >Xem toàn bộ</span
+                >
+              </p></a
             >
-              {{ notificationTotals }} thông báo chưa đọc
-              <span
-                (click)="toSeeAllNotifications()"
-                class="text-blue-500 cursor-pointer hover:text-blue-600 ml-1"
-                >Xem toàn bộ</span
-              >
-            </p>
           </mat-menu>
         </div>
         <!-- Login -->
