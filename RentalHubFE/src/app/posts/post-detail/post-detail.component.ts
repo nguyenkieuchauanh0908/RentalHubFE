@@ -1,4 +1,10 @@
-import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { PostItem } from '../posts-list/post-item/post-item.model';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PostService } from '../post.service';
@@ -10,10 +16,11 @@ import { Subject, takeUntil } from 'rxjs';
 import { PostCardComponent } from '../post-card/post-card.component';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { GoogleMapsModule, MapGeocoder } from '@angular/google-maps';
 
 @Component({
   standalone: true,
-  imports: [SharedModule, FormsModule, PostCardComponent],
+  imports: [SharedModule, FormsModule, PostCardComponent, GoogleMapsModule],
   selector: 'app-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss'],
@@ -29,23 +36,23 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   favoredPosts!: String[] | null | any[];
   isFavoured!: boolean;
   $destroy: Subject<boolean> = new Subject<boolean>();
+  center!: google.maps.LatLngLiteral;
+  latitudeVariable!: number;
+  longitudeVariable!: number;
 
   constructor(
     private postService: PostService,
     private route: ActivatedRoute,
     private notifierService: NotifierService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private geocoder: MapGeocoder
   ) {
     this.postService.getCurrentFavoritesId.subscribe((favorites) => {
       this.favoredPosts = favorites;
     });
     if (this.post && this.favoredPosts) {
       this.isFavoured = this.favoredPosts.some((pid) => pid === this.post._id);
-      console.log(
-        '🚀 ~ PostDetailComponent ~ this.route.params.subscribe ~ this.isFavoured:',
-        this.isFavoured
-      );
     }
     this.id = '';
     this.relatedPosts = [];
@@ -58,15 +65,28 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       this.postService.getPostItem(this.id).subscribe(
         (res) => {
           this.post = res.data;
+          // this.geocoder
+          //   .geocode({
+          //     address: this.post.roomAddress,
+          //   })
+          //   .subscribe(({ results }) => {
+          //     console.log(results);
+          //     if (results.length > 0) {
+          //       const location: any = results[0].geometry.location;
+          //       // Render map with obtained coordinates
+          //       this.center = {
+          //         lat: location.lat(),
+          //         lng: location.lng(),
+          //       };
+          //     } else {
+          //       console.error('No results found');
+          //     }
+          //   });
           this.route.data.subscribe((data) => {
             this.favoredPosts = data['favoritesPosts'];
             if (this.post && this.favoredPosts) {
               this.isFavoured = this.favoredPosts.some(
                 (pid) => pid === this.post._id
-              );
-              console.log(
-                '🚀 ~ PostDetailComponent ~ this.route.params.subscribe ~ this.isFavoured:',
-                this.isFavoured
               );
             }
           });

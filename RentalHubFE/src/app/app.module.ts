@@ -22,6 +22,7 @@ import {
   MAT_DIALOG_SCROLL_STRATEGY_PROVIDER_FACTORY,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,9 +34,7 @@ import {
     BrowserAnimationsModule,
     AppRoutingModule,
     NotifierModule,
-    // RouterModule.forRoot(routes, {
-    //   anchorScrolling: 'enabled',
-    // }),
+    GoogleMapsModule,
   ],
   providers: [
     {

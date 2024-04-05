@@ -188,18 +188,19 @@
       </div>
 
       <!-- Map -->
-      <div>
+      <!-- <div class="relative">
         <p class="text-base font-medium">Bản đồ</p>
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.928014601422!2d105.74156997484822!3d20.99552248892015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345372d45d2c17%3A0x9900fd1f7d348af4!2zSOG7r3UgSMawbmcsIETGsMahbmcgTuG7mWksIEjDoCDEkMO0bmcsIEjDoCBO4buZaSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1697966067208!5m2!1svi!2s"
-          width="600"
+        <google-map
+          class="absolute left-1/2 -translate-x-1/2 max-w-full"
           height="450"
-          style="border: 0; width: 100%"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
-      </div>
+          [center]="center"
+          [zoom]="6"
+        >
+          <map-marker
+            [position]="{ lat: this.center.lat, lng: this.center.lng }"
+          ></map-marker>
+        </google-map>
+      </div> -->
     </div>
   </div>
 
