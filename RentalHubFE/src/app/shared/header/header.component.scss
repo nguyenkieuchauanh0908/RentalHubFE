@@ -4,10 +4,24 @@ mat-icon.mat-accent,
 mat-icon.mat-warn {
   color: #ffff;
 }
-// .tooltip-block {
-//   display: block;
-//   margin: 80px auto 400px;
+// ::ng-deep .mat-mdc-tab-header .mat-mdc-tab-labels {
+//   justify-content: space-around !important;
 // }
+// ::ng-deep .mat-mdc-tab {
+//   font-family: "Helvetica Neue" !important;
+// }
+
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #2563eb !important;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border-color: #2563eb !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 0 !important;
+}
 
 ::ng-deep .mat-mdc-tooltip {
   --mdc-plain-tooltip-container-color: #f6f9fc;
