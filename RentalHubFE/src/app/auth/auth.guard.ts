@@ -23,6 +23,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async navigatingToLogin(): Promise<void> {
+    this.router.createUrlTree(['/auth/login']);
     this.notifierService.notify(
       'warning',
       'Bạn cần phải đăng nhập để thực hiện chức năng này!'
