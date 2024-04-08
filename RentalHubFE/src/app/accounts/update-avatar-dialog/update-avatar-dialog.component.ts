@@ -90,6 +90,7 @@ export class UpdateAvatarDialogComponent {
         sub.unsubscribe();
       });
     } else {
+      this.isLoading = false;
       this.notifierService.notify(
         'warning',
         'Vui lòng chọn ảnh muốn cập nhật!'
