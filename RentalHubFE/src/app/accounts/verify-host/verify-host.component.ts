@@ -124,7 +124,7 @@ export class VerifyHostComponent implements OnInit {
               stepper.next();
               this.notifierService.notify(
                 'success',
-                'Bạn đã kích hoạt tài khoản chủ trọ thành công!'
+                'Yêu cầu thành công, hồ sơ của bạn sẽ được duyệt trong thời gian sớm nhất có thể!'
               );
             }
           },
@@ -189,9 +189,9 @@ export class VerifyHostComponent implements OnInit {
     }
   }
 
-  goToPostNew() {
-    this.router.navigate(['profile/post-new/', this.uId]);
-  }
+  // goToPostNew() {
+  //   this.router.navigate(['profile/post-new/', this.uId]);
+  // }
 
   goToHome() {
     this.router.navigate(['posts']);
