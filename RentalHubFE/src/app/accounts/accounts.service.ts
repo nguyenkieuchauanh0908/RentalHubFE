@@ -112,21 +112,7 @@ export class AccountService {
         phone: phone,
         otp: otp,
       })
-      .pipe(
-        catchError(handleError),
-        tap(() => {
-          let updatedtUser: User;
-          this.getCurrentUser.subscribe((user) => {
-            user!._isHost = true;
-            updatedtUser = user!;
-            // console.log(
-            //   '🚀 ~ file: accounts.service.ts:116 ~ AccountService ~ this.getCurrentUser.subscribe ~ user:',
-            //   user
-            // );
-          });
-          this.setCurrentUser(updatedtUser!);
-        })
-      );
+      .pipe(catchError(handleError));
     //Xử lý otp hết hạn hoặc yêu cầu gửi lại otp
   }
 
