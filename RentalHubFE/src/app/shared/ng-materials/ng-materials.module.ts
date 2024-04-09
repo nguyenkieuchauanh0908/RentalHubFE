@@ -20,6 +20,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTabsModule } from '@angular/material/tabs';
 @NgModule({
   declarations: [],
   imports: [
@@ -43,6 +44,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatTooltipModule,
     MatBadgeModule,
     MatMenuModule,
+    MatTabsModule,
   ],
   exports: [
     MatDividerModule,
@@ -64,6 +66,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatTooltipModule,
     MatBadgeModule,
     MatMenuModule,
+    MatTabsModule,
   ],
 })
 export class NgMaterialsModule {}

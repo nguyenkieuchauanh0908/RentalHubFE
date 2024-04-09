@@ -10,6 +10,8 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { resDataDTO } from '../resDataDTO';
 import { MatDialog } from '@angular/material/dialog';
+import { ThemePalette } from '@angular/material/core';
+import { ViewEncapsulation } from '@angular/compiler';
 
 @Component({
   selector: 'app-header',
@@ -18,8 +20,8 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input('matBadge')
-  content: string | number | undefined | null;
   @Input('matTooltipClass')
+  content: string | number | undefined | null;
   tooltipClass: any;
 
   isLoading = false;
@@ -65,6 +67,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           //   notificationTotal
           // );
           this.notificationTotals = notificationTotal;
+          // this.color = '#2563eb'
         }
       );
     } else {
