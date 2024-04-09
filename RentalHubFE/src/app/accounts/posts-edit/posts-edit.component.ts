@@ -1,15 +1,35 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, map, startWith, tap } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
 import { Tags } from 'src/app/shared/tags/tag.model';
 import { AccountService } from '../accounts.service';
 import { NotifierService } from 'angular-notifier';
-import { Dialog } from '@angular/cdk/dialog';
 import { AddTagDialogComponent } from 'src/app/shared/tags/add-tag-dialog/add-tag-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import {
+  PublicApiServiceService,
+  mockCityData,
+  mockDistrictDataOfHaGiang,
+  mockDistrictDataOfHanoi,
+  mockWardDataOfDongVanHaGiang,
+  mockWardDataOfHoanKiemHaNoi,
+} from 'src/app/shared/public-api-service.service';
+import { FormControl, Validators } from '@angular/forms';
+import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
+
+export const _filter = (
+  optionsToFilter: PublicAPIData[],
+  value: string | null
+): PublicAPIData[] => {
+  const filterValue = value!.toLowerCase();
+
+  return optionsToFilter.filter((option) =>
+    option.full_name.toLowerCase().includes(filterValue)
+  );
+};
 
 @Component({
   selector: 'app-posts-edit',
@@ -31,17 +51,28 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   deletedImageIndexes: number[] = [];
   selectedTags!: Tags[];
 
+  cityInputControl = new FormControl('', [Validators.required]);
+  cityOptions!: PublicAPIData[];
+  filteredCityOptions: Observable<PublicAPIData[]> | undefined;
+
+  districtInputControl = new FormControl('', [Validators.required]);
+  districtOptions!: PublicAPIData[];
+  filteredDistrictOptions: Observable<PublicAPIData[]> | undefined;
+
+  wardInputControl = new FormControl('', [Validators.required]);
+  wardOptions!: PublicAPIData[];
+  filteredWardsOptions: Observable<PublicAPIData[]> | undefined;
+
   constructor(
-    private authService: AuthService,
     private router: Router,
     private postService: PostService,
     private accountService: AccountService,
     private notifierService: NotifierService,
+    private publicApiService: PublicApiServiceService,
     public dialog: MatDialog
   ) {
     this.postService.getCurrentChosenTags.subscribe((tags) => {
       if (tags) {
-        console.log('Get tags successfully...');
         this.selectedTags = tags;
       }
     });
@@ -52,21 +83,78 @@ export class PostsEditComponent implements OnInit, OnDestroy {
       if (user) {
         this.myProfile = user;
         this.isHost = user._isHost;
-        console.log(
-          '🚀 ~ file: posts-edit.component.ts:54 ~ PostsEditComponent ~ this.myProfileSub=this.accountService.getCurrentUser.subscribe ~ this.isHost:',
-          this.isHost
-        );
       }
     });
-
     this.postService.setCurrentChosenTags([]);
     this.getTagSub = this.postService.getAllTags().subscribe();
+    //Gọi API để lấy list thành phố
+    this.publicApiService.getCity(1, 0).subscribe((res) => {
+      this.cityOptions = res.data;
+      this.filteredCityOptions = this.cityInputControl.valueChanges.pipe(
+        startWith(''),
+        map((value) => _filter(this.cityOptions, value || '')),
+        tap(() => {
+          if (this.cityInputControl.valid) {
+            let city = this.cityOptions.find(
+              (city) => city.full_name === this.cityInputControl.value
+            );
+            //Gọi API lấy district ứng với cityId
+            if (city?.id) {
+              let cityId = city!.id;
+              this.publicApiService
+                .getDistrictOfACity('2', cityId)
+                .subscribe((res) => {
+                  this.districtOptions = res.data;
+                  this.filteredDistrictOptions =
+                    this.districtInputControl.valueChanges.pipe(
+                      startWith(''),
+                      map((value) =>
+                        _filter(this.districtOptions, value || '')
+                      ),
+                      tap(() => {
+                        if (this.districtInputControl.valid) {
+                          let district = this.districtOptions.find(
+                            (district) =>
+                              district.full_name ===
+                              this.districtInputControl.value
+                          );
+
+                          if (district?.id) {
+                            let districtId = district!.id;
+                            this.publicApiService
+                              .getWardsOfADistrict('3', districtId)
+                              .subscribe((res) => {
+                                this.wardOptions = res.data;
+                                this.filteredWardsOptions =
+                                  this.wardInputControl.valueChanges.pipe(
+                                    startWith(''),
+                                    map((value) =>
+                                      _filter(this.wardOptions, value || '')
+                                    )
+                                  );
+                              });
+                          }
+                        }
+                      })
+                    );
+                });
+            }
+          }
+        })
+      );
+    });
+    // this.cityOptions = mockCityData;
   }
 
   ngOnDestroy(): void {
     this.myProfileSub.unsubscribe();
     this.getTagSub.unsubscribe();
   }
+
+  getIdOfCity(): string[] {
+    return [];
+  }
+
   onVerifyAccount() {
     console.log('on verifying account ...');
     let uId = this.myProfile?._id;

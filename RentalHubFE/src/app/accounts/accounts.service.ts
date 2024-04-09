@@ -86,6 +86,7 @@ export class AccountService {
             if (currentUser) {
               currentUser._avatar = res.data._avatar;
               updatedtUser = currentUser;
+              localStorage.setItem('userData', JSON.stringify(updatedtUser));
             }
           });
           this.setCurrentUser(updatedtUser);
@@ -111,22 +112,34 @@ export class AccountService {
         phone: phone,
         otp: otp,
       })
+      .pipe(catchError(handleError));
+    //Xử lý otp hết hạn hoặc yêu cầu gửi lại otp
+  }
+
+  verifyNationalIDCard(image_front: File, image_back: File) {
+    let updatedUser: User;
+    const headers = new HttpHeaders().set(
+      'content-type',
+      'multipart/form-data'
+    );
+    let body = new FormData();
+    body.append('image_front', image_front);
+    body.append('image_back', image_back);
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'users/verify-indentity', body)
       .pipe(
         catchError(handleError),
-        tap(() => {
-          let updatedtUser: User;
-          this.getCurrentUser.subscribe((user) => {
-            user!._isHost = true;
-            updatedtUser = user!;
-            // console.log(
-            //   '🚀 ~ file: accounts.service.ts:116 ~ AccountService ~ this.getCurrentUser.subscribe ~ user:',
-            //   user
-            // );
+        tap((res) => {
+          this.getCurrentUser.subscribe((currentUser) => {
+            if (currentUser) {
+              currentUser._isHost = true;
+              updatedUser = currentUser;
+              localStorage.setItem('userData', JSON.stringify(updatedUser));
+            }
           });
-          this.setCurrentUser(updatedtUser!);
+          this.setCurrentUser(updatedUser);
         })
       );
-    //Xử lý otp hết hạn hoặc yêu cầu gửi lại otp
   }
 
   resetOtp() {

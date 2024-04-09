@@ -109,85 +109,6 @@
           </div>
         </div>
       </div>
-      <!-- City -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Tỉnh/Thành phố</label
-        >
-        <input
-          type="text"
-          id="city-input"
-          name="city"
-          disabled
-          ngModel
-          value="Hồ Chí Minh"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #city="ngModel"
-        />
-        <div
-          *ngIf="city.invalid && (city.dirty || city.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="desc.errors?.['required']">
-            Thành phố không được bỏ trống.
-          </div>
-        </div>
-      </div>
-      <!-- District -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Quận/Huyện</label
-        >
-        <input
-          type="text"
-          id="district-input"
-          name="district"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #district="ngModel"
-        />
-        <div
-          *ngIf="district.invalid && (district.dirty || district.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="desc.errors?.['required']">
-            Quận/huyện không được bỏ trống.
-          </div>
-        </div>
-      </div>
-      <!-- Ward -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Quận/Huyện</label
-        >
-        <input
-          type="text"
-          id="ward-input"
-          name="ward"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #ward="ngModel"
-        />
-        <div
-          *ngIf="ward.invalid && (ward.dirty || ward.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="desc.errors?.['required']">
-            Phường/xã không được bỏ trống.
-          </div>
-        </div>
-      </div>
 
       <!-- Street -->
       <div class="mb-6">
@@ -215,6 +136,155 @@
           </div>
         </div>
       </div>
+      <!-- City -->
+      <mat-form-field class="w-full">
+        <mat-label>Thành phố</mat-label>
+        <input
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="PublicAPIData"
+          placeholder="Vui lòng chọn một"
+          aria-label="Thành phố"
+          matInput
+          [formControl]="cityInputControl"
+          [matAutocomplete]="city"
+        />
+        <mat-error *ngIf="cityInputControl.hasError('required')">
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+        <mat-autocomplete autoActiveFirstOption #city="matAutocomplete">
+          <mat-option
+            *ngFor="let option of filteredCityOptions | async"
+            [value]="option.full_name"
+          >
+            {{ option.full_name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <!-- <div class="mb-6">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Tỉnh/Thành phố</label
+        >
+
+        <input
+          type="text"
+          id="city-input"
+          name="city"
+          disabled
+          ngModel
+          value="Hồ Chí Minh"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #city="ngModel"
+        />
+        <div
+          *ngIf="city.invalid && (city.dirty || city.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="desc.errors?.['required']">
+            Thành phố không được bỏ trống.
+          </div>
+        </div>
+      </div> -->
+      <!-- District -->
+      <mat-form-field class="w-full">
+        <mat-label>Quận/huyện</mat-label>
+        <input
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="PublicAPIData"
+          placeholder="Vui lòng chọn một"
+          aria-label="Quận/huyện"
+          matInput
+          [formControl]="districtInputControl"
+          [matAutocomplete]="district"
+        />
+        <mat-error *ngIf="districtInputControl.hasError('required')">
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+        <mat-autocomplete autoActiveFirstOption #district="matAutocomplete">
+          <mat-option
+            *ngFor="let option of filteredDistrictOptions | async"
+            [value]="option.full_name"
+          >
+            {{ option.full_name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <!-- <div class="mb-6">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Quận/Huyện</label
+        >
+        <input
+          type="text"
+          id="district-input"
+          name="district"
+          ngModel
+          required
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #district="ngModel"
+        />
+        <div
+          *ngIf="district.invalid && (district.dirty || district.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="desc.errors?.['required']">
+            Quận/huyện không được bỏ trống.
+          </div>
+        </div>
+      </div> -->
+      <!-- Ward -->
+      <mat-form-field class="w-full">
+        <mat-label>Phường/xã</mat-label>
+        <input
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="PublicAPIData"
+          placeholder="Vui lòng chọn một"
+          aria-label="Phường/xã"
+          matInput
+          [formControl]="wardInputControl"
+          [matAutocomplete]="ward"
+        />
+        <mat-error *ngIf="wardInputControl.hasError('required')">
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+        <mat-autocomplete autoActiveFirstOption #ward="matAutocomplete">
+          <mat-option
+            *ngFor="let option of filteredWardsOptions | async"
+            [value]="option.full_name"
+          >
+            {{ option.full_name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <!-- <div class="mb-6">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Phường/ Xã</label
+        >
+        <input
+          type="text"
+          id="ward-input"
+          name="ward"
+          ngModel
+          required
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #ward="ngModel"
+        />
+        <div
+          *ngIf="ward.invalid && (ward.dirty || ward.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="desc.errors?.['required']">
+            Phường/xã không được bỏ trống.
+          </div>
+        </div>
+      </div> -->
 
       <!-- Area -->
       <div class="mb-6">

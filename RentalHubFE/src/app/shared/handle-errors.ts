@@ -214,6 +214,42 @@ export function handleError(errorRes: HttpErrorResponse) {
     case 'TYPE_INVALID':
       errorMessage = 'Kiểu dữ liệu không hợp lệ!';
       break;
+    case 'NOTIFICATION_NOTFOUND':
+      errorMessage = 'Không tìm thấy thông báo!';
+      break;
+    case 'USER_IDENTITY_NOTFOUND':
+      errorMessage = 'Xác thực CCCD thất bại, không tìm thấy người này!';
+      break;
+    case 'PARAMETERS_VALUES_INVALID':
+      errorMessage = 'Xác thực CCCD thất bại, vui lòng kiểm tra lại!';
+      break;
+    case 'IDCARD_NOTFOUND':
+      errorMessage = 'Xác thực CCCD thất bại, hình ảnh không hợp lệ!';
+      break;
+    case 'IDCARD_DUPLICATE':
+      errorMessage =
+        'Xác thực CCCD thất bại, CCCD đã được sử dụng bởi tài khoản khác!';
+      break;
+    case 'URL_REQUEST_NOTFOUND':
+      errorMessage =
+        'Có lỗi xảy ra trong quá trình xử lý! Chúng tôi sẽ sớm khắc phục!';
+      break;
+    case 'URL_REQUEST_CAN_NOT_OPEN':
+      errorMessage =
+        'Có lỗi xảy ra trong quá trình xử lý! Chúng tôi sẽ sớm khắc phục!';
+      break;
+    case 'BAD_DATA':
+      errorMessage = 'Dữ liệu không hợp lệ!';
+      break;
+    case 'STRING_BASE64_INVALID':
+      errorMessage = 'Dữ liệu không hợp lệ!';
+      break;
+    case 'IDENTID_NOTFOUND':
+      errorMessage = 'Không tìm thấy thông tin của CCCD này, vui lòng thử lại!';
+      break;
+    case 'STATUS_NOTFOUND':
+      errorMessage = 'Không tìm thấy thông tin của CCCD này, vui lòng thử lại!';
+      break;
   }
   return throwError(errorMessage);
 }

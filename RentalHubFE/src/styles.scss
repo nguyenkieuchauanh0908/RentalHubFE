@@ -29,7 +29,7 @@ body {
 body {
   margin: 0;
   overflow-x: hidden; /* Hide horizontal scrollbar */
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
   .element-center {
     position: absolute;
     top: 50%;
