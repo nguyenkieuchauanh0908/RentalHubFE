@@ -122,7 +122,29 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
   addPostToFavorites(postId: String) {
     this.isFavoured = !this.isFavoured;
-    this.postService.createFavorite(postId).subscribe();
+    this.postService.createFavorite(postId).subscribe(
+      (res) => {
+        if (res.data) {
+          if (this.isFavoured) {
+            this.notifierService.notify(
+              'success',
+              'Thêm bài viết yêu thích thành công!'
+            );
+          } else {
+            this.notifierService.notify(
+              'success',
+              'Bỏ yêu thích bài viết thành công!'
+            );
+          }
+        }
+      },
+      (errMsg) => {
+        this.notifierService.notify(
+          'error',
+          'Đã có lỗi xảy ra, chúng tôi sẽ sớm khắc phục!'
+        );
+      }
+    );
   }
 
   openReportDialog(postId: String) {

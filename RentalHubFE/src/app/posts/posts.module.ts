@@ -18,6 +18,7 @@ import { ReportDialogComponent } from './report-dialog/report-dialog.component';
     SharedModule,
     PostsListComponent,
     PostItemComponent,
+    PostCardComponent,
   ],
 })
 export class PostsModule {}

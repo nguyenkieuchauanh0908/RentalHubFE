@@ -119,20 +119,21 @@ export class PostService {
 
   createPost(form: any, images: FileList, selectedTags: any) {
     let body = new FormData();
-    body.append('_title', form.title);
-    body.append('_desc', form.desc);
-    body.append('_content', form.content);
-    body.append('_street', form.street);
-    body.append('_district', form.district);
-    body.append('_area', form.area);
-    body.append('_price', form.renting_price);
-    body.append('_electricPrice', form.electric);
-    body.append('_waterPrice', form.water_price);
-    body.append('_services', form.services);
-    body.append('_utilities', form.utilities);
-    if (form.city) {
-      body.append('_city', form.city);
-    }
+    body.append('_title', form.titleInputControl);
+    body.append('_desc', form.descInputControlsc);
+    body.append('_content', form.contentInputControl);
+    body.append('_street', form.streetInputControl);
+    body.append('_district', form.districtInputControl);
+    body.append('_area', form.areaInputControl);
+    body.append('_price', form.renting_priceInputControl);
+    body.append('_electricPrice', form.electricInputControl);
+    body.append('_waterPrice', form.water_priceInputControl);
+    body.append('_services', form.servicesInputControl);
+    body.append('_utilities', form.utilitiesInputControl);
+    body.append('_city', form.cityInputControl);
+    // if (form.city) {
+    //   body.append('_city', form.city);
+    // }
     const numberOfImages = images.length;
     for (let i = 0; i < numberOfImages; i++) {
       const reader = new FileReader();
@@ -433,6 +434,7 @@ export class PostService {
               'favorite-posts',
               JSON.stringify(updateFavorites)
             );
+            this.setCurrentFavoritesId(updateFavorites);
             console.log('Add to favorite successfully!');
             console.log(
               '🚀 ~ PostService ~ tap ~ updateFavorites:',
