@@ -23,6 +23,7 @@ import { ReportDialogComponent } from '../posts/report-dialog/report-dialog.comp
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
+import { PostCardComponent } from '../posts/post-card/post-card.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { MatMenuModule } from '@angular/material/menu';
     ReactiveFormsModule,
     ScrollingModule,
     NotifierModule,
+    PostCardComponent,
   ],
   exports: [
     CommonModule,
@@ -66,6 +68,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MainLayoutComponent,
     NotifierModule,
     ReactiveFormsModule,
+    PostCardComponent,
   ],
 })
 export class SharedModule {}

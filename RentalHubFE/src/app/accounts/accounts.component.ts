@@ -18,10 +18,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
   profile!: User | null;
   myProfile!: User | null;
 
-  constructor(
-    private accountService: AccountService,
-    private curentRoute: ActivatedRoute
-  ) {}
+  constructor(private accountService: AccountService) {}
 
   ngOnInit() {
     this.myProfileSub = this.accountService.getCurrentUser.subscribe(

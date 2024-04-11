@@ -1,6 +1,6 @@
 <div *ngIf="!isHost; else host" class="flex justify-center align-middle">
   <div
-    class="w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    class="w-sm xs:p-2 md:p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
     <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 bold">
       Bạn cần phải xác thực tài khoản để được đăng bài!
@@ -17,138 +17,120 @@
 </div>
 <ng-template #host>
   <div *ngIf="isLoading" class="spinner__loading">
-    <!-- <mat-progress-spinner diameter="40" [value]="value" mode="determinate">
-    </mat-progress-spinner> -->
     <mat-spinner diameter="30"></mat-spinner>
   </div>
-  <div class="bg-white-background rounded-lg p-6">
+  <div class="bg-white-background rounded-lg xs:p-2 md:p-6">
     <h2 class="text-base font-semibold leading-7 text-gray-900">
       Tạo bài viết mới
     </h2>
-    <form
-      #createPostForm="ngForm"
-      (ngSubmit)="onSubmitPost(createPostForm.value)"
-    >
+    <form [formGroup]="postEditForm" (ngSubmit)="onSubmitPost()">
       <!-- Title -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Tiêu đề</label
-        >
+      <mat-form-field class="w-full">
+        <mat-label>Tiêu đề</mat-label>
         <input
-          type="text"
           id="title-input"
-          name="title"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #title="ngModel"
+          aria-label="Tiêu đề"
+          matInput
+          formControlName="titleInputControl"
         />
-        <div
-          *ngIf="title.invalid && (title.dirty || title.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.titleInputControl.hasError('required')
+          "
         >
-          <div *ngIf="title.errors?.['required']">
-            Tiêu đề không được bỏ trống.
-          </div>
-        </div>
-      </div>
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
       <!-- Description -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Mô tả ngắn</label
+      <mat-form-field class="w-full">
+        <mat-label>Mô tả</mat-label>
+        <input aria-label="Mô tả" matInput formControlName="descInputControl" />
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.descInputControl.hasError('required')
+          "
         >
-        <textarea
-          type="text"
-          rows="4"
-          id="desc-input"
-          name="desc"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Viết mô tả ngắn về phòng trọ ở đây..."
-          #desc="ngModel"
-        ></textarea>
-        <div
-          *ngIf="desc.invalid && (desc.dirty || desc.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="desc.errors?.['required']">Mô tả không được bỏ trống</div>
-        </div>
-      </div>
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
       <!-- Content  -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Nội dung chính</label
-        >
-        <textarea
-          rows="8"
-          type="text"
-          id="content-input"
-          name="content"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Viết mô tả chi tiết về phòng trọ ở đây..."
-          #content="ngModel"
-        ></textarea>
-        <div
-          *ngIf="content.invalid && (content.dirty || content.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="content.errors?.['required']">
-            Nội dung mô tả chi tiết không được bỏ trống.
-          </div>
-        </div>
-      </div>
-
-      <!-- Street -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Số nhà</label
-        >
+      <mat-form-field class="w-full h-96">
+        <mat-label>Nội dung chính</mat-label>
         <input
-          type="text"
-          id="street-input"
-          name="street"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #street="ngModel"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          matInput
+          aria-label="Nội dung chính"
+          placeholder="Viết mô tả chi tiết về phòng trọ ở đây..."
+          formControlName="contentInputControl"
         />
-        <div
-          *ngIf="street.invalid && (street.dirty || street.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.contentInputControl.hasError('required')
+          "
         >
-          <div *ngIf="street.errors?.['required']">
-            Địa chỉ nhà không được bỏ trống.
-          </div>
-        </div>
-      </div>
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Address -->
+      <mat-form-field class="w-full">
+        <mat-label>Địa chỉ</mat-label>
+        <input
+          placeholder="Vui lòng chọn một địa chỉ"
+          aria-label="Địa chỉ"
+          matInput
+          formControlName="addressInputControl"
+          [matAutocomplete]="address"
+        />
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.addressInputControl.hasError('required')
+          "
+        >
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+        <mat-autocomplete #address="matAutocomplete">
+          <mat-option
+            *ngFor="let option of filteredAddressOptions | async"
+            [value]="option"
+          >
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <!-- Street -->
+      <mat-form-field class="w-full">
+        <mat-label>Số nhà và tên đường</mat-label>
+        <input
+          placeholder="123 Trần Phú"
+          aria-label="Số nhà và tên đường"
+          matInput
+          formControlName="streetInputControl"
+        />
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.streetInputControl.hasError('required')
+          "
+        >
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
       <!-- City -->
       <mat-form-field class="w-full">
         <mat-label>Thành phố</mat-label>
         <input
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           type="PublicAPIData"
           placeholder="Vui lòng chọn một"
           aria-label="Thành phố"
           matInput
-          [formControl]="cityInputControl"
+          formControlName="cityInputControl"
           [matAutocomplete]="city"
         />
-        <mat-error *ngIf="cityInputControl.hasError('required')">
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.cityInputControl.hasError('required')
+          "
+        >
           Thông tin <strong>bắt buộc</strong>
         </mat-error>
         <mat-autocomplete autoActiveFirstOption #city="matAutocomplete">
@@ -160,46 +142,23 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <!-- <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Tỉnh/Thành phố</label
-        >
 
-        <input
-          type="text"
-          id="city-input"
-          name="city"
-          disabled
-          ngModel
-          value="Hồ Chí Minh"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #city="ngModel"
-        />
-        <div
-          *ngIf="city.invalid && (city.dirty || city.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="desc.errors?.['required']">
-            Thành phố không được bỏ trống.
-          </div>
-        </div>
-      </div> -->
       <!-- District -->
       <mat-form-field class="w-full">
         <mat-label>Quận/huyện</mat-label>
         <input
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           type="PublicAPIData"
           placeholder="Vui lòng chọn một"
           aria-label="Quận/huyện"
           matInput
-          [formControl]="districtInputControl"
+          formControlName="districtInputControl"
           [matAutocomplete]="district"
         />
-        <mat-error *ngIf="districtInputControl.hasError('required')">
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.districtInputControl.hasError('required')
+          "
+        >
           Thông tin <strong>bắt buộc</strong>
         </mat-error>
         <mat-autocomplete autoActiveFirstOption #district="matAutocomplete">
@@ -211,44 +170,23 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <!-- <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Quận/Huyện</label
-        >
-        <input
-          type="text"
-          id="district-input"
-          name="district"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #district="ngModel"
-        />
-        <div
-          *ngIf="district.invalid && (district.dirty || district.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="desc.errors?.['required']">
-            Quận/huyện không được bỏ trống.
-          </div>
-        </div>
-      </div> -->
+
       <!-- Ward -->
       <mat-form-field class="w-full">
         <mat-label>Phường/xã</mat-label>
         <input
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           type="PublicAPIData"
           placeholder="Vui lòng chọn một"
           aria-label="Phường/xã"
           matInput
-          [formControl]="wardInputControl"
+          formControlName="wardInputControl"
           [matAutocomplete]="ward"
         />
-        <mat-error *ngIf="wardInputControl.hasError('required')">
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.wardInputControl.hasError('required')
+          "
+        >
           Thông tin <strong>bắt buộc</strong>
         </mat-error>
         <mat-autocomplete autoActiveFirstOption #ward="matAutocomplete">
@@ -260,210 +198,141 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-      <!-- <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Phường/ Xã</label
-        >
-        <input
-          type="text"
-          id="ward-input"
-          name="ward"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #ward="ngModel"
-        />
-        <div
-          *ngIf="ward.invalid && (ward.dirty || ward.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="desc.errors?.['required']">
-            Phường/xã không được bỏ trống.
-          </div>
-        </div>
-      </div> -->
 
       <!-- Area -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Diện tích (m2)</label
-        >
+      <mat-form-field class="w-full">
+        <mat-label>Diện tích</mat-label>
         <input
-          type="text"
-          id="area-input"
-          name="area"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #area="ngModel"
+          aria-label="Diện tích"
+          matInput
+          formControlName="areaInputControl"
         />
-        <div
-          *ngIf="area.invalid && (area.dirty || area.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="area.errors?.['required']">
-            Diện tích không được bỏ trống.
-          </div>
-        </div>
-      </div>
-      <!-- Renting price -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Gía thuê nhà theo tháng (VNĐ)</label
-        >
-        <input
-          type="text"
-          id="renting_price-input"
-          name="renting_price"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #retalPrice="ngModel"
-        />
-        <div
-          *ngIf="retalPrice.invalid && (retalPrice.dirty || retalPrice.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="retalPrice.errors?.['required']">
-            Gía thuê nhà không được bỏ trống
-          </div>
-        </div>
-      </div>
-      <!-- Electric price -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Gía điện (ký)</label
-        >
-        <input
-          type="text"
-          id="electric_input"
-          name="electric"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #electricPrice="ngModel"
-        />
-        <div
+        <mat-error
           *ngIf="
-            electricPrice.invalid &&
-            (electricPrice.dirty || electricPrice.touched)
+            this.postEditForm.controls.areaInputControl.hasError('required')
           "
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
         >
-          <div *ngIf="electricPrice.errors?.['required']">
-            Mô tả không được bỏ trống
-          </div>
-        </div>
-      </div>
-      <!-- Water price -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Gía nước (khối)</label
-        >
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Renting price -->
+      <mat-form-field class="w-full">
+        <mat-label>Gía thuê theo tháng</mat-label>
         <input
-          type="text"
-          id="water_price_input"
-          name="water_price"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #waterPrice="ngModel"
+          aria-label="Gía thuê theo tháng"
+          matInput
+          formControlName="renting_priceInputControl"
         />
-        <div
-          *ngIf="waterPrice.invalid && (waterPrice.dirty || waterPrice.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.renting_priceInputControl.hasError(
+              'required'
+            )
+          "
         >
-          <div *ngIf="waterPrice.errors?.['required']">
-            Gía nước không được bỏ trống.
-          </div>
-        </div>
-      </div>
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Electric price -->
+      <mat-form-field class="w-full">
+        <mat-label>Gía điện theo kw</mat-label>
+        <input
+          aria-label="Gía điện theo kw"
+          matInput
+          formControlName="electricInputControl"
+        />
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.electricInputControl.hasError('required')
+          "
+        >
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Water price -->
+      <mat-form-field class="w-full">
+        <mat-label>Giá nước</mat-label>
+        <input
+          placeholder="Vui lòng chọn một"
+          aria-label="Số nhà và tên đường"
+          matInput
+          formControlName="water_priceInputControl"
+        />
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.water_priceInputControl.hasError(
+              'required'
+            )
+          "
+        >
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
 
       <!-- Services -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Dịch vụ</label
-        >
+      <mat-form-field class="w-full">
+        <mat-label>Dịch vụ</mat-label>
         <input
-          type="text"
-          id="services_input"
-          name="services"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #services="ngModel"
+          placeholder="Vui lòng chọn một"
+          aria-label="Dịch vụ"
+          matInput
+          formControlName="servicesInputControl"
         />
-        <div
-          *ngIf="services.invalid && (services.dirty || services.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.servicesInputControl.hasError('required')
+          "
         >
-          <div *ngIf="services.errors?.['required']">
-            Dịch vụ không được bỏ trống.
-          </div>
-        </div>
-      </div>
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
 
       <!-- Utilities -->
-      <div class="mb-6">
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Tiện ích</label
-        >
+      <mat-form-field class="w-full">
+        <mat-label>Tiện ích đi kèm</mat-label>
         <input
-          type="text"
-          id="utilities_input"
-          name="utilities"
-          ngModel
-          required
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          #ultilities="ngModel"
+          placeholder="Vui lòng chọn một"
+          aria-label="Tiện ích đi kèm"
+          matInput
+          formControlName="utilitiesInputControl"
         />
-        <div
-          *ngIf="ultilities.invalid && (ultilities.dirty || ultilities.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.utilitiesInputControl.hasError(
+              'required'
+            )
+          "
         >
-          <div *ngIf="ultilities.errors?.['required']">
-            Tiện ích không được bỏ trống.
-          </div>
-        </div>
-      </div>
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+      </mat-form-field>
 
       <!-- Tags -->
-      <div class="mb-6">
+      <div class="my-6">
         <label
           for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Thêm tag</label
-        >
-        <!-- Your chosen tags -->
-        <div
-          class="flex flex-row flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        >
+          class="flex flex-row mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Gắn thẻ bài viết
+
           <span
             (click)="createTag()"
-            class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
-            >+</span
+            class="relative left-1 bottom-1 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+            ><mat-icon
+              matRipple
+              [matRippleUnbounded]="true"
+              (click)="createTag()"
+              >add</mat-icon
+            ></span
           >
+        </label>
+        <mat-error *ngIf="this.selectedTags.length === 0">
+          Vui lòng gắn <strong>ít nhất 1 thẻ</strong>
+        </mat-error>
+        <!-- Your chosen tags -->
+        <div class="flex flex-row flex-wrap">
           <div
             class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
             *ngFor="let tag of selectedTags"
@@ -479,23 +348,6 @@
             >
           </div>
         </div>
-
-        <!-- Tags to choose from -->
-        <!-- <div class="mt-4 flex flex-wrap h-max-52 overflow-y-auto">
-          <div
-            *ngFor="let tag of sourceTags"
-            class="flex flex-row h-6 align-middle no-wrap bg-grey-background text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:bg-indigo-100"
-            [class.chosenTag]="selectedTags.has(tag)"
-          >
-            <span class="tag" (click)="updateChosentags(tag)">{{ tag._tag }}</span>
-            <span (click)="updateChosentags(tag)" *ngIf="!selectedTags.has(tag)">
-              <mat-icon>add</mat-icon></span
-            >
-            <span (click)="updateChosentags(tag)" *ngIf="selectedTags.has(tag)">
-              <mat-icon>clear</mat-icon></span
-            >
-          </div>
-        </div> -->
       </div>
 
       <!-- Images -->
@@ -505,72 +357,105 @@
           for="multiple_files"
           >Chọn tối đa 5 ảnh</label
         >
+        <mat-error *ngIf="this.previews.length === 0">
+          Vui lòng chọn <strong>ít nhất 1 ảnh</strong>
+        </mat-error>
         <div class="bg-white-background rounded-lg">
-          <div class="flex flex-wrap mt-4 w-100">
+          <div class="flex flex-row flex-wrap mt-4 w-100">
             <!-- Image -->
             <div
               (click)="deleteImage(preview, index)"
               *ngFor="let preview of previews; index as index"
-              class="basis-[19%] h-100 border-solid border-2 border-indigo-600 p-3 mr-1 relative hover:cursor-pointer h-36 w-full"
+              class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
             >
               <img
                 *ngIf="preview !== ''"
                 [src]="preview"
-                class="hover:cursor-pointer object-fill max-h-28 w-full"
+                class="hover:cursor-pointer object-fill max-h-28 w-full rounded-lg"
               />
-              <mat-icon
+              <div
+                class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
                 *ngIf="preview === ''"
-                (click)="image.click()"
-                class="mat-icon-style hover:cursor-pointer hover:bg-indigo-100 hover:rounded-lg"
-                >add</mat-icon
+                (click)="updateFiles.click()"
               >
+                <svg
+                  class="w-8 h-12 text-primary-400 dark:text-primary-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 16"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                  />
+                </svg>
+              </div>
+
               <input
                 (change)="updateFile($event, index)"
                 class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                 id="image_file"
-                name="image_file"
                 type="file"
-                ngModel
-                #image
+                #updateFiles
+                formControlName="updateFilesInputControl"
               />
             </div>
             <!-- Add image -->
             <div
               *ngIf="previews.length < 5"
               (click)="addImage.click()"
-              class="basis-[19%] border-solid border-2 border-indigo-600 p-3 mr-1 relative hover:cursor-pointer h-36 w-full"
+              class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
             >
               <input
                 (change)="addNewImage($event)"
                 class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                 id="addImage"
-                name="addImage"
                 type="file"
-                ngModel
+                formControlName="addFilesInputControl"
                 #addImage
               />
-              <mat-icon
-                class="mat-icon-style hover:cursor-pointer hover:bg-indigo-100 hover:rounded-lg"
-                >add</mat-icon
+
+              <div
+                class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
               >
+                <svg
+                  class="w-8 h-12 text-primary-400 dark:text-primary-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 16"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
 
-        <div
+        <!-- <div
           *ngIf="previews.length === 0"
           class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
           role="alert"
         >
           <p>Vui lòng chọn ảnh</p>
-        </div>
+        </div> -->
       </div>
 
       <!-- Save btn -->
       <div class="mt-6 flex items-center justify-end gap-x-6">
         <button
           type="submit"
-          [disabled]="createPostForm.invalid"
+          [disabled]="postEditForm.invalid"
           class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
           Tạo bài viết

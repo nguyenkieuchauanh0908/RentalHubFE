@@ -9,15 +9,8 @@ import { AccountService } from '../accounts.service';
 import { NotifierService } from 'angular-notifier';
 import { AddTagDialogComponent } from 'src/app/shared/tags/add-tag-dialog/add-tag-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  PublicApiServiceService,
-  mockCityData,
-  mockDistrictDataOfHaGiang,
-  mockDistrictDataOfHanoi,
-  mockWardDataOfDongVanHaGiang,
-  mockWardDataOfHoanKiemHaNoi,
-} from 'src/app/shared/public-api-service.service';
-import { FormControl, Validators } from '@angular/forms';
+import { PublicApiServiceService } from 'src/app/shared/public-api-service.service';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
 
 export const _filter = (
@@ -25,9 +18,18 @@ export const _filter = (
   value: string | null
 ): PublicAPIData[] => {
   const filterValue = value!.toLowerCase();
-
   return optionsToFilter.filter((option) =>
     option.full_name.toLowerCase().includes(filterValue)
+  );
+};
+
+export const _filterForStringOptions = (
+  optionsToFilter: String[],
+  value: string | null
+): String[] => {
+  const filterValue = value!.toLowerCase();
+  return optionsToFilter.filter((option) =>
+    option.toLowerCase().includes(filterValue)
   );
 };
 
@@ -51,17 +53,34 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   deletedImageIndexes: number[] = [];
   selectedTags!: Tags[];
 
-  cityInputControl = new FormControl('', [Validators.required]);
+  addressOptions!: String[];
+  filteredAddressOptions!: Observable<String[]> | undefined;
+
   cityOptions!: PublicAPIData[];
   filteredCityOptions: Observable<PublicAPIData[]> | undefined;
-
-  districtInputControl = new FormControl('', [Validators.required]);
   districtOptions!: PublicAPIData[];
   filteredDistrictOptions: Observable<PublicAPIData[]> | undefined;
-
-  wardInputControl = new FormControl('', [Validators.required]);
   wardOptions!: PublicAPIData[];
   filteredWardsOptions: Observable<PublicAPIData[]> | undefined;
+
+  postEditForm = this.formBuilder.group({
+    titleInputControl: ['', Validators.required],
+    descInputControl: ['', Validators.required],
+    contentInputControl: ['', Validators.required],
+    addressInputControl: ['', Validators.required],
+    streetInputControl: ['', Validators.required],
+    cityInputControl: ['', Validators.required],
+    districtInputControl: ['', Validators.required],
+    wardInputControl: ['', Validators.required],
+    areaInputControl: ['', Validators.required],
+    renting_priceInputControl: ['', Validators.required],
+    electricInputControl: ['', Validators.required],
+    water_priceInputControl: ['', Validators.required],
+    servicesInputControl: ['', Validators.required],
+    utilitiesInputControl: ['', Validators.required],
+    addFilesInputControl: [],
+    updateFilesInputControl: [],
+  });
 
   constructor(
     private router: Router,
@@ -69,7 +88,8 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private notifierService: NotifierService,
     private publicApiService: PublicApiServiceService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private formBuilder: FormBuilder
   ) {
     this.postService.getCurrentChosenTags.subscribe((tags) => {
       if (tags) {
@@ -90,60 +110,134 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     //Gọi API để lấy list thành phố
     this.publicApiService.getCity(1, 0).subscribe((res) => {
       this.cityOptions = res.data;
-      this.filteredCityOptions = this.cityInputControl.valueChanges.pipe(
-        startWith(''),
-        map((value) => _filter(this.cityOptions, value || '')),
-        tap(() => {
-          if (this.cityInputControl.valid) {
-            let city = this.cityOptions.find(
-              (city) => city.full_name === this.cityInputControl.value
-            );
-            //Gọi API lấy district ứng với cityId
-            if (city?.id) {
-              let cityId = city!.id;
-              this.publicApiService
-                .getDistrictOfACity('2', cityId)
-                .subscribe((res) => {
-                  this.districtOptions = res.data;
-                  this.filteredDistrictOptions =
-                    this.districtInputControl.valueChanges.pipe(
-                      startWith(''),
-                      map((value) =>
-                        _filter(this.districtOptions, value || '')
-                      ),
-                      tap(() => {
-                        if (this.districtInputControl.valid) {
-                          let district = this.districtOptions.find(
-                            (district) =>
-                              district.full_name ===
-                              this.districtInputControl.value
-                          );
+      this.filteredCityOptions =
+        this.postEditForm.controls.cityInputControl.valueChanges.pipe(
+          startWith(''),
+          map((value) => _filter(this.cityOptions, value || '')),
+          tap(() => {
+            if (this.postEditForm.controls.cityInputControl.valid) {
+              let city = this.cityOptions.find(
+                (city) =>
+                  city.full_name ===
+                  this.postEditForm.controls.cityInputControl.value
+              );
+              //Gọi API lấy district ứng với cityId
+              if (city?.id) {
+                let cityId = city!.id;
+                this.publicApiService
+                  .getDistrictOfACity('2', cityId)
+                  .subscribe((res) => {
+                    this.districtOptions = res.data;
+                    this.filteredDistrictOptions =
+                      this.postEditForm.controls.districtInputControl.valueChanges.pipe(
+                        startWith(''),
+                        map((value) =>
+                          _filter(this.districtOptions, value || '')
+                        ),
+                        tap(() => {
+                          if (
+                            this.postEditForm.controls.districtInputControl
+                              .valid
+                          ) {
+                            let district = this.districtOptions.find(
+                              (district) =>
+                                district.full_name ===
+                                this.postEditForm.controls.districtInputControl
+                                  .value
+                            );
 
-                          if (district?.id) {
-                            let districtId = district!.id;
-                            this.publicApiService
-                              .getWardsOfADistrict('3', districtId)
-                              .subscribe((res) => {
-                                this.wardOptions = res.data;
-                                this.filteredWardsOptions =
-                                  this.wardInputControl.valueChanges.pipe(
-                                    startWith(''),
-                                    map((value) =>
-                                      _filter(this.wardOptions, value || '')
-                                    )
-                                  );
-                              });
+                            if (district?.id) {
+                              let districtId = district!.id;
+                              this.publicApiService
+                                .getWardsOfADistrict('3', districtId)
+                                .subscribe((res) => {
+                                  this.wardOptions = res.data;
+                                  this.filteredWardsOptions =
+                                    this.postEditForm.controls.wardInputControl.valueChanges.pipe(
+                                      startWith(''),
+                                      map((value) =>
+                                        _filter(this.wardOptions, value || '')
+                                      )
+                                    );
+                                });
+                            }
                           }
-                        }
-                      })
-                    );
-                });
+                        })
+                      );
+                  });
+              }
             }
-          }
-        })
-      );
+          })
+        );
     });
-    // this.cityOptions = mockCityData;
+
+    //List địa chỉ của user
+    this.addressOptions = [
+      '1 Võ Văn Ngân, Linh Chiểu, Thủ Đức',
+      '26/17 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh',
+      '123/4/5 Lê Văn Thọ, Làng Hoa, Gò Vấp',
+    ];
+    this.filteredAddressOptions =
+      this.postEditForm.controls.addressInputControl.valueChanges.pipe(
+        startWith(''),
+        map((value) =>
+          _filterForStringOptions(this.addressOptions, value || '')
+        )
+        // tap(() => {
+        //   if (this.postEditForm.controls.cityInputControl.valid) {
+        //     let city = this.cityOptions.find(
+        //       (city) =>
+        //         city.full_name ===
+        //         this.postEditForm.controls.cityInputControl.value
+        //     );
+        //     //Gọi API lấy district ứng với cityId
+        //     if (city?.id) {
+        //       let cityId = city!.id;
+        //       this.publicApiService
+        //         .getDistrictOfACity('2', cityId)
+        //         .subscribe((res) => {
+        //           this.districtOptions = res.data;
+        //           this.filteredDistrictOptions =
+        //             this.postEditForm.controls.districtInputControl.valueChanges.pipe(
+        //               startWith(''),
+        //               map((value) =>
+        //                 _filter(this.districtOptions, value || '')
+        //               ),
+        //               tap(() => {
+        //                 if (
+        //                   this.postEditForm.controls.districtInputControl
+        //                     .valid
+        //                 ) {
+        //                   let district = this.districtOptions.find(
+        //                     (district) =>
+        //                       district.full_name ===
+        //                       this.postEditForm.controls.districtInputControl
+        //                         .value
+        //                   );
+
+        //                   if (district?.id) {
+        //                     let districtId = district!.id;
+        //                     this.publicApiService
+        //                       .getWardsOfADistrict('3', districtId)
+        //                       .subscribe((res) => {
+        //                         this.wardOptions = res.data;
+        //                         this.filteredWardsOptions =
+        //                           this.postEditForm.controls.wardInputControl.valueChanges.pipe(
+        //                             startWith(''),
+        //                             map((value) =>
+        //                               _filter(this.wardOptions, value || '')
+        //                             )
+        //                           );
+        //                       });
+        //                   }
+        //                 }
+        //               })
+        //             );
+        //         });
+        //     }
+        //   }
+        // })
+      );
   }
 
   ngOnDestroy(): void {
@@ -161,14 +255,26 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile/verify-account/', uId]);
   }
 
-  onSubmitPost(form: any) {
+  onSubmitPost() {
     this.isLoading = true;
     console.log('on submiting post ...');
-    console.log('Form data: ', form);
+    console.log('Form data: ', this.postEditForm.value);
+    console.log(
+      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
+      this.selectedTags
+    );
+    console.log(
+      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
+      this.selectedFiles
+    );
     this.notifierService.hideAll();
-    if (this.selectedFiles) {
+    if (this.selectedFiles && this.selectedTags) {
       this.postService
-        .createPost(form, this.updatedFiles, this.selectedTags)
+        .createPost(
+          this.postEditForm.value,
+          this.updatedFiles,
+          this.selectedTags
+        )
         .subscribe(
           (res) => {
             if (res.data) {
@@ -221,6 +327,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   }
 
   addNewImage(event: any) {
+    console.log('On adding new image...');
     this.selectedFiles = event.target.files;
     const updatedFileList = new DataTransfer();
     if (this.updatedFiles) {
@@ -250,7 +357,11 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   }
 
   deleteImage(preview: any, index: number) {
-    this.previews.splice(index, 1, '');
+    this.previews.splice(index, 1);
+    console.log(
+      '🚀 ~ PostsEditComponent ~ deleteImage ~ this.previews:',
+      this.previews.length
+    );
     if (!this.deletedImageIndexes.includes(index)) {
       this.deletedImageIndexes.push(index);
       console.log(
@@ -258,9 +369,6 @@ export class PostsEditComponent implements OnInit, OnDestroy {
         this.deletedImageIndexes
       );
     }
-    // if(this.selectedFileNames.includes(preview)){
-    //   this.selectedFiles.
-    // }
   }
 
   updateChosentags(tag: any) {

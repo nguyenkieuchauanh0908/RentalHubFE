@@ -5,18 +5,81 @@
     <div
       class="flex flex-nowrap justify-between items-center mx-auto max-w-screen-xl"
     >
-      <!-- Logo -->
-      <a (click)="toHome()" class="flex items-center cursor-pointer">
-        <img
-          src="https://flowbite.com/docs/images/logo.svg"
-          class="mr-3 h-6 sm:h-9"
-          alt="Rental Hub logo"
-        />
-        <span
-          class="xs:hidden md:block self-center text-xl font-semibold whitespace-nowrap text-white"
-          >Rental Hub</span
-        >
-      </a>
+      <!-- Logo and menu for xs screen -->
+      <div class="flex flex-row justify-start">
+        <!-- Menu for xs screen -->
+        <div class="xs:block md:hidden xs:text-right">
+          <button
+            #matMenuTrigger
+            mat-raised-butto
+            [matMenuTriggerFor]="sidebar"
+            class="cursor-pointer mr-3"
+          >
+            <p class="text-black-color font-medium text-center">
+              <mat-icon class="relative top-2.5 ml-1"> menu</mat-icon>
+            </p>
+          </button>
+          <mat-menu #sidebar="matMenu" yPosition="below" class="md:hidden">
+            <a (click)="$event.stopPropagation()">
+              <button mat-menu-item (click)="toUpdateLoginDetail()">
+                <mat-icon>perm_identity</mat-icon>
+                <span class="text-primary-text-color mb-0 text-sm"
+                  >Thông tin đăng nhập</span
+                >
+              </button>
+
+              <button mat-menu-item (click)="toUpdateAvatar()">
+                <mat-icon>add_to_photos</mat-icon>
+                <span class="text-primary-text-color mb-0 text-sm"
+                  >Cập nhật ảnh đại diện</span
+                >
+              </button>
+              <button mat-menu-item (click)="toPostNew()">
+                <mat-icon>library_books</mat-icon>
+                <span class="text-primary-text-color mb-0 text-sm"
+                  >Đăng bài</span
+                >
+              </button>
+              <button mat-menu-item (click)="toMyFavoritePosts()">
+                <mat-icon>favorite_border</mat-icon>
+                <span class="text-primary-text-color mb-0 text-sm"
+                  >Bài viết yêu thích</span
+                >
+              </button>
+              <button mat-menu-item (click)="toAllNotifications()">
+                <mat-icon>notifications_none</mat-icon>
+                <span class="text-primary-text-color mb-0 text-sm"
+                  >Thông báo</span
+                >
+              </button>
+              <button mat-menu-item (click)="toMyPosting()">
+                <mat-icon>history</mat-icon>
+                <span class="text-primary-text-color mb-0 text-sm"
+                  >Lịch sử đăng bài</span
+                >
+              </button>
+              <button mat-menu-item>
+                <mat-icon>logout</mat-icon>
+                <span class="text-primary-text-color mb-0 text-sm"
+                  >Đăng xuất</span
+                >
+              </button>
+            </a>
+          </mat-menu>
+        </div>
+        <!-- Logo -->
+        <a (click)="toHome()" class="flex items-center cursor-pointer">
+          <img
+            src="https://flowbite.com/docs/images/logo.svg"
+            class="md:mr-3 h-6 sm:h-9"
+            alt="Rental Hub logo"
+          />
+          <span
+            class="xs:hidden md:block self-center text-xl font-semibold whitespace-nowrap text-white"
+            >Rental Hub</span
+          >
+        </a>
+      </div>
 
       <!-- Login/Signup/Account/Post new/Filter/Notifications -->
       <div class="flex items-center lg:order-2">

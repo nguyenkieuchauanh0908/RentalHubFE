@@ -7,12 +7,24 @@ import { AuthGuard } from '../auth/auth.guard';
 import { VerifyHostComponent } from './verify-host/verify-host.component';
 import { FavoritePostsComponent } from './favorite-posts/favorite-posts.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { UpdateAvatarComponent } from './update-avatar/update-avatar.component';
+import { LoginDetailUpdateComponent } from './login-detail-update/login-detail-update.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AccountsComponent,
     children: [
+      {
+        path: 'update-login-detail/:uId',
+        component: LoginDetailUpdateComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'update-avatar/:uId',
+        component: UpdateAvatarComponent,
+        canActivate: [AuthGuard],
+      },
       {
         path: 'notifications/:uId',
         component: NotificationsComponent,

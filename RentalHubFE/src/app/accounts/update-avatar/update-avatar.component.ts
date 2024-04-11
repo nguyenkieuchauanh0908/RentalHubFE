@@ -2,16 +2,16 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotifierService } from 'angular-notifier';
 import { Observable } from 'rxjs';
-import { AccountService } from 'src/app/accounts/accounts.service';
-import { User } from 'src/app/auth/user.model';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { AccountService } from '../accounts.service';
 
 @Component({
-  selector: 'app-update-avatar-dialog',
-  templateUrl: './update-avatar-dialog.component.html',
-  styleUrls: ['./update-avatar-dialog.component.scss'],
+  selector: 'app-update-avatar',
+  templateUrl: './update-avatar.component.html',
+  styleUrls: ['./update-avatar.component.scss'],
 })
-export class UpdateAvatarDialogComponent {
+export class UpdateAvatarComponent {
+  title: string = 'Cập nhật ảnh đại diện';
   isLoading = false;
   error: string = '';
   selectedFiles?: FileList;
@@ -23,11 +23,11 @@ export class UpdateAvatarDialogComponent {
   preview: string = '';
   imageInfos?: Observable<any>;
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: string,
     private accountService: AccountService,
     private notifierService: NotifierService,
     public dialog: MatDialog
   ) {
+    this.title = 'Cập nhật ảnh đại diện';
     this.accountService.getCurrentUser.subscribe((user) => {
       if (user) {
         this.preview = user?._avatar;

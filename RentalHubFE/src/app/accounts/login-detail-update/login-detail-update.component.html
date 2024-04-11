@@ -1,0 +1,128 @@
+<div class="flex flex-col justify-center items-center w-full">
+  <div *ngIf="isLoading" class="spinner__loading text-center">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <h2>{{ this.title }}</h2>
+  <!-- Edit modal -->
+  <div>
+    <form #editProfileForm="ngForm" class="xs:w-72 sm:w-96">
+      <!-- Email  -->
+      <div class="mb-4">
+        <label
+          for="base-input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Email</label
+        >
+        <input
+          [value]="this.email"
+          rows="8"
+          type="email"
+          id="email-input"
+          name="email"
+          ngModel
+          required
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          #email="ngModel"
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="mb-4">
+        <label
+          for="password"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Mật khẩu mới</label
+        >
+        <div class="relative">
+          <input
+            [type]="password"
+            name="pw"
+            id="password"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            ngModel
+            #pw="ngModel"
+          />
+          <button
+            class="absolute top-3 right-4"
+            (click)="onEyesSeePwClick()"
+            type="button"
+          >
+            <i class="fa fa-eye" aria-hidden="true" *ngIf="!isPwShown"></i>
+            <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="isPwShown"></i>
+          </button>
+        </div>
+        <div
+          *ngIf="pw.invalid && (pw.dirty || pw.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="pw.errors?.['required']">
+            Mật khẩu mới không được bỏ trống!
+          </div>
+        </div>
+      </div>
+
+      <!-- password confirm -->
+      <div class="mb-4">
+        <label
+          for="pw_confirm"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Mật khẩu cũ</label
+        >
+        <div class="relative">
+          <input
+            [type]="confirmPassword"
+            name="repw"
+            id="password"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            ngModel
+            #confirmPw="ngModel"
+          />
+          <button
+            class="absolute top-3 right-4"
+            (click)="onEyesSeeConfirmPwClick()"
+            type="button"
+          >
+            <i
+              class="fa fa-eye"
+              aria-hidden="true"
+              *ngIf="!isConfirmPwShown"
+            ></i>
+            <i
+              class="fa fa-eye-slash"
+              aria-hidden="true"
+              *ngIf="isConfirmPwShown"
+            ></i>
+          </button>
+        </div>
+        <div
+          *ngIf="confirmPw.invalid && (confirmPw.dirty || confirmPw.touched)"
+          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <div *ngIf="confirmPw.errors?.['required']">
+            Vui lòng nhập mật khẩu cũ!
+          </div>
+        </div>
+      </div>
+    </form>
+    <notifier-container></notifier-container>
+  </div>
+
+  <div class="flex flex-row justify-end xs:w-72 sm:w-96 mt-2">
+    <button mat-button mat-dialog-close>Hủy</button>
+    <button
+      (click)="saveChanges(editProfileForm.value)"
+      class="bg-blue-700 hover:bg-blue-800"
+      style="color: white; background-color: #1a56db"
+      mat-button
+      type="submit"
+    >
+      Lưu thay đổi
+    </button>
+  </div>
+</div>

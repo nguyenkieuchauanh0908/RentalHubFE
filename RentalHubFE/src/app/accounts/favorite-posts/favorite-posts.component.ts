@@ -52,7 +52,8 @@ export class FavoritePostsComponent {
     private postService: PostService,
     private paginationService: PaginationService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private notifier: NotifierService
   ) {
     this.currentPage = 1;
     this.isLoading = true;
@@ -90,28 +91,35 @@ export class FavoritePostsComponent {
   }
 
   toUnfavorPost(postId: String) {
+    this.postService.getCurrentFavorites.subscribe((favorites) => {
+      if (favorites) {
+        favorites = favorites.filter((post) => {
+          console.log(post._postId, postId);
+          return String(post._postId) !== postId;
+        });
+        this.historyPosts = favorites;
+      }
+    });
     this.postService.createFavorite(postId).subscribe();
     this.getPostHistorySub = this.postService
       .getFavorites(this.currentPage, this.pageItemLimit)
       .subscribe(
         (res) => {
-          this.postService.getCurrentFavorites.subscribe((postingHistory) => {
-            console.log(
-              '🚀 ~ FavoritePostsComponent ~ this.postService.getCurrentFavorites.subscribe ~ postingHistory:',
-              postingHistory
-            );
-            if (postingHistory) {
-              postingHistory = postingHistory.filter((post) => {
-                console.log(post._postId, postId);
-                return String(post._postId) !== postId;
-              });
-              this.historyPosts = postingHistory;
-              console.log(
-                '🚀 ~ FavoritePostsComponent ~ this.historyPosts=postingHistory!.filter ~ this.historyPosts:',
-                this.historyPosts
-              );
-            }
-          });
+          if (res.data) {
+            this.postService.getCurrentFavorites.subscribe((favorites) => {
+              if (favorites) {
+                favorites = favorites.filter((post) => {
+                  console.log(post._postId, postId);
+                  return String(post._postId) !== postId;
+                });
+                this.historyPosts = favorites;
+                this.notifier.notify(
+                  'success',
+                  'Bỏ thích bài viết thành công!'
+                );
+              }
+            });
+          }
 
           this.paginationService.pagination = res.pagination;
           this.totalPages = res.pagination.total;

@@ -17,6 +17,8 @@ import { UpdateAvatarDialogComponent } from './update-avatar-dialog/update-avata
 import { VerifyHostComponent } from './verify-host/verify-host.component';
 import { FavoritePostsComponent } from './favorite-posts/favorite-posts.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { UpdateAvatarComponent } from './update-avatar/update-avatar.component';
+import { LoginDetailUpdateComponent } from './login-detail-update/login-detail-update.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { NotificationsComponent } from './notifications/notifications.component'
     VerifyHostComponent,
     FavoritePostsComponent,
     NotificationsComponent,
+    UpdateAvatarComponent,
+    LoginDetailUpdateComponent,
   ],
   imports: [
     CommonModule,

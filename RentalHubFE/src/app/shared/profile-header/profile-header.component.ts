@@ -1,4 +1,4 @@
-import { Component, Inject, Optional } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
@@ -7,13 +7,7 @@ import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
 import { NotificationService } from '../notifications/notification.service';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { resDataDTO } from '../resDataDTO';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-header',
@@ -39,16 +33,15 @@ export class ProfileHeaderComponent {
     private accountService: AccountService,
     private notifierService: NotifierService,
     private notificationService: NotificationService,
-    private authService: AuthService // private dialog: MatDialog, // @Optional() public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-  ) // @Inject(MAT_DIALOG_DATA) public dialogData: any
-  {
+    private authService: AuthService
+  ) {
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         console.log('On rendering headers...');
-        console.log(user);
+        // console.log(user);
         this.isAuthenticatedUser = !!user;
-        console.log('User is authenticated: ', this.isAuthenticatedUser);
+        // console.log('User is authenticated: ', this.isAuthenticatedUser);
         this.user = user;
         if (this.user?._fname && this.user?._lname) {
           this.fullName = this.user?._fname + ' ' + this.user._lname;
@@ -79,7 +72,6 @@ export class ProfileHeaderComponent {
   ngOnInit() {
     this.userSub = this.accountService.getCurrentUser.subscribe((user) => {
       console.log('On rendering headers...');
-      console.log(user);
       this.isAuthenticatedUser = !!user;
       console.log('User is authenticated: ', this.isAuthenticatedUser);
       this.user = user;
@@ -87,6 +79,16 @@ export class ProfileHeaderComponent {
         this.fullName = this.user?._fname + ' ' + this.user._lname;
       }
     });
+  }
+
+  toUpdateLoginDetail() {
+    let uId = this.user?._id;
+    this.router.navigate(['/profile/update-login-detail/', uId]);
+  }
+
+  toUpdateAvatar() {
+    let uId = this.user?._id;
+    this.router.navigate(['/profile/update-avatar/', uId]);
   }
 
   toMyPosting() {
@@ -101,6 +103,18 @@ export class ProfileHeaderComponent {
     } else {
       this.notifierService.notify('error', 'Vui lòng đăng nhập để đăng bài!');
     }
+  }
+
+  toMyFavoritePosts() {
+    this.router.navigate(['/profile/favorites-posts', this.user?._id]);
+  }
+
+  toPostingHistory() {
+    this.router.navigate(['/profile/posting-history', this.user?._id]);
+  }
+
+  toAllNotifications() {
+    this.router.navigate(['/profile/notifications', this.user?._id]);
   }
 
   onSearchByKeyword(searchForm: any) {

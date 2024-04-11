@@ -460,8 +460,11 @@
             for="multiple_files"
             >Chọn tối đa 5 ảnh</label
           >
+          <mat-error *ngIf="this.previews.length === 0">
+            Vui lòng chọn <strong>ít nhất 1 ảnh</strong>
+          </mat-error>
           <div class="bg-white-background rounded-lg">
-            <div class="flex flex-wrap mt-4 h-32">
+            <div class="flex flex-wrap justify-center mt-4 h-32">
               <!-- Image -->
               <div
                 (click)="deleteImage(preview, index)"
@@ -471,19 +474,34 @@
                     ? 'cursor-not-allowed'
                     : 'hover:cursor-pointer'
                 "
-                class="basis-[19%] border-solid border-2 border-indigo-600 p-3 mr-1 relative h-36 w-full"
+                class="xs:basis-[80%] sm:basis-[49%] md:basis-[19%] border-solid border-2 border-indigo-300 p-3 mr-1 mb-1 relative h-36 w-full rounded-lg"
               >
                 <img
                   *ngIf="preview !== ''"
                   [src]="preview"
-                  class="object-fill max-h-28 w-full"
+                  class="hover:cursor-pointer object-fill max-h-28 w-full rounded-lg"
                 />
-                <mat-icon
+                <div
+                  class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
                   *ngIf="preview === ''"
                   (click)="image.click()"
-                  class="mat-icon-style hover:cursor-pointer hover:bg-indigo-100 hover:rounded-lg"
-                  >add</mat-icon
                 >
+                  <svg
+                    class="w-8 h-12 text-primary-400 dark:text-primary-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                </div>
                 <input
                   (change)="updateFile($event, index)"
                   class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
@@ -499,7 +517,7 @@
               <div
                 *ngIf="previews.length < 5"
                 (click)="addImage.click()"
-                class="basis-[19%] border-solid border-2 border-indigo-600 p-3 mr-1 relative h-36 w-full"
+                class="xs:basis-[80%] sm:basis-[49%] md:basis-[19%] border-solid border-2 border-indigo-300 p-3 mr-1 mb-1 relative h-36 w-full rounded-lg"
               >
                 <input
                   (change)="addNewImage($event)"
@@ -511,10 +529,25 @@
                   multiple
                   #addImage
                 />
-                <mat-icon
-                  class="mat-icon-style hover:cursor-pointer hover:bg-indigo-100 hover:rounded-lg"
-                  >add</mat-icon
+                <div
+                  class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
                 >
+                  <svg
+                    class="w-8 h-12 text-primary-400 dark:text-primary-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
