@@ -86,6 +86,11 @@ export class ProfileHeaderComponent {
     this.router.navigate(['/profile/update-login-detail/', uId]);
   }
 
+  toRegisterNewAddress() {
+    let uId = this.user?._id;
+    this.router.navigate(['/profile/register-address', uId]);
+  }
+
   toUpdateAvatar() {
     let uId = this.user?._id;
     this.router.navigate(['/profile/update-avatar/', uId]);

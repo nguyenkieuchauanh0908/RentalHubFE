@@ -9,6 +9,7 @@ import { User } from './user.model';
 import { AccountService } from '../accounts/accounts.service';
 import { PostService } from '../posts/post.service';
 import { NotificationService } from '../shared/notifications/notification.service';
+import { AddressesService } from '../accounts/register-address/addresses.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,8 @@ export class AuthService {
     private router: Router,
     private accountService: AccountService,
     private postService: PostService,
-    private notiService: NotificationService
+    private notiService: NotificationService,
+    private addressesService: AddressesService
   ) {
     this.user.subscribe((user) => {
       if (user) {
@@ -50,6 +52,7 @@ export class AuthService {
           this.handleAuthentication(res.data);
           this.getFavoredPostLogin();
           this.getPostsNotifictionsLogin();
+          this.setRegisteredAddressesWhenLogin(res.data._addressRental);
         })
       );
   }
@@ -78,10 +81,9 @@ export class AuthService {
         user?._ACToken,
         user?._ACExpiredTime
       );
-      this.accountService.setCurrentUser(loadedUserData);
+      // this.accountService.setCurrentUser(loadedUserData);
       if (loadedUserData.ACToken && loadedUserData.RFToken) {
         this.accountService.setCurrentUser(loadedUserData);
-
         expirationDuration = loadedUserData._RFExpiredTime - Date.now();
       }
       if (!loadedUserData.ACToken && loadedUserData.RFToken) {
@@ -93,6 +95,13 @@ export class AuthService {
       if (expirationDuration !== 0) {
         this.getFavoredPostLogin();
         this.getPostsNotifictionsLogin();
+        let registeredAddresses = localStorage.getItem('registered-addresses');
+        if (registeredAddresses) {
+          this.addressesService.setcurrentRegisteredAddresses(
+            // JSON.parse(registeredAddresses)
+            []
+          );
+        }
       }
     } else {
       return;
@@ -157,10 +166,12 @@ export class AuthService {
       this.isUser = false;
       if (
         localStorage.getItem('userData') ||
-        localStorage.getItem('favorite-posts')
+        localStorage.getItem('favorite-posts') ||
+        localStorage.getItem('registered-addresses')
       ) {
         localStorage.removeItem('userData');
         localStorage.removeItem('favorite-posts');
+        localStorage.removeItem('registered-addresses');
       }
     }, expirationDuration);
   }
@@ -303,6 +314,20 @@ export class AuthService {
       });
       localStorage.setItem('favorite-posts', JSON.stringify(favorites));
     }
+  }
+
+  setRegisteredAddressesWhenLogin(registeredAddress: String[]) {
+    //Lấy registered addresses do api login trả về ra lưu vào services và local storage
+    registeredAddress = [
+      '1 Võ Văn Ngân, Linh Chiểu, Thủ Đức',
+      '26/17 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh',
+      '123/4/5 Lê Văn Thọ, Làng Hoa, Gò Vấp',
+    ];
+    this.addressesService.setcurrentRegisteredAddresses(registeredAddress);
+    localStorage.setItem(
+      'registered-addresses',
+      JSON.stringify(registeredAddress)
+    );
   }
 
   getPostsNotifictionsLogin() {

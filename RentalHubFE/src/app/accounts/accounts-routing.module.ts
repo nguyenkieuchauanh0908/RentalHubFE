@@ -9,6 +9,7 @@ import { FavoritePostsComponent } from './favorite-posts/favorite-posts.componen
 import { NotificationsComponent } from './notifications/notifications.component';
 import { UpdateAvatarComponent } from './update-avatar/update-avatar.component';
 import { LoginDetailUpdateComponent } from './login-detail-update/login-detail-update.component';
+import { RegisterAddressComponent } from './register-address/register-address.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,11 @@ const routes: Routes = [
       {
         path: 'posting-history/:uId',
         component: PostingHistoryComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'register-address/:uId',
+        component: RegisterAddressComponent,
         canActivate: [AuthGuard],
       },
       {

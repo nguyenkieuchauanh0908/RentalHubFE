@@ -19,7 +19,31 @@
   <div *ngIf="isLoading" class="spinner__loading">
     <mat-spinner diameter="30"></mat-spinner>
   </div>
-  <div class="bg-white-background rounded-lg xs:p-2 md:p-6">
+  <ng-template #noRegisteredAddresses>
+    <div class="flex justify-center align-middle">
+      <div
+        class="w-sm xs:p-2 md:p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      >
+        <p
+          class="mb-3 font-medium text-gray-700 dark:text-gray-400 bold text-center"
+        >
+          Bạn cần phải đăng ký địa chỉ trọ trước khi đăng bài!
+        </p>
+        <div class="flex justify-center">
+          <a
+            (click)="goToRegisterNewAddress()"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
+          >
+            Đồng ý
+          </a>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <div
+    *ngIf="this.addressOptions.length > 0; else noRegisteredAddresses"
+    class="bg-white-background rounded-lg xs:p-2 md:p-6"
+  >
     <h2 class="text-base font-semibold leading-7 text-gray-900">
       Tạo bài viết mới
     </h2>
@@ -95,106 +119,6 @@
             [value]="option"
           >
             {{ option }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <!-- Street -->
-      <mat-form-field class="w-full">
-        <mat-label>Số nhà và tên đường</mat-label>
-        <input
-          placeholder="123 Trần Phú"
-          aria-label="Số nhà và tên đường"
-          matInput
-          formControlName="streetInputControl"
-        />
-        <mat-error
-          *ngIf="
-            this.postEditForm.controls.streetInputControl.hasError('required')
-          "
-        >
-          Thông tin <strong>bắt buộc</strong>
-        </mat-error>
-      </mat-form-field>
-      <!-- City -->
-      <mat-form-field class="w-full">
-        <mat-label>Thành phố</mat-label>
-        <input
-          type="PublicAPIData"
-          placeholder="Vui lòng chọn một"
-          aria-label="Thành phố"
-          matInput
-          formControlName="cityInputControl"
-          [matAutocomplete]="city"
-        />
-        <mat-error
-          *ngIf="
-            this.postEditForm.controls.cityInputControl.hasError('required')
-          "
-        >
-          Thông tin <strong>bắt buộc</strong>
-        </mat-error>
-        <mat-autocomplete autoActiveFirstOption #city="matAutocomplete">
-          <mat-option
-            *ngFor="let option of filteredCityOptions | async"
-            [value]="option.full_name"
-          >
-            {{ option.full_name }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <!-- District -->
-      <mat-form-field class="w-full">
-        <mat-label>Quận/huyện</mat-label>
-        <input
-          type="PublicAPIData"
-          placeholder="Vui lòng chọn một"
-          aria-label="Quận/huyện"
-          matInput
-          formControlName="districtInputControl"
-          [matAutocomplete]="district"
-        />
-        <mat-error
-          *ngIf="
-            this.postEditForm.controls.districtInputControl.hasError('required')
-          "
-        >
-          Thông tin <strong>bắt buộc</strong>
-        </mat-error>
-        <mat-autocomplete autoActiveFirstOption #district="matAutocomplete">
-          <mat-option
-            *ngFor="let option of filteredDistrictOptions | async"
-            [value]="option.full_name"
-          >
-            {{ option.full_name }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <!-- Ward -->
-      <mat-form-field class="w-full">
-        <mat-label>Phường/xã</mat-label>
-        <input
-          type="PublicAPIData"
-          placeholder="Vui lòng chọn một"
-          aria-label="Phường/xã"
-          matInput
-          formControlName="wardInputControl"
-          [matAutocomplete]="ward"
-        />
-        <mat-error
-          *ngIf="
-            this.postEditForm.controls.wardInputControl.hasError('required')
-          "
-        >
-          Thông tin <strong>bắt buộc</strong>
-        </mat-error>
-        <mat-autocomplete autoActiveFirstOption #ward="matAutocomplete">
-          <mat-option
-            *ngFor="let option of filteredWardsOptions | async"
-            [value]="option.full_name"
-          >
-            {{ option.full_name }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
@@ -355,7 +279,7 @@
         <label
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           for="multiple_files"
-          >Chọn tối đa 5 ảnh</label
+          >Giấy phép kinh doanh (tối đa 5 ảnh)</label
         >
         <mat-error *ngIf="this.previews.length === 0">
           Vui lòng chọn <strong>ít nhất 1 ảnh</strong>
@@ -441,14 +365,6 @@
             </div>
           </div>
         </div>
-
-        <!-- <div
-          *ngIf="previews.length === 0"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <p>Vui lòng chọn ảnh</p>
-        </div> -->
       </div>
 
       <!-- Save btn -->

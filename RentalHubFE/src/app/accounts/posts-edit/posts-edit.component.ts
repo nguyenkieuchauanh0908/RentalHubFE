@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PublicApiServiceService } from 'src/app/shared/public-api-service.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
+import { AddressesService } from '../register-address/addresses.service';
 
 export const _filter = (
   optionsToFilter: PublicAPIData[],
@@ -53,25 +54,14 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   deletedImageIndexes: number[] = [];
   selectedTags!: Tags[];
 
-  addressOptions!: String[];
+  addressOptions: String[] = new Array<string>();
   filteredAddressOptions!: Observable<String[]> | undefined;
-
-  cityOptions!: PublicAPIData[];
-  filteredCityOptions: Observable<PublicAPIData[]> | undefined;
-  districtOptions!: PublicAPIData[];
-  filteredDistrictOptions: Observable<PublicAPIData[]> | undefined;
-  wardOptions!: PublicAPIData[];
-  filteredWardsOptions: Observable<PublicAPIData[]> | undefined;
 
   postEditForm = this.formBuilder.group({
     titleInputControl: ['', Validators.required],
     descInputControl: ['', Validators.required],
     contentInputControl: ['', Validators.required],
     addressInputControl: ['', Validators.required],
-    streetInputControl: ['', Validators.required],
-    cityInputControl: ['', Validators.required],
-    districtInputControl: ['', Validators.required],
-    wardInputControl: ['', Validators.required],
     areaInputControl: ['', Validators.required],
     renting_priceInputControl: ['', Validators.required],
     electricInputControl: ['', Validators.required],
@@ -87,9 +77,9 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     private postService: PostService,
     private accountService: AccountService,
     private notifierService: NotifierService,
-    private publicApiService: PublicApiServiceService,
     public dialog: MatDialog,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private addressesService: AddressesService
   ) {
     this.postService.getCurrentChosenTags.subscribe((tags) => {
       if (tags) {
@@ -107,136 +97,18 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     });
     this.postService.setCurrentChosenTags([]);
     this.getTagSub = this.postService.getAllTags().subscribe();
-    //Gọi API để lấy list thành phố
-    this.publicApiService.getCity(1, 0).subscribe((res) => {
-      this.cityOptions = res.data;
-      this.filteredCityOptions =
-        this.postEditForm.controls.cityInputControl.valueChanges.pipe(
-          startWith(''),
-          map((value) => _filter(this.cityOptions, value || '')),
-          tap(() => {
-            if (this.postEditForm.controls.cityInputControl.valid) {
-              let city = this.cityOptions.find(
-                (city) =>
-                  city.full_name ===
-                  this.postEditForm.controls.cityInputControl.value
-              );
-              //Gọi API lấy district ứng với cityId
-              if (city?.id) {
-                let cityId = city!.id;
-                this.publicApiService
-                  .getDistrictOfACity('2', cityId)
-                  .subscribe((res) => {
-                    this.districtOptions = res.data;
-                    this.filteredDistrictOptions =
-                      this.postEditForm.controls.districtInputControl.valueChanges.pipe(
-                        startWith(''),
-                        map((value) =>
-                          _filter(this.districtOptions, value || '')
-                        ),
-                        tap(() => {
-                          if (
-                            this.postEditForm.controls.districtInputControl
-                              .valid
-                          ) {
-                            let district = this.districtOptions.find(
-                              (district) =>
-                                district.full_name ===
-                                this.postEditForm.controls.districtInputControl
-                                  .value
-                            );
-
-                            if (district?.id) {
-                              let districtId = district!.id;
-                              this.publicApiService
-                                .getWardsOfADistrict('3', districtId)
-                                .subscribe((res) => {
-                                  this.wardOptions = res.data;
-                                  this.filteredWardsOptions =
-                                    this.postEditForm.controls.wardInputControl.valueChanges.pipe(
-                                      startWith(''),
-                                      map((value) =>
-                                        _filter(this.wardOptions, value || '')
-                                      )
-                                    );
-                                });
-                            }
-                          }
-                        })
-                      );
-                  });
-              }
-            }
-          })
-        );
-    });
 
     //List địa chỉ của user
-    this.addressOptions = [
-      '1 Võ Văn Ngân, Linh Chiểu, Thủ Đức',
-      '26/17 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh',
-      '123/4/5 Lê Văn Thọ, Làng Hoa, Gò Vấp',
-    ];
+    this.addressOptions = [];
+    this.addressesService.getCurrentRegisteredAddress.subscribe((addresses) => {
+      if (addresses) this.addressOptions = addresses;
+    });
     this.filteredAddressOptions =
       this.postEditForm.controls.addressInputControl.valueChanges.pipe(
         startWith(''),
         map((value) =>
           _filterForStringOptions(this.addressOptions, value || '')
         )
-        // tap(() => {
-        //   if (this.postEditForm.controls.cityInputControl.valid) {
-        //     let city = this.cityOptions.find(
-        //       (city) =>
-        //         city.full_name ===
-        //         this.postEditForm.controls.cityInputControl.value
-        //     );
-        //     //Gọi API lấy district ứng với cityId
-        //     if (city?.id) {
-        //       let cityId = city!.id;
-        //       this.publicApiService
-        //         .getDistrictOfACity('2', cityId)
-        //         .subscribe((res) => {
-        //           this.districtOptions = res.data;
-        //           this.filteredDistrictOptions =
-        //             this.postEditForm.controls.districtInputControl.valueChanges.pipe(
-        //               startWith(''),
-        //               map((value) =>
-        //                 _filter(this.districtOptions, value || '')
-        //               ),
-        //               tap(() => {
-        //                 if (
-        //                   this.postEditForm.controls.districtInputControl
-        //                     .valid
-        //                 ) {
-        //                   let district = this.districtOptions.find(
-        //                     (district) =>
-        //                       district.full_name ===
-        //                       this.postEditForm.controls.districtInputControl
-        //                         .value
-        //                   );
-
-        //                   if (district?.id) {
-        //                     let districtId = district!.id;
-        //                     this.publicApiService
-        //                       .getWardsOfADistrict('3', districtId)
-        //                       .subscribe((res) => {
-        //                         this.wardOptions = res.data;
-        //                         this.filteredWardsOptions =
-        //                           this.postEditForm.controls.wardInputControl.valueChanges.pipe(
-        //                             startWith(''),
-        //                             map((value) =>
-        //                               _filter(this.wardOptions, value || '')
-        //                             )
-        //                           );
-        //                       });
-        //                   }
-        //                 }
-        //               })
-        //             );
-        //         });
-        //     }
-        //   }
-        // })
       );
   }
 
@@ -253,6 +125,12 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     console.log('on verifying account ...');
     let uId = this.myProfile?._id;
     this.router.navigate(['/profile/verify-account/', uId]);
+  }
+
+  goToRegisterNewAddress() {
+    console.log('go to register new address ...');
+    let uId = this.myProfile?._id;
+    this.router.navigate(['/profile/register-address/', uId]);
   }
 
   onSubmitPost() {
