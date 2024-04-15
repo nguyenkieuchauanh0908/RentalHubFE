@@ -59,6 +59,8 @@ export class PostsListComponent implements OnInit, OnDestroy {
     priorities: new Array<String>(),
   };
 
+  currentFavourites: String[] | null = [];
+
   isLoading: boolean = false;
   postList!: PostItem[];
   postListChangedSub: Subscription = new Subscription();
@@ -101,13 +103,11 @@ export class PostsListComponent implements OnInit, OnDestroy {
         this.totalPages = pagination.total;
       }
     );
-  }
 
-  // ngAfterViewInit(): void {
-  //   // try {
-  //   //   document.querySelector('start' + this.fragment).scrollIntoView();
-  //   // } catch (e) { }
-  // }
+    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+      this.currentFavourites = favourites;
+    });
+  }
 
   forceNavigate(name: string) {
     console.log('forceNavigate', name);

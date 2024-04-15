@@ -73,10 +73,20 @@
                   class="grid gap-2 grid-cols-12 mb-4 w-full h-max-full"
                 >
                   <!-- Image -->
-                  <div
-                    (click)="goToPost(post._id)"
-                    class="grid xs:col-span-3 lg:col-span-2"
-                  >
+                  <div class="relative grid xs:col-span-3 lg:col-span-2">
+                    <mat-icon
+                      class="absolute top-1 right-1 z-10 cursor-pointer"
+                      color="warn"
+                      *ngIf="this.favoredPosts!.includes(post._id)"
+                      (click)="addOrRemovePostToFavorites(post._id, false)"
+                      >favorite</mat-icon
+                    >
+                    <mat-icon
+                      *ngIf="!this.favoredPosts!.includes(post._id)"
+                      class="absolute top-1 right-1 z-10 text-white cursor-pointer"
+                      (click)="addOrRemovePostToFavorites(post._id, true)"
+                      >favorite</mat-icon
+                    >
                     <img
                       class="hover:cursor-pointer object-fill h-32 w-full rounded-lg"
                       src="{{ post._images[0] }}"
@@ -123,8 +133,9 @@
                       <p>
                         Diện tích:
                         <span class="text-text-price-color font-medium"
-                          >{{ post.roomArea.toLocaleString() }}m
-                          <sup>2</sup></span
+                          >{{ post.roomArea.toLocaleString() }}m<sup
+                            >2</sup
+                          ></span
                         >
                       </p>
                     </div>
@@ -158,40 +169,10 @@
               <!-- xs screen -->
               <div *ngIf="historyPosts.length > 0" class="xs:block sm:hidden">
                 <div *ngFor="let post of historyPosts">
-                  <div
-                    (click)="goToPost(post._id)"
-                    class="max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2 cursor-pointer hover:-translate-y-0.5 hover:shadow-primary-200"
-                  >
-                    <a (click)="goToPost(post._id)">
-                      <img
-                        class="rounded-t-lg w-full h-60"
-                        src="{{ post._images[0] }}"
-                        alt="room's images"
-                      />
-                    </a>
-                    <div class="p-2">
-                      <a (click)="goToPost(post._id)">
-                        <p
-                          class="text-md font-medium tracking-tight text-black-color dark:text-white hover:text-primary-600 line-clamp-1"
-                        >
-                          {{ post._title }}
-                        </p>
-                      </a>
-                      <div
-                        class="row flex flex-row gap-2 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color relative bottom-2"
-                      >
-                        <span class="text-text-price-color font-normal"
-                          >{{ post.roomPrice.toLocaleString() }}tr</span
-                        >
-
-                        <span class="font-normal">{{ post.roomArea }}m2</span>
-
-                        <span class="font-normal line-clamp-1">{{
-                          post.roomAddress
-                        }}</span>
-                      </div>
-                    </div>
-                  </div>
+                  <app-post-card
+                    [post]="post"
+                    [isFavoured]="this.favoredPosts!.includes(post._id)"
+                  ></app-post-card>
                 </div>
                 <!-- Pagination -->
                 <app-pagination

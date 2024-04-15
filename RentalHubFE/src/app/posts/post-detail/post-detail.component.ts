@@ -48,6 +48,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private geocoder: MapGeocoder
   ) {
+    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+      this.favoredPosts = favourites;
+    });
     this.postService.getCurrentFavoritesId.subscribe((favorites) => {
       this.favoredPosts = favorites;
     });

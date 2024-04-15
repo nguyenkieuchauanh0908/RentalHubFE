@@ -406,6 +406,7 @@ export class PostService {
     this.currentFavorites.next(updateFavorites);
   }
 
+  // Add/Remove to/from favourites
   createFavorite(pId: String) {
     let updateFavorites: String[];
     return this.http

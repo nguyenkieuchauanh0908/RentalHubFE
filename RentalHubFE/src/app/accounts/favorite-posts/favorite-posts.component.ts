@@ -47,6 +47,8 @@ export class FavoritePostsComponent {
     data: this.historyPosts,
   };
 
+  currentFavourites: String[] | null = [];
+
   constructor(
     private accountService: AccountService,
     private postService: PostService,
@@ -81,6 +83,9 @@ export class FavoritePostsComponent {
 
   ngOnInit() {
     this.currentUid = this.accountService.getCurrentUserId();
+    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+      this.currentFavourites = favourites;
+    });
   }
   ngOnDestroy(): void {
     this.getPostHistorySub.unsubscribe();

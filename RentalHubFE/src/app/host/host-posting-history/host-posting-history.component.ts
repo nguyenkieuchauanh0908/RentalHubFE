@@ -23,6 +23,7 @@ export class HostPostingHistoryComponent implements OnInit {
     avatar: '',
     id: '',
   };
+  favoredPosts!: String[] | null | any[];
   isLoading = false;
   error: string = '';
   stateData: any;
@@ -55,6 +56,9 @@ export class HostPostingHistoryComponent implements OnInit {
     this.currentUid = this.route.snapshot.paramMap.get('id');
     this.isLoading = true;
     if (this.currentUid) {
+      this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+        this.favoredPosts = favourites;
+      });
       this.getPostHistorySub = this.postService
         .getPostsHistoryOfAUser(this.currentUid, 1, 5)
         .subscribe((res) => {
@@ -116,5 +120,31 @@ export class HostPostingHistoryComponent implements OnInit {
         'Xảy ra lỗi trong quá trình điều hướng!'
       );
     }
+  }
+
+  addOrRemovePostToFavorites(postId: string, add: boolean) {
+    this.postService.createFavorite(postId).subscribe(
+      (res) => {
+        if (res.data) {
+          if (add) {
+            this.notifierService.notify(
+              'success',
+              'Thêm bài viết yêu thích thành công!'
+            );
+          } else {
+            this.notifierService.notify(
+              'success',
+              'Bỏ yêu thích bài viết thành công!'
+            );
+          }
+        }
+      },
+      (errMsg) => {
+        this.notifierService.notify(
+          'error',
+          'Đã có lỗi xảy ra, chúng tôi sẽ sớm khắc phục!'
+        );
+      }
+    );
   }
 }

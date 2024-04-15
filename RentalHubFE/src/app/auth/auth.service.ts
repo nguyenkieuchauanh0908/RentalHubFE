@@ -138,9 +138,6 @@ export class AuthService {
 
   logout(refreshToken: any) {
     console.log('On loging out ...');
-    this.router.navigate(['/auth/login']);
-    localStorage.removeItem('userData');
-    localStorage.removeItem('favorite-posts');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
@@ -152,8 +149,14 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          console.log(res);
-          this.accountService.setCurrentUser(null);
+          if (res.data) {
+            this.router.navigate(['/']);
+            localStorage.removeItem('userData');
+            localStorage.removeItem('favorite-posts');
+            this.postService.setCurrentFavorites([]);
+            this.postService.setCurrentFavoritesId([]);
+            this.accountService.setCurrentUser(null);
+          }
         })
       );
   }

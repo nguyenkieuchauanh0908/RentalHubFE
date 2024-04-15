@@ -151,7 +151,11 @@
           *ngFor="let post of postList"
           class="xs:col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-3"
         >
-          <app-post-card [post]="post" class="h-60 w-30"></app-post-card>
+          <app-post-card
+            [post]="post"
+            [isFavoured]="this.currentFavourites!.includes(post._id)"
+            class="h-60 w-30"
+          ></app-post-card>
         </div>
       </div>
     </div>
@@ -260,3 +264,4 @@
     </div>
   </div>
 </div>
+<notifier-container></notifier-container>

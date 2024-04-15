@@ -46,10 +46,16 @@
               class="flex items-center mx-2 relative bottom-1"
               (click)="addPostToFavorites(this.post._id)"
             >
-              <mat-icon *ngIf="!this.isFavoured" color="warn"
+              <mat-icon
+                *ngIf="!this.isFavoured"
+                color="warn"
+                class="cursor-pointer"
                 >favorite_border</mat-icon
               >
-              <mat-icon *ngIf="this.isFavoured" color="warn"
+              <mat-icon
+                *ngIf="this.isFavoured"
+                color="warn"
+                class="cursor-pointer"
                 >favorite_</mat-icon
               >
             </div>
@@ -216,7 +222,11 @@
         </div>
         <ng-template #similarPostsBlock>
           <div *ngFor="let post of relatedPosts">
-            <app-post-card [post]="post" class="max-h-60 w-30"></app-post-card>
+            <app-post-card
+              [post]="post"
+              [isFavoured]="this.favoredPosts!.includes(post._id)"
+              class="max-h-60 w-30"
+            ></app-post-card>
           </div>
         </ng-template>
       </div>
