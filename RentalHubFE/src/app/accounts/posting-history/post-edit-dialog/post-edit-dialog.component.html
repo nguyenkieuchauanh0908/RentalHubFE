@@ -5,22 +5,9 @@
     <mat-spinner diameter="30"></mat-spinner>
   </div>
   <mat-dialog-content>
-    <!-- Edit modal -->
-    <div class="p-4 md:p-5">
-      <form
-        #createPostForm="ngForm"
-        (ngSubmit)="onSubmitPost(createPostForm.value)"
-      >
-        <!-- Id -->
-        <label
-          for="base-input"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Id:
-          <span class="text-sm font-normal text-gray-900">
-            {{ this.data._id }}</span
-          >
-        </label>
-
+    <!-- New post edit modal -->
+    <div>
+      <form [formGroup]="postEditForm" (ngSubmit)="onSubmitPost()">
         <!-- Reported Reasons Tags -->
         <div class="mb-6" *ngIf="data._status === 4">
           <label
@@ -41,398 +28,239 @@
             </div>
           </div>
         </div>
-
         <!-- Title -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Tiêu đề</label
-          >
+        <mat-form-field class="w-full">
+          <mat-label>Tiêu đề</mat-label>
           <input
-            type="text"
             id="title-input"
-            name="title"
-            [(ngModel)]="data._title"
-            ngModel
-            required
-            [disabled]="data._status === 4"
-            class="'cursor-default bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            aria-label="Tiêu đề"
+            matInput
+            formControlName="titleInputControl"
             [ngClass]="
               data._status === 4 ? 'cursor-not-allowed' : 'cursor-default'
             "
-            #title="ngModel"
           />
-          <div
-            *ngIf="title.invalid && (title.dirty || title.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.titleInputControl.hasError('required')
+            "
           >
-            <div *ngIf="title.errors?.['required']">
-              Tiêu đề không được bỏ trống.
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
         <!-- Description -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Mô tả ngắn</label
-          >
-          <textarea
-            [(ngModel)]="data._desc"
-            type="text"
-            rows="4"
-            [disabled]="data._status === 4"
-            id="desc-input"
-            name="desc"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        <mat-form-field class="w-full">
+          <mat-label>Mô tả</mat-label>
+          <input
+            aria-label="Mô tả"
+            matInput
+            formControlName="descInputControl"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            placeholder="Viết mô tả ngắn về phòng trọ ở đây..."
-            #desc="ngModel"
-          ></textarea>
-          <div
-            *ngIf="desc.invalid && (desc.dirty || desc.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
+          />
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.descInputControl.hasError('required')
+            "
           >
-            <div *ngIf="desc.errors?.['required']">
-              Mô tả không được bỏ trống
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
         <!-- Content  -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Nội dung chính</label
-          >
-          <textarea
-            [(ngModel)]="data._content"
-            rows="8"
-            type="text"
-            [disabled]="data._status === 4"
-            id="content-input"
-            name="content"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        <mat-form-field class="w-full h-96">
+          <mat-label>Nội dung chính</mat-label>
+          <input
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            matInput
+            aria-label="Nội dung chính"
             placeholder="Viết mô tả chi tiết về phòng trọ ở đây..."
-            #content="ngModel"
-          ></textarea>
-          <div
-            *ngIf="content.invalid && (content.dirty || content.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
-          >
-            <div *ngIf="content.errors?.['required']">
-              Nội dung mô tả chi tiết không được bỏ trống.
-            </div>
-          </div>
-        </div>
-
-        <!-- Street -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Đường</label
-          >
-          <input
-            [(ngModel)]="data.roomStreet"
-            type="text"
-            id="street-input"
-            [disabled]="data._status === 4"
-            name="street"
-            ngModel
-            required
-            [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            #street="ngModel"
+            formControlName="contentInputControl"
           />
-          <div
-            *ngIf="street.invalid && (street.dirty || street.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.contentInputControl.hasError(
+                'required'
+              )
+            "
           >
-            <div *ngIf="street.errors?.['required']">
-              Địa chỉ phòng trọ không được bỏ trống.
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
 
-        <!-- District -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Quận</label
-          >
+        <!-- Address -->
+        <mat-form-field class="w-full">
+          <mat-label>Địa chỉ</mat-label>
           <input
-            [(ngModel)]="data.roomDistrict"
-            type="text"
-            id="district-input"
-            [disabled]="data._status === 4"
-            name="district"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            #district="ngModel"
+            placeholder="Vui lòng chọn một địa chỉ"
+            aria-label="Địa chỉ"
+            matInput
+            formControlName="addressInputControl"
+            [matAutocomplete]="address"
           />
-          <div
-            *ngIf="district.invalid && (district.dirty || district.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.addressInputControl.hasError(
+                'required'
+              )
+            "
           >
-            <div *ngIf="desc.errors?.['required']">
-              Địa chỉ phòng trọ không được bỏ trống.
-            </div>
-          </div>
-        </div>
-
-        <!-- City -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Thành phố</label
-          >
-          <input
-            [ngModel]="data.roomCity"
-            ngModel
-            type="text"
-            id="city-input"
-            name="city"
-            disabled
-            [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-not-allowed"
-          />
-          <!-- <div
-            *ngIf="city.invalid && (city.dirty || city.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
-          >
-            <div *ngIf="desc.errors?.['required']">
-              Địa chỉ phòng trọ không được bỏ trống.
-            </div>
-          </div> -->
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+          <mat-autocomplete #address="matAutocomplete">
+            <mat-option
+              *ngFor="let option of filteredAddressOptions | async"
+              [value]="option"
+            >
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
         <!-- Area -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Diện tích (m2)</label
-          >
+        <mat-form-field class="w-full">
+          <mat-label>Diện tích</mat-label>
           <input
-            [(ngModel)]="data.roomArea"
-            type="text"
-            id="area-input"
-            [disabled]="data._status === 4"
-            name="area"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            #area="ngModel"
+            aria-label="Diện tích"
+            matInput
+            formControlName="areaInputControl"
           />
-          <div
-            *ngIf="area.invalid && (area.dirty || area.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.areaInputControl.hasError('required')
+            "
           >
-            <div *ngIf="area.errors?.['required']">
-              Diện tích không được bỏ trống.
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
 
         <!-- Renting price -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Gía thuê nhà theo tháng (VNĐ)</label
-          >
+        <mat-form-field class="w-full">
+          <mat-label>Gía thuê theo tháng</mat-label>
           <input
-            [(ngModel)]="data.roomPrice"
-            type="text"
-            id="renting_price-input"
-            [disabled]="data._status === 4"
-            name="renting_price"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            #retalPrice="ngModel"
+            aria-label="Gía thuê theo tháng"
+            matInput
+            formControlName="renting_priceInputControl"
           />
-          <div
+          <mat-error
             *ngIf="
-              retalPrice.invalid && (retalPrice.dirty || retalPrice.touched)
+              this.postEditForm.controls.renting_priceInputControl.hasError(
+                'required'
+              )
             "
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
           >
-            <div *ngIf="retalPrice.errors?.['required']">
-              Gía thuê nhà không được bỏ trống
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
+
         <!-- Electric price -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Gía điện (ký)</label
-          >
+        <mat-form-field class="w-full">
+          <mat-label>Gía điện theo kw</mat-label>
           <input
-            [(ngModel)]="data.roomElectricPrice"
-            type="text"
-            id="electric_input"
-            [disabled]="data._status === 4"
-            name="electric"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            #electricPrice="ngModel"
+            aria-label="Gía điện theo kw"
+            matInput
+            formControlName="electricInputControl"
           />
-          <div
+          <mat-error
             *ngIf="
-              electricPrice.invalid &&
-              (electricPrice.dirty || electricPrice.touched)
+              this.postEditForm.controls.electricInputControl.hasError(
+                'required'
+              )
             "
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
           >
-            <div *ngIf="electricPrice.errors?.['required']">
-              Mô tả không được bỏ trống
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
+
         <!-- Water price -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Gía nước (khối)</label
-          >
+        <mat-form-field class="w-full">
+          <mat-label>Giá nước</mat-label>
           <input
-            [(ngModel)]="data.roomWaterPrice"
-            type="text"
-            id="water_price_input"
-            [disabled]="data._status === 4"
-            name="water_price"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            #waterPrice="ngModel"
+            placeholder="Vui lòng chọn một"
+            aria-label="Số nhà và tên đường"
+            matInput
+            formControlName="water_priceInputControl"
           />
-          <div
+          <mat-error
             *ngIf="
-              waterPrice.invalid && (waterPrice.dirty || waterPrice.touched)
+              this.postEditForm.controls.water_priceInputControl.hasError(
+                'required'
+              )
             "
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
           >
-            <div *ngIf="waterPrice.errors?.['required']">
-              Gía nước không được bỏ trống.
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
 
         <!-- Services -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Dịch vụ</label
-          >
+        <mat-form-field class="w-full">
+          <mat-label>Dịch vụ</mat-label>
           <input
-            [(ngModel)]="data.roomServices"
-            type="text"
-            id="services_input"
-            [disabled]="data._status === 4"
-            name="services"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            #services="ngModel"
+            placeholder="Vui lòng chọn một"
+            aria-label="Dịch vụ"
+            matInput
+            formControlName="servicesInputControl"
           />
-          <div
-            *ngIf="services.invalid && (services.dirty || services.touched)"
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.servicesInputControl.hasError(
+                'required'
+              )
+            "
           >
-            <div *ngIf="services.errors?.['required']">
-              Dịch vụ không được bỏ trống.
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
 
         <!-- Utilities -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Tiện ích</label
-          >
+        <mat-form-field class="w-full">
+          <mat-label>Tiện ích đi kèm</mat-label>
           <input
-            [(ngModel)]="data.roomUtilities"
-            type="text"
-            id="utilities_input"
-            [disabled]="data._status === 4"
-            name="utilities"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            #ultilities="ngModel"
+            placeholder="Vui lòng chọn một"
+            aria-label="Tiện ích đi kèm"
+            matInput
+            formControlName="utilitiesInputControl"
           />
-          <div
+          <mat-error
             *ngIf="
-              ultilities.invalid && (ultilities.dirty || ultilities.touched)
+              this.postEditForm.controls.utilitiesInputControl.hasError(
+                'required'
+              )
             "
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
           >
-            <div *ngIf="ultilities.errors?.['required']">
-              Tiện ích không được bỏ trống.
-            </div>
-          </div>
-        </div>
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
 
         <!-- Tags -->
-        <div
-          class="mb-6"
-          [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-        >
+        <div *ngIf="data._status !== 4; else tagsNoUpdate" class="my-6">
           <label
             for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Thêm tag</label
-          >
-          <!-- Your chosen tags -->
-          <div
-            class="flex flex-row flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          >
+            class="flex flex-row mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Gắn thẻ bài viết
+
             <span
               (click)="createTag()"
-              [ngClass]="
-                data._status === 4 ? 'cursor-not-allowed' : 'cursor-pointer'
-              "
-              class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
-              >+</span
+              class="relative left-1 bottom-1 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+              ><mat-icon
+                matRipple
+                [matRippleUnbounded]="true"
+                (click)="createTag()"
+                >add</mat-icon
+              ></span
             >
+          </label>
+          <mat-error *ngIf="this.selectedTags.length === 0">
+            Vui lòng gắn <strong>ít nhất 1 thẻ</strong>
+          </mat-error>
+          <!-- Your chosen tags -->
+          <div class="flex flex-row flex-wrap">
             <div
               class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
               *ngFor="let tag of selectedTags"
@@ -450,31 +278,50 @@
           </div>
         </div>
 
+        <ng-template #tagsNoUpdate>
+          <div
+            class="my-6"
+            [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
+          >
+            <label
+              for="base-input"
+              class="flex flex-row mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Thẻ bài viết
+            </label>
+            <!-- Your chosen tags -->
+            <div class="flex flex-row flex-wrap">
+              <div
+                class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+                *ngFor="let tag of selectedTags"
+              >
+                <span class="tag">
+                  {{ tag._tag }}
+                </span>
+                <span *ngIf="selectedTags.includes(tag)">
+                  <mat-icon>clear</mat-icon></span
+                >
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
         <!-- Images -->
-        <div
-          class="mb-6"
-          [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-        >
+        <div *ngIf="data._status !== 4; else imageNoUpdates" class="mb-6">
           <label
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             for="multiple_files"
-            >Chọn tối đa 5 ảnh</label
+            >Giấy phép kinh doanh (tối đa 5 ảnh)</label
           >
           <mat-error *ngIf="this.previews.length === 0">
             Vui lòng chọn <strong>ít nhất 1 ảnh</strong>
           </mat-error>
           <div class="bg-white-background rounded-lg">
-            <div class="flex flex-wrap justify-center mt-4 h-32">
+            <div class="flex flex-row flex-wrap mt-4 w-100">
               <!-- Image -->
               <div
                 (click)="deleteImage(preview, index)"
                 *ngFor="let preview of previews; index as index"
-                [ngClass]="
-                  data._status === 4
-                    ? 'cursor-not-allowed'
-                    : 'hover:cursor-pointer'
-                "
-                class="xs:basis-[80%] sm:basis-[49%] md:basis-[19%] border-solid border-2 border-indigo-300 p-3 mr-1 mb-1 relative h-36 w-full rounded-lg"
+                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
               >
                 <img
                   *ngIf="preview !== ''"
@@ -484,7 +331,7 @@
                 <div
                   class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
                   *ngIf="preview === ''"
-                  (click)="image.click()"
+                  (click)="updateFiles.click()"
                 >
                   <svg
                     class="w-8 h-12 text-primary-400 dark:text-primary-400"
@@ -502,33 +349,31 @@
                     />
                   </svg>
                 </div>
+
                 <input
                   (change)="updateFile($event, index)"
                   class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                   id="image_file"
-                  name="image_file"
                   type="file"
-                  multiple
-                  ngModel
-                  #image
+                  #updateFiles
+                  formControlName="updateFilesInputControl"
                 />
               </div>
               <!-- Add image -->
               <div
                 *ngIf="previews.length < 5"
                 (click)="addImage.click()"
-                class="xs:basis-[80%] sm:basis-[49%] md:basis-[19%] border-solid border-2 border-indigo-300 p-3 mr-1 mb-1 relative h-36 w-full rounded-lg"
+                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
               >
                 <input
                   (change)="addNewImage($event)"
                   class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                   id="addImage"
-                  name="addImage"
                   type="file"
-                  ngModel
-                  multiple
+                  formControlName="addFilesInputControl"
                   #addImage
                 />
+
                 <div
                   class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
                 >
@@ -551,20 +396,33 @@
               </div>
             </div>
           </div>
-
-          <div
-            *ngIf="
-              selectedFileNames?.length === 0 &&
-              deletedImageIndexes.length === 5
-            "
-            class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
-          >
-            <p>Vui lòng chọn ảnh</p>
-          </div>
         </div>
+
+        <ng-template #imageNoUpdates>
+          <div class="mb-6">
+            <label
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              for="multiple_files"
+              >Ảnh</label
+            >
+            <div class="bg-white-background rounded-lg">
+              <div class="flex flex-row flex-wrap mt-4 w-100">
+                <!-- Image -->
+                <div
+                  *ngFor="let preview of previews; index as index"
+                  class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-default h-36 w-full"
+                >
+                  <img
+                    *ngIf="preview !== ''"
+                    [src]="preview"
+                    class="object-fill max-h-28 w-full rounded-lg"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </form>
-      <notifier-container></notifier-container>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
@@ -577,7 +435,7 @@
       Gỡ bài viết
     </button>
     <button
-      *ngIf="data._status === 2 && data._status !== 4"
+      *ngIf="data._status === 3 && data._status !== 4"
       (click)="toOpenPostDialog()"
       mat-button
     >
@@ -585,12 +443,12 @@
     </button>
     <button
       *ngIf="data._status !== 4"
-      (click)="onSubmitPost(createPostForm.value)"
+      (click)="onSubmitPost()"
       class="bg-blue-700 hover:bg-blue-800"
       style="color: white; background-color: #1a56db"
       mat-button
       type="submit"
-      [disabled]="createPostForm.invalid"
+      [disabled]="postEditForm.invalid"
     >
       Lưu
     </button>

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { PostService } from 'src/app/posts/post.service';
-import { Subscription, Observable, interval } from 'rxjs';
+import { Subscription, Observable, interval, map, startWith } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
 import { Tags } from 'src/app/shared/tags/tag.model';
@@ -10,6 +10,10 @@ import { AddTagDialogComponent } from 'src/app/shared/tags/add-tag-dialog/add-ta
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { ThemePalette } from '@angular/material/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
+import { AddressesService } from '../../register-address/addresses.service';
+import { _filterForStringOptions } from '../../posts-edit/posts-edit.component';
 
 @Component({
   selector: 'app-post-edit-dialog',
@@ -43,24 +47,91 @@ export class PostEditDialogComponent implements OnInit {
 
   selectedTags!: Tags[];
 
+  addressOptions: String[] = new Array<string>();
+  filteredAddressOptions!: Observable<String[]> | undefined;
+
   currentActiveStatus = {
     status: 4, //All posts
     data: this.historyPosts,
   };
 
   currentPost!: PostItem;
-  authService: any;
+
+  postEditForm = this.formBuilder.group({
+    titleInputControl: [{ value: '', disabled: false }, Validators.required],
+    descInputControl: [{ value: '', disabled: false }, Validators.required],
+    contentInputControl: [{ value: '', disabled: false }, Validators.required],
+    addressInputControl: [{ value: '', disabled: false }, Validators.required],
+    areaInputControl: [{ value: 0, disabled: false }, Validators.required],
+    renting_priceInputControl: [
+      { value: 0, disabled: false },
+      Validators.required,
+    ],
+    electricInputControl: [{ value: 0, disabled: false }, Validators.required],
+    water_priceInputControl: [
+      { value: 0, disabled: false },
+      Validators.required,
+    ],
+    servicesInputControl: [
+      { value: [''], disabled: false },
+      Validators.required,
+    ],
+    utilitiesInputControl: [
+      { value: [''], disabled: false },
+      Validators.required,
+    ],
+    addFilesInputControl: [],
+    updateFilesInputControl: [],
+  });
   constructor(
     private postService: PostService,
     private notifierService: NotifierService,
     public dialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private addressesService: AddressesService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentPost = this.data;
-    console.log(
-      '🚀 ~ file: post-edit-dialog.component.ts:54 ~ PostEditDialogComponent ~ this.currentPost:',
-      this.currentPost
-    );
+    //Initite postEdit form value
+    if (this.currentPost) {
+      this.postEditForm.patchValue({
+        titleInputControl: this.currentPost._title,
+        descInputControl: this.currentPost._desc,
+        contentInputControl: this.currentPost._content,
+        addressInputControl: this.currentPost.roomAddress,
+        areaInputControl: this.currentPost.roomArea,
+        renting_priceInputControl: this.currentPost.roomPrice,
+        electricInputControl: this.currentPost.roomElectricPrice,
+        water_priceInputControl: this.currentPost.roomWaterPrice,
+        servicesInputControl: this.currentPost.roomServices,
+        utilitiesInputControl: this.currentPost.roomUtilities,
+      });
+      if (this.currentPost._status === 4) {
+        this.postEditForm.controls['titleInputControl'].disable();
+        this.postEditForm.controls['descInputControl'].disable();
+        this.postEditForm.controls['contentInputControl'].disable();
+        this.postEditForm.controls['addressInputControl'].disable();
+        this.postEditForm.controls['areaInputControl'].disable();
+        this.postEditForm.controls['renting_priceInputControl'].disable();
+        this.postEditForm.controls['electricInputControl'].disable();
+        this.postEditForm.controls['water_priceInputControl'].disable();
+        this.postEditForm.controls['servicesInputControl'].disable();
+        this.postEditForm.controls['utilitiesInputControl'].disable();
+      }
+    }
+
+    //List địa chỉ của user
+    this.addressOptions = [];
+    this.addressesService.getCurrentRegisteredAddress.subscribe((addresses) => {
+      if (addresses) this.addressOptions = addresses;
+    });
+    this.filteredAddressOptions =
+      this.postEditForm.controls.addressInputControl.valueChanges.pipe(
+        startWith(''),
+        map((value) =>
+          _filterForStringOptions(this.addressOptions, value || '')
+        )
+      );
   }
 
   ngOnInit(): void {
@@ -70,7 +141,7 @@ export class PostEditDialogComponent implements OnInit {
     });
   }
 
-  onSubmitPost(form: any) {
+  onSubmitPost1(form: any) {
     console.log('on submiting post ...');
     console.log('Form data: ', form);
     this.isLoading = true;
@@ -109,6 +180,47 @@ export class PostEditDialogComponent implements OnInit {
           'Vui lòng không để trống ảnh của bài viết!'
         );
       }
+    }
+  }
+
+  onSubmitPost() {
+    this.isLoading = true;
+    console.log('on submiting post ...');
+    console.log('Form data: ', this.postEditForm.value);
+    console.log(
+      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
+      this.selectedTags
+    );
+    console.log(
+      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
+      this.selectedFiles
+    );
+    this.notifierService.hideAll();
+    if (this.selectedFiles && this.selectedTags) {
+      this.postService
+        .createPost(
+          this.postEditForm.value,
+          this.updatedFiles,
+          this.selectedTags
+        )
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.notifierService.notify(
+                'success',
+                'Cập nhật bài viết thành công!'
+              );
+              this.isLoading = false;
+            }
+          },
+          (errMsg) => {
+            this.isLoading = false;
+            this.notifierService.notify('error', errMsg);
+          }
+        );
+    } else {
+      this.isLoading = false;
+      this.notifierService.notify('warning', 'Vui lòng điền đủ các trường!');
     }
   }
 
