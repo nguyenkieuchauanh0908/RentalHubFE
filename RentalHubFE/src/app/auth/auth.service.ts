@@ -98,8 +98,7 @@ export class AuthService {
         let registeredAddresses = localStorage.getItem('registered-addresses');
         if (registeredAddresses) {
           this.addressesService.setcurrentRegisteredAddresses(
-            // JSON.parse(registeredAddresses)
-            []
+            JSON.parse(registeredAddresses)
           );
         }
       }
@@ -318,11 +317,14 @@ export class AuthService {
 
   setRegisteredAddressesWhenLogin(registeredAddress: String[]) {
     //Lấy registered addresses do api login trả về ra lưu vào services và local storage
-    registeredAddress = [
-      '1 Võ Văn Ngân, Linh Chiểu, Thủ Đức',
-      '26/17 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh',
-      '123/4/5 Lê Văn Thọ, Làng Hoa, Gò Vấp',
-    ];
+    if (!registeredAddress) {
+      registeredAddress = [
+        '1 Võ Văn Ngân, Linh Chiểu, Thủ Đức',
+        '26/17 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh',
+        '123/4/5 Lê Văn Thọ, Làng Hoa, Gò Vấp',
+      ];
+    }
+
     this.addressesService.setcurrentRegisteredAddresses(registeredAddress);
     localStorage.setItem(
       'registered-addresses',
