@@ -1,6 +1,4 @@
 <div *ngIf="isLoading; else postsBlock" class="spinner__loading">
-  <!-- <mat-progress-spinner diameter="40" [value]="value" mode="determinate">
-  </mat-progress-spinner> -->
   <mat-spinner diameter="30"></mat-spinner>
 </div>
 <!-- Container -->
@@ -9,99 +7,200 @@
     class="grid grid-cols-12 gap-4 px-4 lg:px-20 pt-8 pb-32 bg-grey-background"
   >
     <!-- Sidebar host -->
-    <div class="col-span-3 text-center">
+    <div class="xs:hidden md:block md:col-span-3 text-center">
       <app-host-sidebar [hostProfile]="hostProfile"></app-host-sidebar>
     </div>
     <!-- Main content -->
-    <div class="col-span-9">
+    <div class="xs:col-span-12 md:col-span-9">
       <div class="flex flex-col flex-nowrap bg-white-background p-6 rounded-lg">
         <!-- Title -->
-        <div class="flex flex-row gap-4 align-middle text-justify">
+        <div
+          class="flex flex-row gap-4 align-middle text-justify justify-between"
+        >
           <h2 class="text-base font-semibold leading-7 text-gray-900 mb-0">
             Lịch sử bài viết
           </h2>
-          <!-- <p>Filter theo thời gian</p> -->
-        </div>
-        <!-- Main content-->
-        <div class="flex flex-col">
-          <!-- Lists of products -->
-          <div class="grid grid-rows bg-white-background">
-            <div *ngIf="historyPosts.length > 0; else noPostsBlock">
-              <div
-                (click)="goToPost(post._id)"
-                *ngFor="let post of historyPosts"
-                class="grid gap-4 grid-cols-12 mb-4"
-              >
-                <!-- Image -->
-                <div class="grid col-span-2 w-full h-700px">
-                  <img
-                    class="hover:cursor-pointer object-fill max-h-32 w-full"
-                    src="{{ post._images[0] }}"
-                    alt="hình nhà trọ"
-                  />
-                </div>
-                <!-- Info -->
-                <div class="grid col-span-7">
-                  <!-- Title -->
-                  <div class="row flex flex-row items-center mb-0">
-                    <p
-                      class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
-                    >
-                      {{ post._desc }}
-                    </p>
-                  </div>
-                  <!-- Price, Area, Assress -->
-                  <div
-                    class="row flex flex-row gap-4 items-center hover:cursor-pointer text-sm text-sub-text-color"
-                  >
-                    <p>
-                      Giá:
-                      <span class="text-text-price-color font-medium">
-                        {{ post.roomPrice }}đ</span
-                      >
-                    </p>
-
-                    <p>
-                      Giá điện:
-                      <span class="text-text-price-color font-medium"
-                        >{{ post.roomElectricPrice }}đ</span
-                      >
-                    </p>
-
-                    <p>
-                      Giá nước:
-                      <span class="text-text-price-color font-medium"
-                        >{{ post.roomWaterPrice }}đ</span
-                      >
-                    </p>
-                  </div>
-
-                  <!-- Address -->
-                  <div
-                    class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
-                  >
-                    <p>
-                      Địa chỉ phòng trọ:
-                      <span class="font-medium">{{ post.roomAddress }}</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <ng-template #noPostsBlock>
-              <p class="text-center">Không có bài viết nào!</p>
-            </ng-template>
+          <!-- Menu for xs screen -->
+          <div class="xs:block md:hidden xs:text-right">
+            <button
+              #matMenuTrigger
+              mat-raised-butto
+              [matMenuTriggerFor]="host"
+              class="cursor-pointer mr-3"
+            >
+              <p class="text-black-color font-medium text-center">
+                <mat-icon class="relative top-1 ml-1" color="primary">
+                  arrow_drop_down_circle</mat-icon
+                >
+              </p>
+            </button>
+            <mat-menu
+              #host="matMenu"
+              yPosition="below"
+              xPosition="after"
+              class="md:hidden w-50 rounded-lg shadow-lg"
+            >
+              <a (click)="$event.stopPropagation()"
+                ><app-host-sidebar
+                  [hostProfile]="this.hostProfile"
+                ></app-host-sidebar
+              ></a>
+            </mat-menu>
           </div>
 
-          <!-- Pagination -->
-          <app-pagination
-            [currentPage]="currentPage"
-            [totalPages]="totalPages"
-            (toPrevPage)="changeCurrentPage($event, false, false)"
-            (toNextPage)="changeCurrentPage($event, false, false)"
-            (toFirstPage)="changeCurrentPage(0, $event, false)"
-            (toLastPage)="changeCurrentPage(0, false, $event)"
-          ></app-pagination>
+          <!-- <p>Filter theo thời gian</p> -->
+        </div>
+        <!-- List of products -->
+        <div class="flex flex-col relative">
+          <!-- Loading spinner -->
+          <div
+            *ngIf="isLoading; else postsBlock"
+            class="spinner__loading text-center"
+          >
+            <mat-spinner diameter="30"></mat-spinner>
+          </div>
+          <!-- Lists of products -->
+          <!-- Item -->
+          <ng-template #postsBlock>
+            <div class="grid grid-rows justify-center">
+              <!-- sm screen above -->
+              <div
+                *ngIf="historyPosts.length > 0; else noPostsBlock"
+                class="xs:hidden sm:block"
+              >
+                <div
+                  *ngFor="let post of historyPosts"
+                  class="grid gap-2 grid-cols-12 mb-4 w-full h-max-full"
+                >
+                  <!-- Image -->
+                  <div
+                    (click)="goToPost(post._id)"
+                    class="grid xs:col-span-3 lg:col-span-2"
+                  >
+                    <img
+                      class="hover:cursor-pointer object-fill h-32 w-full rounded-lg"
+                      src="{{ post._images[0] }}"
+                      alt="hình nhà trọ"
+                    />
+                  </div>
+                  <!-- Info -->
+                  <div
+                    (click)="goToPost(post._id)"
+                    class="grid xs:col-span-9 lg:col-span-7"
+                  >
+                    <!-- Title -->
+                    <div class="row flex flex-row items-center mb-0">
+                      <a
+                        class="text-base font-medium mb-0 hover:cursor-pointer hover:text-primary-600 line-clamp-2"
+                      >
+                        {{ post._title }}
+                      </a>
+                    </div>
+                    <!-- Price, Area, Assress -->
+                    <div
+                      class="row flex flex-row gap-4 items-center hover:cursor-pointer text-sm text-sub-text-color"
+                    >
+                      <p>
+                        Giá:
+                        <span class="text-text-price-color font-medium">
+                          {{ post.roomPrice }}đ</span
+                        >
+                      </p>
+
+                      <p>
+                        Giá điện:
+                        <span class="text-text-price-color font-medium"
+                          >{{ post.roomElectricPrice }}đ</span
+                        >
+                      </p>
+
+                      <p>
+                        Giá nước:
+                        <span class="text-text-price-color font-medium"
+                          >{{ post.roomWaterPrice }}đ</span
+                        >
+                      </p>
+                    </div>
+
+                    <!-- Address -->
+                    <div
+                      class="row flex flex-row gap-4 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color"
+                    >
+                      <p>
+                        Địa chỉ phòng trọ:
+                        <span class="font-medium">{{ post.roomAddress }}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    *ngIf="post._status === 3"
+                    class="xs:hidden lg:grid lg:col-span-3 lg:p-8 lg:h-10"
+                  ></div>
+                </div>
+                <!-- Pagination -->
+                <app-pagination
+                  [currentPage]="currentPage"
+                  [totalPages]="totalPages"
+                  (toPrevPage)="changeCurrentPage($event, false, false)"
+                  (toNextPage)="changeCurrentPage($event, false, false)"
+                  (toFirstPage)="changeCurrentPage(0, $event, false)"
+                  (toLastPage)="changeCurrentPage(0, false, $event)"
+                ></app-pagination>
+              </div>
+              <!-- xs screen -->
+              <div *ngIf="historyPosts.length > 0" class="xs:block sm:hidden">
+                <div *ngFor="let post of historyPosts">
+                  <div
+                    (click)="goToPost(post._id)"
+                    class="max-w-xs bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2 cursor-pointer hover:-translate-y-0.5 hover:shadow-primary-200"
+                  >
+                    <a (click)="goToPost(post._id)">
+                      <img
+                        class="rounded-t-lg w-full h-60"
+                        src="{{ post._images[0] }}"
+                        alt="room's images"
+                      />
+                    </a>
+                    <div class="p-2">
+                      <a (click)="goToPost(post._id)">
+                        <p
+                          class="text-md font-medium tracking-tight text-black-color dark:text-white hover:text-primary-600 line-clamp-1"
+                        >
+                          {{ post._title }}
+                        </p>
+                      </a>
+                      <div
+                        class="row flex flex-row gap-2 items-center justify-between hover:cursor-pointer text-sm text-sub-text-color relative bottom-2"
+                      >
+                        <span class="text-text-price-color font-normal"
+                          >{{ post.roomPrice }}tr</span
+                        >
+
+                        <span class="font-normal">{{ post.roomArea }}m2</span>
+
+                        <span class="font-normal line-clamp-1">{{
+                          post.roomAddress
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Pagination -->
+                <app-pagination
+                  [currentPage]="currentPage"
+                  [totalPages]="totalPages"
+                  (toPrevPage)="changeCurrentPage($event, false, false)"
+                  (toNextPage)="changeCurrentPage($event, false, false)"
+                  (toFirstPage)="changeCurrentPage(0, $event, false)"
+                  (toLastPage)="changeCurrentPage(0, false, $event)"
+                ></app-pagination>
+              </div>
+              <ng-template #noPostsBlock>
+                <p class="text-center">Không có bài viết nào!</p>
+              </ng-template>
+            </div>
+          </ng-template>
         </div>
       </div>
       <notifier-container></notifier-container>

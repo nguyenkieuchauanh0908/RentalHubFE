@@ -3,6 +3,7 @@ import { HostComponent } from './host.component';
 import { HostPostingHistoryComponent } from './host-posting-history/host-posting-history.component';
 import { NgModule } from '@angular/core';
 import { AuthGuard } from '../auth/auth.guard';
+import { PostsSearchResultComponent } from '../posts/posts-search-result/posts-search-result.component';
 
 const routes: Routes = [
   {

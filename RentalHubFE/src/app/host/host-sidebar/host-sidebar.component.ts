@@ -7,4 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class HostSidebarComponent {
   @Input() hostProfile: any | undefined;
+
+  constructor() {
+    console.log('🚀 ~ HostSidebarComponent ~ hostProfile:', this.hostProfile);
+  }
 }
