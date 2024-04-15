@@ -117,9 +117,17 @@ export class AuthService {
       .pipe(catchError(handleError));
   }
 
-  signupOTP(email: string, pw: string, _pwconfirm: string) {
+  signupOTP(
+    fname: string,
+    lname: string,
+    email: string,
+    pw: string,
+    _pwconfirm: string
+  ) {
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/registor-user', {
+        _fname: fname,
+        _lname: lname,
         _email: email,
         _pw: pw,
         _pwconfirm: _pwconfirm,

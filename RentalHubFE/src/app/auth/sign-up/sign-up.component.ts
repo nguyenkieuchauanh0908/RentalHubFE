@@ -34,31 +34,45 @@ export class SignUpComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
+    console.log('onSubmit....');
+    console.log(
+      '🚀 ~ SignUpComponent ~ onSubmit ~ form.value.email:',
+      form.value
+    );
     this.temptEmail = form.value.email;
     this.notifierService.hideAll();
-    console.log('onSubmit....');
     let signupObs: Observable<resDataDTO>;
     if (!form.valid) {
       return;
     }
+    const fname = form.value.fname;
+    const lname = form.value.lname;
     const email = form.value.email;
     const pw = form.value.password;
     const pw_confirm = form.value.pw_confirm;
 
     if (pw === pw_confirm) {
-      signupObs = this.authService.signupOTP(email, pw, pw_confirm);
+      signupObs = this.authService.signupOTP(
+        fname,
+        lname,
+        email,
+        pw,
+        pw_confirm
+      );
       this.isLoading = true;
       signupObs.subscribe(
         (res) => {
-          this.isLoading = false;
-          this.notifierService.notify(
-            'success',
-            'OTP đã được gửi đến email đăng ký!'
-          );
-          const dialogRef = this.dialog.open(OtpDialogComponent, {
-            width: '400px',
-            data: this.temptEmail,
-          });
+          if (res.data) {
+            this.isLoading = false;
+            this.notifierService.notify(
+              'success',
+              'OTP đã được gửi đến email đăng ký!'
+            );
+            const dialogRef = this.dialog.open(OtpDialogComponent, {
+              width: '400px',
+              data: this.temptEmail,
+            });
+          }
         },
         (errorMsg) => {
           this.isLoading = false;

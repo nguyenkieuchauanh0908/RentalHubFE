@@ -7,14 +7,14 @@
   </div>
   <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
     <p
-      class="text-xl font-medium leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
+      class="text-center text-xl font-medium leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
     >
       Đăng nhập vào tài khoản
     </p>
     <form
       #loginForm="ngForm"
       (ngSubmit)="onSubmit(loginForm)"
-      class="space-y-4 md:space-y-6"
+      class="space-y-2 md:space-y-3"
     >
       <!-- Email input -->
       <div>
@@ -34,13 +34,11 @@
           email
           #email="ngModel"
         />
-        <div
-          *ngIf="email.invalid && (email.dirty || email.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
+        <mat-error
+          *ngIf="(email.dirty || email.touched) && email.hasError('required')"
         >
-          <div *ngIf="email.errors?.['required']">Vui lòng nhập email!</div>
-        </div>
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
       </div>
 
       <!-- Password input -->
@@ -71,13 +69,9 @@
             <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="isShow"></i>
           </button>
         </div>
-        <div
-          *ngIf="pw.invalid && (pw.dirty || pw.touched)"
-          class="p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          <div *ngIf="pw.errors?.['required']">Vui lòng nhập mật khẩu!</div>
-        </div>
+        <mat-error *ngIf="(pw.dirty || pw.touched) && pw.hasError('required')">
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
       </div>
       <!-- Remember me -->
       <!-- <div class="flex items-center justify-between">
@@ -100,7 +94,7 @@
       <button
         type="submit"
         [disabled]="!loginForm.valid"
-        class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+        class="w-full space-y-2 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
       >
         Đăng nhập
       </button>
