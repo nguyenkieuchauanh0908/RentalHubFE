@@ -57,7 +57,7 @@
               </div>
               <!-- Price, Area, Assress -->
               <div
-                class="row flex flex-row gap-4 items-center hover:cursor-pointer text-sm text-sub-text-color"
+                class="row flex flex-row flex-wrap gap-2 items-center hover:cursor-pointer text-sm text-sub-text-color"
               >
                 <p>
                   Giá:
@@ -77,6 +77,12 @@
                   Giá nước:
                   <span class="text-text-price-color font-medium"
                     >{{ post.roomWaterPrice.toLocaleString() }}đ</span
+                  >
+                </p>
+                <p>
+                  Diện tích:
+                  <span class="text-text-price-color font-medium"
+                    >{{ post.roomArea.toLocaleString() }}m <sup>2</sup></span
                   >
                 </p>
               </div>

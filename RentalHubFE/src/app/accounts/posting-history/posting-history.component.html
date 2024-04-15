@@ -120,9 +120,9 @@
                   {{ post._title }}
                 </a>
               </div>
-              <!-- Price, Area, Assress -->
+              <!-- Price, Area, Address -->
               <div
-                class="row flex flex-row gap-4 items-center hover:cursor-pointer text-sm text-sub-text-color"
+                class="row flex flex-row flex-wrap gap-2 items-center hover:cursor-pointer text-sm text-sub-text-color"
               >
                 <p>
                   Giá:
@@ -142,6 +142,12 @@
                   Giá nước:
                   <span class="text-text-price-color font-medium"
                     >{{ post.roomWaterPrice.toLocaleString() }}đ</span
+                  >
+                </p>
+                <p>
+                  Diện tích:
+                  <span class="text-text-price-color font-medium"
+                    >{{ post.roomArea.toLocaleString() }}m <sup>2</sup></span
                   >
                 </p>
               </div>
@@ -223,7 +229,9 @@
                     >{{ post.roomPrice.toLocaleString() }}tr</span
                   >
 
-                  <span class="font-normal">{{ post.roomArea }}m2</span>
+                  <span class="font-normal"
+                    >{{ post.roomArea }}m<sup>2</sup></span
+                  >
 
                   <span class="font-normal line-clamp-1">{{
                     post.roomAddress
