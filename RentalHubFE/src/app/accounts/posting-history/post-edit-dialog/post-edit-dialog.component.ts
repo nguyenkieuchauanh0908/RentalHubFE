@@ -50,11 +50,6 @@ export class PostEditDialogComponent implements OnInit {
   addressOptions: String[] = new Array<string>();
   filteredAddressOptions!: Observable<String[]> | undefined;
 
-  currentActiveStatus = {
-    status: 4, //All posts
-    data: this.historyPosts,
-  };
-
   currentPost!: PostItem;
 
   postEditForm = this.formBuilder.group({
@@ -141,47 +136,47 @@ export class PostEditDialogComponent implements OnInit {
     });
   }
 
-  onSubmitPost1(form: any) {
-    console.log('on submiting post ...');
-    console.log('Form data: ', form);
-    this.isLoading = true;
-    if (this.previews) {
-      console.log(
-        '🚀 ~ file: post-edit-dialog.component.ts:59 ~ PostEditDialogComponent ~ onSubmitPost ~ this.selectedFiles:',
-        this.selectedFiles
-      );
-      this.postService
-        .updatePost(
-          form,
-          this.updatedFiles,
-          this.deletedImageIndexes,
-          this.selectedTags,
-          this.data._id
-        )
-        .subscribe(
-          (res) => {
-            if (res.data) {
-              this.isLoading = false;
-              this.value = 0;
-              this.notifierService.notify(
-                'success',
-                'Cập nhật bài viết thành công!'
-              );
-            }
-          },
-          (errMsg) => {
-            this.notifierService.notify('error', errMsg);
-          }
-        );
-    } else {
-      if (this.selectedFiles) {
-        this.notifierService.notify(
-          'warning',
-          'Vui lòng không để trống ảnh của bài viết!'
-        );
-      }
-    }
-  }
+  // onSubmitPost1(form: any) {
+  //   console.log('on submiting post ...');
+  //   console.log('Form data: ', form);
+  //   this.isLoading = true;
+  //   if (this.previews) {
+  //     console.log(
+  //       '🚀 ~ file: post-edit-dialog.component.ts:59 ~ PostEditDialogComponent ~ onSubmitPost ~ this.selectedFiles:',
+  //       this.selectedFiles
+  //     );
+  //     this.postService
+  //       .updatePost(
+  //         form,
+  //         this.updatedFiles,
+  //         this.deletedImageIndexes,
+  //         this.selectedTags,
+  //         this.data._id
+  //       )
+  //       .subscribe(
+  //         (res) => {
+  //           if (res.data) {
+  //             this.isLoading = false;
+  //             this.value = 0;
+  //             this.notifierService.notify(
+  //               'success',
+  //               'Cập nhật bài viết thành công!'
+  //             );
+  //           }
+  //         },
+  //         (errMsg) => {
+  //           this.notifierService.notify('error', errMsg);
+  //         }
+  //       );
+  //   } else {
+  //     if (this.selectedFiles) {
+  //       this.notifierService.notify(
+  //         'warning',
+  //         'Vui lòng không để trống ảnh của bài viết!'
+  //       );
+  //     }
+  //   }
+  // }
 
   onSubmitPost() {
     this.isLoading = true;
@@ -198,10 +193,12 @@ export class PostEditDialogComponent implements OnInit {
     this.notifierService.hideAll();
     if (this.selectedFiles && this.selectedTags) {
       this.postService
-        .createPost(
+        .updatePost(
           this.postEditForm.value,
           this.updatedFiles,
-          this.selectedTags
+          this.deletedImageIndexes,
+          this.selectedTags,
+          this.data._id
         )
         .subscribe(
           (res) => {
@@ -292,9 +289,6 @@ export class PostEditDialogComponent implements OnInit {
         this.deletedImageIndexes
       );
     }
-    // if(this.selectedFileNames.includes(preview)){
-    //   this.selectedFiles.
-    // }
   }
 
   updateChosentags(tag: any) {

@@ -20,6 +20,8 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { UpdateAvatarComponent } from './update-avatar/update-avatar.component';
 import { LoginDetailUpdateComponent } from './login-detail-update/login-detail-update.component';
 import { RegisterAddressComponent } from './register-address/register-address.component';
+import { ManageAddressesComponent } from './manage-addresses/manage-addresses.component';
+import { AddressDetailComponent } from './manage-addresses/address-detail/address-detail.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,8 @@ import { RegisterAddressComponent } from './register-address/register-address.co
     UpdateAvatarComponent,
     LoginDetailUpdateComponent,
     RegisterAddressComponent,
+    ManageAddressesComponent,
+    AddressDetailComponent,
   ],
   imports: [
     CommonModule,

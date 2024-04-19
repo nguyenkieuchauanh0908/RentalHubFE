@@ -82,29 +82,28 @@ export class ProfileHeaderComponent {
   }
 
   toUpdateLoginDetail() {
-    let uId = this.user?._id;
-    this.router.navigate(['/profile/update-login-detail/', uId]);
+    this.router.navigate(['/profile/update-login-detail/', this.user?._id]);
   }
 
   toRegisterNewAddress() {
-    let uId = this.user?._id;
-    this.router.navigate(['/profile/register-address', uId]);
+    this.router.navigate(['/profile/register-address', this.user?._id]);
+  }
+
+  toAddressesManagement() {
+    this.router.navigate(['/profile/manage-addresses', this.user?._id]);
   }
 
   toUpdateAvatar() {
-    let uId = this.user?._id;
-    this.router.navigate(['/profile/update-avatar/', uId]);
+    this.router.navigate(['/profile/update-avatar/', this.user?._id]);
   }
 
   toMyPosting() {
-    let uId = this.user?._id;
-    this.router.navigate(['/profile/posting-history/', uId]);
+    this.router.navigate(['/profile/posting-history/', this.user?._id]);
   }
 
   toPostNew() {
     if (this.user !== null) {
-      let uId = this.user?._id;
-      this.router.navigate(['/profile/post-new/', uId]);
+      this.router.navigate(['/profile/post-new/', this.user?._id]);
     } else {
       this.notifierService.notify('error', 'Vui lòng đăng nhập để đăng bài!');
     }

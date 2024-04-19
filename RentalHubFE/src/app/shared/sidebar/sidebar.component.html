@@ -10,7 +10,6 @@
           class="w-32 h-32 rounded-full mx-auto cursor-pointer"
           alt="Avatar"
         />
-        <!-- <a (click)="editAvatar()">Đổi avatar</a> -->
       </div>
       <!-- User name -->
       <div class="p-2">
@@ -50,6 +49,16 @@
             class="hover:text-primary-600 hover:font-medium"
             (click)="toRegisterNewAddress()"
             >Đăng ký địa chỉ</a
+          >
+          <mat-divider></mat-divider>
+        </div>
+
+        <!-- Address Management -->
+        <div class="flex flex-col gap-2 text-center cursor-pointer">
+          <a
+            class="hover:text-primary-600 hover:font-medium"
+            (click)="toAddressesManagement()"
+            >Quản lý địa chỉ</a
           >
           <mat-divider></mat-divider>
         </div>

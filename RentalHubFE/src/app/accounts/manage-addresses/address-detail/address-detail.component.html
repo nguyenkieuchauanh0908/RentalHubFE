@@ -1,0 +1,207 @@
+<div [ngClass]="isLoading ? 'opacity-70' : ''">
+  <h2 mat-dialog-title>Chi tiết bài viết</h2>
+  '
+  <div *ngIf="isLoading" class="spinner__loading">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <mat-dialog-content>
+    <!-- New post edit modal -->
+    <div>
+      <form [formGroup]="addressDetailForm">
+        <!-- Reported Reasons Tags -->
+        <div class="mb-6" *ngIf="data._status === 4">
+          <label
+            for="base-input"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Lý do bị báo cáo</label
+          >
+          <div *ngIf="data._reason">
+            <div class="flex flex-row flex-wrap">
+              <div
+                class="flex flex-row h-6 bg-red-200 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-red-300 dark:text-red-900"
+              >
+                <span class="tag">{{ data._reason }} </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <mat-form-field class="w-full">
+          <mat-label>Địa chỉ</mat-label>
+          <input
+            class="cursor-pointer"
+            aria-label="Địa chỉ"
+            matInput
+            formControlName="addressInputControl"
+          />
+          <mat-error
+            *ngIf="
+              this.addressDetailForm.controls.addressInputControl.hasError(
+                'required'
+              )
+            "
+          >
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
+        <!-- Address -->
+        <mat-form-field class="w-full">
+          <mat-label>ID kiểm duyệt viên</mat-label>
+          <input
+            class="cursor-pointer"
+            aria-label="ID kiểm duyệt viên"
+            matInput
+            formControlName="inspectorIdInputControl"
+          />
+          <mat-error
+            *ngIf="
+              this.addressDetailForm.controls.inspectorIdInputControl.hasError(
+                'required'
+              )
+            "
+          >
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Images -->
+        <div *ngIf="data._status !== 4; else imageNoUpdates" class="mb-6">
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            for="multiple_files"
+            >Giấy phép kinh doanh (tối đa 5 ảnh)</label
+          >
+          <mat-error *ngIf="this.previews.length === 0">
+            Vui lòng chọn <strong>ít nhất 1 ảnh</strong>
+          </mat-error>
+          <div class="bg-white-background rounded-lg">
+            <div class="flex flex-row flex-wrap mt-4 w-100">
+              <!-- Image -->
+              <div
+                (click)="deleteImage(preview, index)"
+                *ngFor="let preview of previews; index as index"
+                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
+              >
+                <img
+                  *ngIf="preview !== ''"
+                  [src]="preview"
+                  class="hover:cursor-pointer object-fill max-h-28 w-full rounded-lg"
+                />
+                <div
+                  class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
+                  *ngIf="preview === ''"
+                  (click)="updateFiles.click()"
+                >
+                  <svg
+                    class="w-8 h-12 text-primary-400 dark:text-primary-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                </div>
+
+                <input
+                  (change)="updateFile($event, index)"
+                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="image_file"
+                  type="file"
+                  #updateFiles
+                  formControlName="updateFilesInputControl"
+                />
+              </div>
+              <!-- Add image -->
+              <div
+                *ngIf="previews.length < 5"
+                (click)="addImage.click()"
+                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
+              >
+                <input
+                  (change)="addNewImage($event)"
+                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="addImage"
+                  type="file"
+                  formControlName="addFilesInputControl"
+                  #addImage
+                />
+
+                <div
+                  class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
+                >
+                  <svg
+                    class="w-8 h-12 text-primary-400 dark:text-primary-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #imageNoUpdates>
+          <div class="mb-6">
+            <label
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              for="multiple_files"
+              >Ảnh</label
+            >
+            <div class="bg-white-background rounded-lg">
+              <div class="flex flex-row flex-wrap mt-4 w-100">
+                <!-- Image -->
+                <div
+                  *ngFor="let preview of previews; index as index"
+                  class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-default h-36 w-full"
+                >
+                  <img
+                    *ngIf="preview !== ''"
+                    [src]="preview"
+                    class="object-fill max-h-28 w-full rounded-lg"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </form>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Hủy</button>
+    <button
+      *ngIf="data._status === 1"
+      (click)="updateAddressStatus(data._id, 3)"
+      style="color: white; background-color: #1a56db"
+      mat-button
+    >
+      Gỡ
+    </button>
+    <button
+      *ngIf="data._status === 3"
+      (click)="updateAddressStatus(data._id, 1)"
+      style="color: white; background-color: #1a56db"
+      mat-button
+    >
+      Mở lại
+    </button>
+  </mat-dialog-actions>
+</div>
