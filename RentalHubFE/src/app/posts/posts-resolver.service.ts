@@ -33,16 +33,18 @@ export class PostsResolverService implements Resolve<PostItem[]> {
       lowerThan: 10000000,
       checked: false,
     },
+    range: {
+      priceRange: { max: 10000000000, min: 100000 },
+      electricRanges: { max: 10000000000, min: 100000 },
+      waterRange: { max: 10000000000, min: 100000 },
+    },
     priorities: [''],
   };
   constructor(private postService: PostService) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const posts = this.postService.posts;
-    if (posts.length === 0) {
-      return this.postService.getPostList(1, 3, this.filterCriteria);
-    } else {
-      return posts;
-    }
+
+    return posts;
   }
 }

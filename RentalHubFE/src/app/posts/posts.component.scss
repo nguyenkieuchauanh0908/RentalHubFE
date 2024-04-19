@@ -1,0 +1,28 @@
+:host ::ng-deep .mat-slider.mat-slider-horizontal .mat-slider-wrapper {
+  top: 18px;
+}
+:host ::ng-deep .mat-slider.mat-slider-horizontal .mat-slider-track-wrapper {
+  height: 6px;
+  border-radius: 10px;
+}
+:host ::ng-deep .mat-slider.mat-slider-horizontal .mat-slider-track-background,
+:host ::ng-deep .mat-slider.mat-slider-horizontal .mat-slider-track-fill {
+  height: 100%;
+}
+:host ::ng-deep .mat-slider.mat-slider-horizontal .mat-slider-track-fill {
+  background-color: blue;
+}
+:host ::ng-deep .mat-accent .mat-slider-thumb {
+  height: 30px;
+  width: 30px;
+  background-color: white;
+  border: solid 2px gray;
+  bottom: -20px;
+  right: -20px;
+}
+:host
+  ::ng-deep
+  .mat-slider-min-value:not(.mat-slider-thumb-label-showing)
+  .mat-slider-thumb {
+  background-color: white;
+}

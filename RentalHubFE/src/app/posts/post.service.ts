@@ -39,10 +39,6 @@ export class PostService {
   }
 
   getPostList(page: number, limit: number, filter: FilterCriteria) {
-    console.log(
-      '🚀 ~ PostService ~ filter.priorities.forEach ~ filter.priorities:',
-      filter.priorities
-    );
     let queryParams = new HttpParams();
     //Params filter
     filter.priorities.forEach((priority) => {
@@ -81,10 +77,13 @@ export class PostService {
       }
     });
 
+    queryParams = queryParams.append('greater', filter.range.priceRange.min);
+    queryParams = queryParams.append('less', filter.range.priceRange.max);
+
     //Params pagination
     queryParams = queryParams.append('page', page);
     queryParams = queryParams.append('limit', limit);
-    this.http
+    return this.http
       .get<resDataDTO>(environment.baseUrl + 'posts', {
         params: queryParams,
       })
@@ -92,7 +91,7 @@ export class PostService {
         catchError(handleError),
         tap(
           (res) => {
-            this.posts = res.data;
+            this.posts = res.data.slice(0, -1);
             this.paginationService.pagination = res.pagination;
             this.paginationService.paginationChanged.next(res.pagination);
             this.postListChanged.next([...this.posts]);
@@ -101,10 +100,9 @@ export class PostService {
             this.notifierService.notify('error', errMsg);
           }
         )
-      )
-      .subscribe();
+      );
 
-    return this.posts.slice();
+    // return this.posts.slice();
   }
 
   getPostItem(postId: string) {
@@ -171,18 +169,18 @@ export class PostService {
   ) {
     console.log(form.city);
     let body = new FormData();
-    body.append('_title', form.title);
-    body.append('_desc', form.desc);
-    body.append('_content', form.content);
-    body.append('_address', form.address);
-    body.append('_area', form.area.toString());
-    body.append('_price', form.renting_price.toString());
-    body.append('_electricPrice', form.electric.toString());
-    body.append('_waterPrice', form.water_price.toString());
-    body.append('_services', form.services);
-    body.append('_utilities', form.utilities);
-    body.append('_street', form.street);
-    body.append('_district', form.district);
+    body.append('_title', form.titleInputControl);
+    body.append('_desc', form.descInputControlsc);
+    body.append('_content', form.contentInputControl);
+    body.append('_street', form.streetInputControl);
+    body.append('_district', form.districtInputControl);
+    body.append('_area', form.areaInputControl);
+    body.append('_price', form.renting_priceInputControl);
+    body.append('_electricPrice', form.electricInputControl);
+    body.append('_waterPrice', form.water_priceInputControl);
+    body.append('_services', form.servicesInputControl);
+    body.append('_utilities', form.utilitiesInputControl);
+    body.append('_city', form.cityInputControl);
     if (form.city) {
       body.append('_city', form.city);
     }

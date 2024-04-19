@@ -12,6 +12,17 @@ import {
 import { FormsModule } from '@angular/forms';
 import { PostCardComponent } from '../post-card/post-card.component';
 
+export interface Range {
+  max: number;
+  min: number;
+}
+
+export interface PriceRanges {
+  priceRange: Range;
+  electricRanges: Range;
+  waterRange: Range;
+}
+
 export interface PriceCriteria {
   lowToHigh: boolean;
   highToLow: boolean;
@@ -24,6 +35,7 @@ export interface FilterCriteria {
   roomPrice: PriceCriteria;
   electricityPrice: PriceCriteria;
   waterPrice: PriceCriteria;
+  range: PriceRanges;
   priorities: String[];
 }
 @Component({
@@ -34,30 +46,10 @@ export interface FilterCriteria {
   styleUrls: ['./posts-list.component.scss'],
 })
 export class PostsListComponent implements OnInit, OnDestroy {
-  filterCriteria: FilterCriteria = {
-    roomPrice: {
-      lowToHigh: false,
-      highToLow: false,
-      greaterThan: 0,
-      lowerThan: 10000000,
-      checked: false,
-    },
-    electricityPrice: {
-      lowToHigh: false,
-      highToLow: false,
-      greaterThan: 0,
-      lowerThan: 10000000,
-      checked: false,
-    },
-    waterPrice: {
-      lowToHigh: false,
-      highToLow: false,
-      greaterThan: 0,
-      lowerThan: 10000000,
-      checked: false,
-    },
-    priorities: new Array<String>(),
-  };
+  filterCriteria!: FilterCriteria;
+  priceRanges!: PriceRanges;
+  min!: number;
+  max!: number;
 
   currentFavourites: String[] | null = [];
 
@@ -77,24 +69,20 @@ export class PostsListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {
     this.resetFilter();
-  }
-
-  ngOnInit() {
     this.route.fragment.subscribe((fragment) => {
       this.fragment = fragment!;
     });
     this.isLoading = true;
     this.currentPage = 1;
 
-    this.postService.getPostList(
-      this.currentPage,
-      this.pageItemLimit,
-      this.filterCriteria
-    );
-    this.isLoading = false;
+    this.postService
+      .getPostList(this.currentPage, this.pageItemLimit, this.filterCriteria)
+      .subscribe((res) => {
+        this.priceRanges = res.data[res.data.length - 1];
+      });
 
-    this.postService.postListChanged.subscribe((posts: PostItem[]) => {
-      this.postList = posts;
+    this.postService.postListChanged.subscribe((posts: any[]) => {
+      this.postList = [...posts];
       this.isLoading = false;
     });
 
@@ -108,6 +96,8 @@ export class PostsListComponent implements OnInit, OnDestroy {
       this.currentFavourites = favourites;
     });
   }
+
+  ngOnInit() {}
 
   forceNavigate(name: string) {
     console.log('forceNavigate', name);
@@ -208,8 +198,20 @@ export class PostsListComponent implements OnInit, OnDestroy {
         lowerThan: 10000000,
         checked: false,
       },
+      range: {
+        priceRange: { max: 10000000000, min: 100000 },
+        electricRanges: { max: 10000000000, min: 100000 },
+        waterRange: { max: 10000000000, min: 100000 },
+      },
       priorities: new Array<String>(),
     };
+
+    this.priceRanges = {
+      priceRange: { max: 10000000000, min: 100000 },
+      electricRanges: { max: 10000000000, min: 100000 },
+      waterRange: { max: 10000000000, min: 100000 },
+    };
+
     this.postService.getPostList(
       this.currentPage,
       this.pageItemLimit,
@@ -229,16 +231,54 @@ export class PostsListComponent implements OnInit, OnDestroy {
     );
   }
 
+  sliderValueChanged(value: any, type: string, from: boolean) {
+    if (from === true) {
+      switch (type) {
+        case 'roomPrice':
+          this.filterCriteria.range.priceRange.min = value;
+          break;
+        case 'electricityPrice':
+          this.filterCriteria.range.electricRanges.min = value;
+          break;
+        case 'waterPrice':
+          this.filterCriteria.range.waterRange.min = value;
+          break;
+        default:
+      }
+    } else {
+      switch (type) {
+        case 'roomPrice':
+          this.filterCriteria.range.priceRange.max = value;
+          break;
+        case 'electricityPrice':
+          this.filterCriteria.range.electricRanges.max = value;
+          break;
+        case 'waterPrice':
+          this.filterCriteria.range.waterRange.max = value;
+
+          break;
+        default:
+      }
+    }
+    console.log(
+      '🚀 ~ PostsListComponent ~ sliderValueChanged ~ this.filterCriteria.range:',
+      this.filterCriteria.range
+    );
+  }
+
   applyFilter() {
     console.log('On applying filter...');
+    console.log(this.filterCriteria.range);
     this.isLoading = true;
     this.currentPage = 1;
 
-    this.postService.getPostList(
-      this.currentPage,
-      this.pageItemLimit,
-      this.filterCriteria
-    );
+    this.postService
+      .getPostList(this.currentPage, this.pageItemLimit, this.filterCriteria)
+      .subscribe((res) => {
+        if (res.data) {
+          this.priceRanges = res.data[res.data.length - 1];
+        }
+      });
     this.isLoading = false;
 
     this.postService.postListChanged.subscribe((posts: PostItem[]) => {
@@ -271,11 +311,13 @@ export class PostsListComponent implements OnInit, OnDestroy {
     } else if (toLastPage) {
       this.currentPage = this.totalPages;
     }
-    this.postService.getPostList(
-      this.currentPage,
-      this.pageItemLimit,
-      this.filterCriteria
-    );
+    this.postService
+      .getPostList(this.currentPage, this.pageItemLimit, this.filterCriteria)
+      .subscribe((res) => {
+        if (res.data) {
+          this.priceRanges = res.data[res.data.length - 1];
+        }
+      });
     this.postListChangedSub = this.postService.postListChanged.subscribe(
       (posts: PostItem[]) => {
         this.postList = posts;
