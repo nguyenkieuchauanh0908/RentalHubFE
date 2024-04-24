@@ -1,0 +1,111 @@
+<div *ngIf="isLoading" class="spinner__loading text-center">
+  <mat-spinner diameter="30"></mat-spinner>
+</div>
+<h2 mat-dialog-title>{{ this.title }}</h2>
+<mat-dialog-content>
+  <form #verifyIdCardForm="ngForm">
+    <div class="flex md:flex-row xs:flex-col xs:gap-1 justify-center mb-6">
+      <!-- Front -->
+      <div class="flex flex-col items-center justify-start xs:w-full md:w-1/2">
+        <label
+          for="dropzone-file-front"
+          class="flex flex-row items-start justify-center xs:w-full md:w-3/4 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        >
+          <div class="flex flex-row items-center justify-center">
+            <svg
+              class="w-8 h-12 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 16"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+              />
+            </svg>
+
+            <p class="relative top-1 text-xs text-gray-500 dark:text-gray-400">
+              Mặt trước CCCD
+            </p>
+          </div>
+          <input
+            id="dropzone-file-front"
+            #dropzoneFileFront
+            type="file"
+            class="hidden"
+            (change)="selectFiles($event, 'front')"
+          />
+        </label>
+        <div class="flex justify-center xs:p-1 md:p-4">
+          <img
+            (click)="dropzoneFileFront.click()"
+            [src]="previewFront"
+            class="w-full rounded-md cursor-pointer"
+          />
+        </div>
+      </div>
+      <!-- Back -->
+      <div class="flex flex-col items-center justify-start xs:w-full md:w-1/2">
+        <label
+          for="dropzone-file-back"
+          class="flex flex-row items-start justify-center xs:w-full md:w-3/4 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        >
+          <div class="flex flex-row items-center justify-center">
+            <svg
+              class="w-8 h-12 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 16"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+              />
+            </svg>
+
+            <p class="relative top-1 text-xs text-gray-500 dark:text-gray-400">
+              Mặt sau CCCD
+            </p>
+          </div>
+          <input
+            id="dropzone-file-back"
+            #dropzoneFileBack
+            type="file"
+            class="hidden"
+            (change)="selectFiles($event, 'back')"
+          />
+        </label>
+        <div class="flex justify-center xs:p-1 md:p-4">
+          <img
+            (click)="dropzoneFileBack.click()"
+            [src]="previewBack"
+            class="w-full rounded-md cursor-pointer"
+          />
+        </div>
+      </div>
+
+      <notifier-container></notifier-container>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Hủy</button>
+  <button
+    mat-button
+    cdkFocusInitial
+    [disabled]="!previewFront || !previewBack"
+    (click)="verifyNationalIDCard()"
+    class="bg-blue-700 hover:bg-blue-800"
+    style="color: white; background-color: #1a56db"
+  >
+    Cập nhật
+  </button>
+</mat-dialog-actions>

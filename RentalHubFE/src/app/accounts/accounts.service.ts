@@ -5,11 +5,13 @@ import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Subject, catchError, tap } from 'rxjs';
 import { User } from '../auth/user.model';
 import { handleError } from '../shared/handle-errors';
+import { Identity } from './manage-identity/identity.model';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   currentUserId = new Subject<string>();
   private currentUser = new BehaviorSubject<User | null>(null);
+  private currentIDCard = new BehaviorSubject<Identity | null>(null);
   constructor(
     private http: HttpClient // private authService: AuthService
   ) {}
@@ -17,6 +19,11 @@ export class AccountService {
   getCurrentUser = this.currentUser.asObservable();
   setCurrentUser(updatedUser: User | null) {
     this.currentUser.next(updatedUser);
+  }
+
+  getCurrentIDCard = this.currentIDCard.asObservable();
+  setCurrentIDCard(updatedIDCard: Identity | null) {
+    this.currentIDCard.next(updatedIDCard);
   }
 
   getCurrentUserId(): string | null {
@@ -138,6 +145,19 @@ export class AccountService {
             }
           });
           this.setCurrentUser(updatedUser);
+        })
+      );
+  }
+
+  getIdentityCard() {
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'users/get-identity')
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            this.setCurrentIDCard(res.data);
+          }
         })
       );
   }

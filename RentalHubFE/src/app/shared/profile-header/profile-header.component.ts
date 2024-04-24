@@ -85,6 +85,10 @@ export class ProfileHeaderComponent {
     this.router.navigate(['/profile/update-login-detail/', this.user?._id]);
   }
 
+  toIdentityCardManagement() {
+    this.router.navigate(['/profile/manage-identity', this.user?._id]);
+  }
+
   toRegisterNewAddress() {
     this.router.navigate(['/profile/register-address', this.user?._id]);
   }

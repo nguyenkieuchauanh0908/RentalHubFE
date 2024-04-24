@@ -22,6 +22,8 @@ import { LoginDetailUpdateComponent } from './login-detail-update/login-detail-u
 import { RegisterAddressComponent } from './register-address/register-address.component';
 import { ManageAddressesComponent } from './manage-addresses/manage-addresses.component';
 import { AddressDetailComponent } from './manage-addresses/address-detail/address-detail.component';
+import { ManageIdentityComponent } from './manage-identity/manage-identity.component';
+import { IdentityUpdateDialogComponent } from './manage-identity/identity-update-dialog/identity-update-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { AddressDetailComponent } from './manage-addresses/address-detail/addres
     RegisterAddressComponent,
     ManageAddressesComponent,
     AddressDetailComponent,
+    ManageIdentityComponent,
+    IdentityUpdateDialogComponent,
   ],
   imports: [
     CommonModule,

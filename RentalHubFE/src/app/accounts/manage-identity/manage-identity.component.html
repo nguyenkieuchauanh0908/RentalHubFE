@@ -1,0 +1,146 @@
+<ng-template #noIdentity class="flex justify-center align-middle">
+  <div class="flex justify-center align-middle">
+    <div
+      class="w-sm xs:p-2 md:p-6 text-center bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    >
+      <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 bold">
+        CCCD của bạn đang chờ duyệt! Chức năng đăng bài và đăng ký địa chỉ sẽ bị
+        khóa tạm thời cho tới khi tài khoản được xác thực lại!
+      </p>
+    </div>
+  </div>
+</ng-template>
+<div *ngIf="identity; else noIdentity">
+  <div *ngIf="isLoading" class="spinner__loading">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+
+  <div class="bg-white-background rounded-lg xs:p-2 md:p-6">
+    <h2 class="text-base font-semibold leading-7 text-gray-900">
+      {{ this.title }}
+    </h2>
+    <form [formGroup]="identityCardForm" (ngSubmit)="updateIdentity()">
+      <!-- IDCard -->
+      <mat-form-field class="w-full">
+        <mat-label>Mã CCCD</mat-label>
+        <input
+          id="title-input"
+          aria-label="Mã CCCD"
+          matInput
+          formControlName="idCardInputControl"
+        />
+      </mat-form-field>
+      <!-- Name -->
+      <mat-form-field class="w-full">
+        <mat-label>Họ & tên</mat-label>
+        <input
+          aria-label="Họ & tên"
+          matInput
+          formControlName="nameInputControl"
+        />
+      </mat-form-field>
+      <!-- DOB  -->
+      <mat-form-field>
+        <mat-label>Ngày sinh</mat-label>
+        <input
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          matInput
+          aria-label="Ngày sinh"
+          formControlName="dobInputControl"
+        />
+      </mat-form-field>
+
+      <!-- Home -->
+      <mat-form-field class="w-full">
+        <mat-label>Nguyên quán</mat-label>
+        <input
+          aria-label="Nguyên quán"
+          matInput
+          formControlName="homeInputControl"
+        />
+      </mat-form-field>
+
+      <!-- Address -->
+      <mat-form-field class="w-full">
+        <mat-label>Địa chỉ thường trú</mat-label>
+        <input
+          aria-label="Địa chỉ thường trú"
+          matInput
+          formControlName="addressInputControl"
+        />
+      </mat-form-field>
+
+      <!-- gender -->
+      <mat-form-field class="w-full">
+        <mat-label>Giới tính</mat-label>
+        <input
+          aria-label="Giới tính"
+          matInput
+          formControlName="genderInputControl"
+        />
+      </mat-form-field>
+
+      <!-- nationality -->
+      <mat-form-field class="w-full">
+        <mat-label>Quốc tịch</mat-label>
+        <input
+          aria-label="Quốc tịch"
+          matInput
+          formControlName="nationalityInputControl"
+        />
+      </mat-form-field>
+
+      <!-- features -->
+      <mat-form-field class="w-full">
+        <mat-label>Đặc điểm nhận dạng</mat-label>
+        <input
+          aria-label="Đặc điểm nhận dạng"
+          matInput
+          formControlName="featuresInputControl"
+        />
+      </mat-form-field>
+
+      <!-- IssueDate -->
+      <mat-form-field class="w-full">
+        <mat-label>Ngày cấp</mat-label>
+        <input
+          placeholder="Vui lòng chọn một"
+          aria-label="Ngày cấp"
+          matInput
+          formControlName="issueDateInputControl"
+        />
+      </mat-form-field>
+
+      <!-- doe -->
+      <mat-form-field class="w-full">
+        <mat-label>Ngày hết hạn</mat-label>
+        <input
+          aria-label="Ngày hết hạn"
+          matInput
+          formControlName="issueDateInputControl"
+        />
+      </mat-form-field>
+
+      <!-- issue locattion -->
+      <mat-form-field class="w-full">
+        <mat-label>Nơi cấp</mat-label>
+        <input
+          aria-label="Nơi cấp"
+          matInput
+          formControlName="issueLocInputControl"
+        />
+      </mat-form-field>
+
+      <!-- Edit btn -->
+      <div class="mt-6 flex items-center justify-end gap-x-6">
+        <button
+          type="submit"
+          class="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        >
+          Cập nhật CCCD
+        </button>
+      </div>
+    </form>
+    <notifier-container></notifier-container>
+  </div>
+</div>

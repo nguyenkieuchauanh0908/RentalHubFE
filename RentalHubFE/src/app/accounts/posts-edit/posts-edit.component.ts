@@ -102,6 +102,10 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     this.addressOptions = [];
     this.addressesService.getCurrentRegisteredAddress.subscribe((addresses) => {
       if (addresses) this.addressOptions = addresses;
+      console.log(
+        '🚀 ~ PostsEditComponent ~ this.addressesService.getCurrentRegisteredAddress.subscribe ~ this.addressOptions:',
+        this.addressOptions
+      );
     });
     this.filteredAddressOptions =
       this.postEditForm.controls.addressInputControl.valueChanges.pipe(

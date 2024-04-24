@@ -12,6 +12,8 @@ export class User {
     public _avatar: string,
     public _role: number,
     public _isHost: boolean,
+    public _addressRental: [string],
+    public _temptHostBlocked: boolean,
     private _RFToken: string,
     public _RFExpiredTime: number,
     private _ACToken: string,

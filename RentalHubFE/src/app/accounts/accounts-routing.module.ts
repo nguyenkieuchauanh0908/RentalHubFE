@@ -11,6 +11,7 @@ import { UpdateAvatarComponent } from './update-avatar/update-avatar.component';
 import { LoginDetailUpdateComponent } from './login-detail-update/login-detail-update.component';
 import { RegisterAddressComponent } from './register-address/register-address.component';
 import { ManageAddressesComponent } from './manage-addresses/manage-addresses.component';
+import { ManageIdentityComponent } from './manage-identity/manage-identity.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,11 @@ const routes: Routes = [
       {
         path: 'update-avatar/:uId',
         component: UpdateAvatarComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'manage-identity/:uId',
+        component: ManageIdentityComponent,
         canActivate: [AuthGuard],
       },
       {

@@ -1,9 +1,14 @@
-<div *ngIf="!isHost; else host" class="flex justify-center align-middle">
+<!-- User bình thường -->
+
+<div
+  *ngIf="!isHost && this.myProfile?._temptHostBlocked === null; else host"
+  class="flex justify-center align-middle"
+>
   <div
     class="w-sm xs:p-2 md:p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
   >
     <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 bold">
-      Bạn cần phải xác thực tài khoản để đăng ký địa chỉ cho thuê!
+      Bạn cần phải xác thực tài khoản để được đăng bài!
     </p>
     <div class="flex justify-center">
       <a
@@ -19,7 +24,14 @@
   <div *ngIf="isLoading" class="spinner__loading">
     <mat-spinner diameter="30"></mat-spinner>
   </div>
-  <div class="bg-white-background rounded-lg xs:p-2 md:p-6">
+  <!-- Host được phép đăng ký địa chỉ -->
+  <div
+    *ngIf="
+      this.isHost && !this.myProfile?._temptHostBlocked;
+      else temptBlockedHost
+    "
+    class="bg-white-background rounded-lg xs:p-2 md:p-6"
+  >
     <h2 class="text-base font-semibold leading-7 text-gray-900">
       {{ this.title }}
     </h2>
@@ -256,4 +268,15 @@
     </form>
     <notifier-container></notifier-container>
   </div>
+  <!-- Host bị khóa tạm do đang cập nhật CCCD/chờ duyệt CCCD -->
+  <ng-template #temptBlockedHost>
+    <div
+      class="w-sm xs:p-2 md:p-6 text-center bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    >
+      <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 bold">
+        CCCD của bạn đang chờ duyệt! Chức năng đăng bài và đăng ký địa chỉ sẽ bị
+        khóa tạm thời cho tới khi tài khoản được xác thực lại!
+      </p>
+    </div>
+  </ng-template>
 </ng-template>

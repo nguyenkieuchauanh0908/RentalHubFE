@@ -76,6 +76,8 @@ export class AuthService {
         user?._avatar,
         user?._role,
         user?._isHost,
+        user?._addressRental,
+        user?._temptHostBlocked,
         user?._RFToken,
         user?._RFExpiredTime,
         user?._ACToken,
@@ -215,6 +217,8 @@ export class AuthService {
                 currentUser._avatar,
                 currentUser._role,
                 currentUser._isHost,
+                currentUser._addressRental,
+                currentUser._temptHostBlocked,
                 res.data.refreshToken,
                 res.data.expiredRefresh,
                 res.data.accessToken,
@@ -293,14 +297,14 @@ export class AuthService {
       data._avatar,
       data._role,
       data._isHost,
+      data._addressRental,
+      data._temptHostBlocked,
       data.refreshToken,
       data.expiredRefresh,
       data.accessToken,
       data.expiredAccess
     );
     this.accountService.setCurrentUser(user);
-    this.isUser = true;
-    this.isHost = user._isHost;
     localStorage.setItem('userData', JSON.stringify(user));
     const expirationDuration = user._RFExpiredTime - Date.now();
     console.log('Expiration duration:', expirationDuration);

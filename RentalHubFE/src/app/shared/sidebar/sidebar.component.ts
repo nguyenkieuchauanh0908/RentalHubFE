@@ -80,6 +80,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile/posting-history', this.myProfile?._id]);
   }
 
+  toIdentityCardManagement() {
+    this.router.navigate(['/profile/manage-identity', this.myProfile?._id]);
+  }
+
   toRegisterNewAddress() {
     this.router.navigate(['/profile/register-address', this.myProfile?._id]);
   }
