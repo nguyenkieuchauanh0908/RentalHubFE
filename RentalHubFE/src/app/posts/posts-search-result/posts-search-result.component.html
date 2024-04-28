@@ -1,27 +1,144 @@
-<div class="grid grid-cols-12 gap-6">
+<div class="grid grid-cols-12 gap-2 px-4 lg:px-20">
   <!-- Lists of products -->
-  <div class="grid col-span-12 mt-6 mb-12 w-full h-max-full">
-    <div>
-      <span class="line-clamp-1"
-        >Từ khóa tìm kiếm: {{ this.currentKeyword }}</span
-      >
-    </div>
-
+  <div class="grid col-span-12 md:col-span-9 gap-3 mt-6 mb-12">
     <!-- Item list -->
-    <div *ngFor="let post of searchResult">
-      <app-post-item [item]="post"></app-post-item>
+    <div class="grid grid-flow-row auto-rows-max">
+      <div>
+        <span class="line-clamp-1"
+          >Từ khóa tìm kiếm: {{ this.currentKeyword }}</span
+        >
+      </div>
+      <div class="grid grid-cols-12 gap-1">
+        <div
+          *ngFor="let post of this.searchResult"
+          class="xs:col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-3"
+        >
+          <app-post-card
+            [post]="post"
+            [isFavoured]="this.currentFavourites!.includes(post._id)"
+            class="h-60 w-30"
+          ></app-post-card>
+        </div>
+      </div>
     </div>
 
     <!-- Pagination -->
     <app-pagination
-      [totalPages]="totalPages"
       [currentPage]="currentPage"
+      [totalPages]="totalPages"
       (toPrevPage)="changeCurrentPage($event, false, false)"
       (toNextPage)="changeCurrentPage($event, false, false)"
       (toFirstPage)="changeCurrentPage(0, $event, false)"
       (toLastPage)="changeCurrentPage(0, false, $event)"
     ></app-pagination>
   </div>
-
-  <notifier-container></notifier-container>
+  <!-- Filter panel -->
+  <div class="grid md:col-span-3 max-h-72 mt-6 mb-8 z-40 sticky top-24">
+    <!-- Filter for medium screen -->
+    <div class="xs:hidden md:block bg-white-background rounded-lg">
+      <!-- Title -->
+      <p class="text-black-color font-medium text-center">
+        <mat-icon class="relative top-1.5 mr-1">filter_list</mat-icon>Bộ lọc
+      </p>
+      <!-- Filter by room's price -->
+      <div class="flex flex-col text-sm py-1 px-3">
+        <p class="text-black-color font-medium">Giá nhà (VNĐ):</p>
+        <div class="flex flex-row">
+          <mat-checkbox
+            class="example-margin"
+            [(ngModel)]="filterCriteria.roomPrice.lowToHigh"
+            (change)="
+              checkPriceFilter($event.checked, 'roomPrice', 'lowToHigh')
+            "
+            >Cao dần</mat-checkbox
+          >
+          <mat-checkbox
+            class="example-margin"
+            [(ngModel)]="filterCriteria.roomPrice.highToLow"
+            (change)="
+              checkPriceFilter($event.checked, 'roomPrice', 'highToLow')
+            "
+            >Thấp dần</mat-checkbox
+          >
+        </div>
+        <mat-slider
+          [min]="this.priceRanges.priceRange.min"
+          [max]="this.priceRanges.priceRange.max"
+          discrete
+          color="accent"
+        >
+          <input
+            matSliderStartThumb
+            [(ngModel)]="this.filterCriteria.range.priceRange.min"
+          />
+          <input
+            matSliderEndThumb
+            [(ngModel)]="this.filterCriteria.range.priceRange.max"
+          />
+        </mat-slider>
+      </div>
+      <mat-divider></mat-divider>
+      <!-- Filter by electricity price -->
+      <div class="flex flex-col text-sm py-3 px-2">
+        <p class="text-black-color font-medium">Giá điện (VNĐ):</p>
+        <div class="flex flex-row">
+          <mat-checkbox
+            class="example-margin"
+            [(ngModel)]="filterCriteria.electricityPrice.lowToHigh"
+            (change)="
+              checkPriceFilter($event.checked, 'electricityPrice', 'lowToHigh')
+            "
+            >Cao dần</mat-checkbox
+          >
+          <mat-checkbox
+            class="example-margin"
+            [(ngModel)]="filterCriteria.electricityPrice.highToLow"
+            (change)="
+              checkPriceFilter($event.checked, 'electricityPrice', 'highToLow')
+            "
+            >Thấp dần</mat-checkbox
+          >
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <!-- Filter by water price -->
+      <div class="flex flex-col text-sm py-3 px-2">
+        <p class="text-black-color font-medium">Giá nước (VNĐ):</p>
+        <div class="flex flex-row">
+          <mat-checkbox
+            class="example-margin"
+            [(ngModel)]="filterCriteria.waterPrice.lowToHigh"
+            (change)="
+              checkPriceFilter($event.checked, 'waterPrice', 'lowToHigh')
+            "
+            >Cao dần</mat-checkbox
+          >
+          <mat-checkbox
+            class="example-margin"
+            [(ngModel)]="filterCriteria.waterPrice.highToLow"
+            (change)="
+              checkPriceFilter($event.checked, 'waterPrice', 'highToLow')
+            "
+            >Thấp dần</mat-checkbox
+          >
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="flex flex-row text-sm py-3 px-2 justify-around">
+        <p
+          class="text-orange-500 font-medium hover:cursor-pointer"
+          (click)="resetFilter()"
+        >
+          Reset
+        </p>
+        <p
+          class="text-primary-600 font-medium hover:cursor-pointer"
+          (click)="applyFilter()"
+        >
+          Áp dụng
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
+<notifier-container></notifier-container>
