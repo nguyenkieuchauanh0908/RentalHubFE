@@ -1,12 +1,31 @@
 <!-- Background landing images slider -->
 <div
-  id="landing"
   class="relative bg-cover bg-no-repeat bg-center min-h-screen mx-0 my-0 p-0"
-  style="
-    background: linear-gradient(rgba(4, 9, 30, 0.5), rgba(4, 9, 30, 0.5)),
-      url(../../../assets/images/background_3.jpg);
-  "
+  style="background-color: rgb(0, 0, 0)"
 >
+  <!-- Next Img -->
+  <div
+    (click)="navigateNextSilderImage(true)"
+    matRipple
+    [matRippleUnbounded]="true"
+    class="absolute flex justify-center items-center right-6 top-1/2 -translate-y-full z-10 rounded-full w-10 h-10 bg-black-color img-gradient cursor-pointer"
+  >
+    <mat-icon class="text-white-text-color">navigate_next</mat-icon>
+  </div>
+  <!-- Previous Img -->
+  <div
+    (click)="navigateNextSilderImage(false)"
+    matRipple
+    [matRippleUnbounded]="true"
+    class="absolute flex justify-center items-center left-4 top-1/2 -translate-y-full z-10 rounded-full w-10 h-10 bg-black-color img-gradient cursor-pointer"
+  >
+    <mat-icon class="text-white-text-color">navigate_before</mat-icon>
+  </div>
+  <img
+    src="{{ this.backgroundImages[this.imageIndex] }}"
+    id="landing"
+    class="max-h-screen min-w-full img-gradient"
+  />
   <div
     class="absolute flex flex-col top-1/2 right-1/2 -translate-y-full translate-x-1/2 text-white-text-color text-lg"
   >
@@ -20,6 +39,7 @@
     </a>
   </div>
 </div>
+
 <!-- Main content -->
 <div id="start" class="grid grid-cols-12 gap-2 px-4 lg:px-20">
   <div *ngIf="isLoading" class="spinner__loading">

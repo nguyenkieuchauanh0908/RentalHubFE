@@ -46,10 +46,14 @@ export interface FilterCriteria {
   styleUrls: ['./posts-list.component.scss'],
 })
 export class PostsListComponent implements OnInit, OnDestroy {
+  backgroundImages = [
+    '../../../assets/images/background_3.jpg',
+    '../../../assets/images/background_2.jpg',
+    '../../../assets/images/background_1.jpg',
+  ];
+  imageIndex = 0;
   filterCriteria!: FilterCriteria;
   priceRanges!: PriceRanges;
-  min!: number;
-  max!: number;
 
   currentFavourites: String[] | null = [];
 
@@ -98,6 +102,23 @@ export class PostsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {}
+
+  navigateNextSilderImage(next: boolean) {
+    let maxIndex = this.backgroundImages.length - 1;
+    if (next) {
+      if (this.imageIndex < maxIndex) {
+        this.imageIndex = this.imageIndex + 1;
+      } else {
+        this.imageIndex = 0;
+      }
+    } else {
+      if (this.imageIndex === 0) {
+        this.imageIndex = maxIndex;
+      } else {
+        this.imageIndex = this.imageIndex - 1;
+      }
+    }
+  }
 
   forceNavigate(name: string) {
     console.log('forceNavigate', name);
