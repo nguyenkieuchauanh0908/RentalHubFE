@@ -23,6 +23,7 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,6 +36,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     AppRoutingModule,
     NotifierModule,
     GoogleMapsModule,
+    SharedModule,
   ],
   providers: [
     {

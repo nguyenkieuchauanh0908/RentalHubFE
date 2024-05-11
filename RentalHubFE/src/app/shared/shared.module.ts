@@ -24,6 +24,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
 import { PostCardComponent } from '../posts/post-card/post-card.component';
+import { ChatBotComponent } from './chat-bot/chat-bot.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { PostCardComponent } from '../posts/post-card/post-card.component';
     ProfileHeaderComponent,
     SendForgetPwEmailComponent,
     ReportDialogComponent,
+    ChatBotComponent,
   ],
   imports: [
     CommonModule,
@@ -69,6 +71,7 @@ import { PostCardComponent } from '../posts/post-card/post-card.component';
     NotifierModule,
     ReactiveFormsModule,
     PostCardComponent,
+    ChatBotComponent,
   ],
 })
 export class SharedModule {}

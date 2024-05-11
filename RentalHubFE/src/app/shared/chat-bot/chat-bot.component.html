@@ -1,0 +1,478 @@
+<!-- Chatbox Container -->
+<div *ngIf="isAuthenticated">
+  <!-- Chatbox icon -->
+  <img
+    *ngIf="isAuthenticated"
+    [matMenuTriggerFor]="chatbot"
+    class="tooltip-block"
+    aria-hidden="false"
+    class="fixed bottom-4 right-4 z-40 w-16 h-16 bg-white-background rounded-full p-2 cursor-pointer"
+    src="../../../assets/images/icons8-paper-plane-94.png"
+    alt="send message here"
+  />
+  <!-- Chatbox -->
+  <mat-menu
+    #chatbot="matMenu"
+    yPosition="above"
+    xPosition="after"
+    class="w-128 h-[480px] max-h-[480px] overflow-scroll scroll-smooth scrollbar-hide bg-white-background rounded-lg"
+    style="padding: 0px; min-width: 320px"
+  >
+    <a (click)="$event.stopPropagation()">
+      <!-- Chatbot -->
+      <div *ngIf="!this.seeContactList; else contactList">
+        <!-- Chatbox Header -->
+        <div
+          class="flex align-middle items-center sticky top-0 hover:cursor-pointer bg-gray-100 p-2.5"
+        >
+          <mat-icon (click)="toContactList()" class="cursor-pointer"
+            >arrow_back</mat-icon
+          >
+          <img
+            class="w-8 h-8 rounded-full"
+            src="../assets/images/background_1.jpg"
+            alt="Jese image"
+          />
+          <span class="ml-1"> Janes </span>
+        </div>
+
+        <!-- Chatbox Content -->
+        <div class="mb-10 bg-white-background p-4">
+          <!-- Chat Message Recipient-->
+          <div class="flex justify-start self-start gap-2.5 mt-2 mr-10">
+            <!-- Avatar -->
+            <img
+              class="w-8 h-8 rounded-full"
+              src="../assets/images/background_1.jpg"
+              alt="Jese image"
+            />
+            <!-- Message Content  -->
+            <div
+              class="flex flex-col max-w-[280px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
+            >
+              <div class="flex items-center space-x-2">
+                <span
+                  class="text-xs font-semibold text-gray-900 dark:text-white"
+                  >Bonnie grey</span
+                >
+                <span
+                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                  >11:46</span
+                >
+              </div>
+              <p class="text-xs font-normal py-1 text-gray-900 dark:text-white">
+                That's awesome. I think our users will really appreciate the
+                improvements.
+              </p>
+              <span class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                >Delivered</span
+              >
+            </div>
+          </div>
+
+          <!-- Chat Message Sender-->
+          <div class="flex justify-end self-end gap-2.5 mt-2 ml-10">
+            <div
+              class="flex flex-col max-w-[280px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-s-xl rounded-ee-xl dark:bg-gray-700"
+            >
+              <div class="flex items-center space-x-2">
+                <span
+                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                  >11:46</span
+                >
+              </div>
+              <p
+                class="text-xs text-right font-normal py-1 text-gray-900 dark:text-white"
+              >
+                Nice.
+              </p>
+              <span
+                class="text-xs text-right font-normal text-gray-500 dark:text-gray-400"
+                >Delivered</span
+              >
+            </div>
+          </div>
+          <!-- Chat Message Recipient-->
+          <div class="flex justify-start self-start gap-2.5 mt-2 mr-10">
+            <!-- Avatar -->
+            <img
+              class="w-8 h-8 rounded-full"
+              src="../assets/images/background_1.jpg"
+              alt="Jese image"
+            />
+            <!-- Message Content  -->
+            <div
+              class="flex flex-col max-w-[280px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
+            >
+              <div class="flex items-center space-x-2">
+                <span
+                  class="text-xs font-semibold text-gray-900 dark:text-white"
+                  >Bonnie grey</span
+                >
+                <span
+                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                  >11:46</span
+                >
+              </div>
+              <p class="text-xs font-normal py-1 text-gray-900 dark:text-white">
+                That's awesome. I think our users will really appreciate the
+                improvements.
+              </p>
+              <span class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                >Delivered</span
+              >
+            </div>
+          </div>
+
+          <!-- Chat Message Sender-->
+          <div class="flex justify-end self-end gap-2.5 mt-2 ml-10">
+            <div
+              class="flex flex-col max-w-[280px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-s-xl rounded-ee-xl dark:bg-gray-700"
+            >
+              <div class="flex items-center space-x-2">
+                <span
+                  class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                  >11:46</span
+                >
+              </div>
+              <p
+                class="text-xs text-right font-normal py-1 text-gray-900 dark:text-white"
+              >
+                Nice.
+              </p>
+              <span
+                class="text-xs text-right font-normal text-gray-500 dark:text-gray-400"
+                >Delivered</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Chatbox Footer -->
+        <div
+          class="flex mt-4 p-2 sticky bottom-0 left-8 z-40 bg-white-background"
+        >
+          <label for="simple-search" class="sr-only">Search</label>
+          <div class="relative w-full">
+            <div
+              class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+            >
+              <svg
+                class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 18 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2"
+                />
+              </svg>
+            </div>
+            <input
+              type="text"
+              id="simple-search"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Nội dung tin nhắn..."
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="p-1 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            <mat-icon>send</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!-- Contact list -->
+      <ng-template
+        #contactList
+        class="fixed bottom-4 left-4 z-40 max-w-xs max-h-[480px] overflow-scroll scroll-smooth scrollbar-hide bg-white-background rounded-lg"
+      >
+        <!-- Contact list Header -->
+        <div
+          class="flex align-middle items-center sticky top-0 bg-gray-100 p-2.5 z-40"
+        >
+          <span class="text-black-color text-base font-medium">Chats</span>
+        </div>
+        <!-- Contact list search-->
+        <div class="flex flex-col gap-1 sticky top-10 z-40 bg-white-background">
+          <div class="relative p-2">
+            <mat-icon class="absolute top-1/2 left-4 -translate-y-1/2"
+              >search</mat-icon
+            >
+            <input
+              type="text"
+              id="simple-search"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Tìm kiếm..."
+              required
+            />
+          </div>
+        </div>
+        <!-- Contact list -->
+        <div class="bg-white-background">
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat n -->
+          <div
+            class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+            (click)="toChatBot()"
+          >
+            <!-- Avatar -->
+            <div class="relative row-span-2">
+              <img
+                src="../../../assets/images/profile.png"
+                alt="User's avatar"
+                class="w-12 h-12 rounded-full"
+              />
+              <span class="user-online"></span>
+            </div>
+            <!-- Chat sumary -->
+            <div class="row-span-10 w-full flex flex-col">
+              <div class="font-medium">Hoa Tran</div>
+
+              <div class="flex flex-row justify-between">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  Please contact me!
+                </p>
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-400">
+                  12/12/2024
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </a>
+  </mat-menu>
+</div>
