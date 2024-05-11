@@ -9,6 +9,7 @@ import { NotifierService } from 'angular-notifier';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  seeContactList = false;
   title = 'Rental Hub';
 
   constructor(private authService: AuthService) {}
