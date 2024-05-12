@@ -6,6 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../post.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { AccountService } from 'src/app/accounts/accounts.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   standalone: true,
@@ -17,18 +20,39 @@ import { SharedModule } from 'src/app/shared/shared.module';
 export class PostCardComponent {
   @Input() post!: PostItem;
   @Input() isFavoured: boolean | null = null;
+  isAuthenticated: boolean = false;
 
   constructor(
     private router: Router,
     private notifierService: NotifierService,
-    private postService: PostService
-  ) {}
+    private postService: PostService,
+    private accountService: AccountService,
+    public dialog: MatDialog
+  ) {
+    this.isAuthenticated = false;
+    this.accountService.getCurrentUser.subscribe((user) => {
+      this.isAuthenticated = !!user;
+    });
+  }
 
   goToPost() {
     if (this.post._id) {
-      this.router.navigate(['/posts/', this.post._id]).then(() => {
-        window.location.reload();
-      });
+      if (this.isAuthenticated) {
+        this.router.navigate(['/posts/', this.post._id]).then(() => {
+          window.location.reload();
+        });
+      } else {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          width: '400px',
+          data: 'Bạn cần phải đăng nhập để tiếp tục!',
+        });
+        const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+          this.router.navigate(['/auth/login']);
+        });
+        dialogRef.afterClosed().subscribe(() => {
+          sub.unsubscribe();
+        });
+      }
     } else {
       this.notifierService.notify(
         'error',
