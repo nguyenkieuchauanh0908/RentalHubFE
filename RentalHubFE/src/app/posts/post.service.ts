@@ -9,6 +9,7 @@ import { handleError } from '../shared/handle-errors';
 import { NotifierService } from 'angular-notifier';
 import { Tags } from '../shared/tags/tag.model';
 import { FilterCriteria } from './posts-list/posts-list.component';
+import { NotificationService } from '../shared/notifications/notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -29,7 +30,8 @@ export class PostService {
   constructor(
     private http: HttpClient,
     private paginationService: PaginationService,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    private notiService: NotificationService
   ) {}
 
   getCurrentPostingHistory = this.currentPostingHistory.asObservable();
@@ -498,12 +500,14 @@ export class PostService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          if (res.data) {
-            console.log(
-              'Getting reported post details successfully!',
-              res.data
-            );
+          if (!res.data) {
+            this.notiService.setCurrentUnseenNotifications([]);
+            this.notiService.setTotalNotifications(0);
+          } else {
+            this.notiService.getUnseenNotifications().subscribe();
           }
+
+          this.notiService.getSeenNotifications().subscribe();
         })
       );
   }
