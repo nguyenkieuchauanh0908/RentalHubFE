@@ -9,6 +9,7 @@
   right: 1px;
   z-index: 2;
 }
-::ng-deep.mat-mdc-menu-panel {
+
+.chatbot ::ng-deep.mat-mdc-menu-panel {
   min-width: 320px !important;
 }
