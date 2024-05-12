@@ -50,12 +50,7 @@ import { SharedModule } from './shared/shared.module';
         scrollStrategyOptions.noop,
       deps: [ScrollStrategyOptions],
     },
-    {
-      provide: MAT_MENU_SCROLL_STRATEGY,
-      useFactory: (scrollStrategyOptions: ScrollStrategyOptions) =>
-        scrollStrategyOptions.noop,
-      deps: [ScrollStrategyOptions],
-    },
+
     AuthGuard,
   ],
   bootstrap: [AppComponent],

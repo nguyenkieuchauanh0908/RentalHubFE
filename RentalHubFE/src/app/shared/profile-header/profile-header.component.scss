@@ -16,3 +16,37 @@ mat-icon.mat-warn {
   --mdc-plain-tooltip-supporting-text-size: 12px;
   --mdc-plain-tooltip-supporting-text-weight: 400;
 }
+
+:host ::ng-deep mat-icon,
+mat-icon.mat-primary,
+mat-icon.mat-accent,
+mat-icon.mat-warn {
+  color: #ffff;
+}
+
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #2563eb !important;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border-color: #2563eb !important;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 0 !important;
+}
+
+::ng-deep .mat-mdc-tooltip {
+  --mdc-plain-tooltip-container-color: #f6f9fc;
+  --mdc-plain-tooltip-supporting-text-color: #434657;
+  --mdc-plain-tooltip-supporting-text-font: Roboto, sans-serif;
+  --mdc-plain-tooltip-supporting-text-size: 12px;
+  --mdc-plain-tooltip-supporting-text-weight: 400;
+}
+
+::ng-deep .mdc-tooltip__surface .mdc-tooltip__surface-animation {
+  margin-right: 6px !important;
+}
+::ng-deep.mat-mdc-menu-panel {
+  max-width: 280px !important;
+}

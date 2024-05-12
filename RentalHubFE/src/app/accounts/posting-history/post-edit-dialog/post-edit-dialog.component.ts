@@ -21,6 +21,7 @@ import { _filterForStringOptions } from '../../posts-edit/posts-edit.component';
   styleUrls: ['./post-edit-dialog.component.scss'],
 })
 export class PostEditDialogComponent implements OnInit {
+  title = 'Chi tiết bài viết';
   isLoading: boolean = false;
   color: ThemePalette = 'primary';
   mode: ProgressSpinnerMode = 'determinate';
@@ -53,6 +54,7 @@ export class PostEditDialogComponent implements OnInit {
   currentPost!: PostItem;
 
   postEditForm = this.formBuilder.group({
+    idInputControl: [{ value: '', disabled: true }],
     titleInputControl: [{ value: '', disabled: false }, Validators.required],
     descInputControl: [{ value: '', disabled: false }, Validators.required],
     contentInputControl: [{ value: '', disabled: false }, Validators.required],
@@ -87,9 +89,16 @@ export class PostEditDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentPost = this.data;
+    if (this.data._status === 4) {
+      this.title = 'Chi tiết thông báo';
+    } else {
+      this.title = 'Chi tiết bài viết';
+    }
+
     //Initite postEdit form value
     if (this.currentPost) {
       this.postEditForm.patchValue({
+        idInputControl: this.currentPost._id,
         titleInputControl: this.currentPost._title,
         descInputControl: this.currentPost._desc,
         contentInputControl: this.currentPost._content,
@@ -136,47 +145,7 @@ export class PostEditDialogComponent implements OnInit {
     });
   }
 
-  // onSubmitPost1(form: any) {
-  //   console.log('on submiting post ...');
-  //   console.log('Form data: ', form);
-  //   this.isLoading = true;
-  //   if (this.previews) {
-  //     console.log(
-  //       '🚀 ~ file: post-edit-dialog.component.ts:59 ~ PostEditDialogComponent ~ onSubmitPost ~ this.selectedFiles:',
-  //       this.selectedFiles
-  //     );
-  //     this.postService
-  //       .updatePost(
-  //         form,
-  //         this.updatedFiles,
-  //         this.deletedImageIndexes,
-  //         this.selectedTags,
-  //         this.data._id
-  //       )
-  //       .subscribe(
-  //         (res) => {
-  //           if (res.data) {
-  //             this.isLoading = false;
-  //             this.value = 0;
-  //             this.notifierService.notify(
-  //               'success',
-  //               'Cập nhật bài viết thành công!'
-  //             );
-  //           }
-  //         },
-  //         (errMsg) => {
-  //           this.notifierService.notify('error', errMsg);
-  //         }
-  //       );
-  //   } else {
-  //     if (this.selectedFiles) {
-  //       this.notifierService.notify(
-  //         'warning',
-  //         'Vui lòng không để trống ảnh của bài viết!'
-  //       );
-  //     }
-  //   }
-  // }
+  toMarkAsSeen() {}
 
   onSubmitPost() {
     this.isLoading = true;

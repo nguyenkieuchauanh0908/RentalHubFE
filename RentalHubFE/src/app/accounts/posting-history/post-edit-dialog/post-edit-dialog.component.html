@@ -1,5 +1,5 @@
 <div [ngClass]="isLoading ? 'opacity-70' : ''">
-  <h2 mat-dialog-title>Chi tiết bài viết</h2>
+  <h2 mat-dialog-title>{{ this.title }}</h2>
   '
   <div *ngIf="isLoading" class="spinner__loading">
     <mat-spinner diameter="30"></mat-spinner>
@@ -427,6 +427,11 @@
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Hủy</button>
+    <!-- Bài viết bị báo cáo -->
+    <!-- <button *ngIf="data._status === 4" (click)="toMarkAsSeen()" mat-button>
+      Đánh dấu đã đọc
+    </button> -->
+    <!-- Bài viết đang đăng -->
     <button
       *ngIf="data._status === 1 && data._status !== 4"
       (click)="toHidePostDialog()"
@@ -434,6 +439,8 @@
     >
       Gỡ bài viết
     </button>
+
+    <!-- Bài viết không được duyệt/ Đang đăng thì sửa-->
     <button
       *ngIf="data._status === 3 && data._status !== 4"
       (click)="toOpenPostDialog()"
@@ -441,6 +448,8 @@
     >
       Yêu cầu duyệt lại
     </button>
+
+    <!-- Lưu -->
     <button
       *ngIf="data._status !== 4"
       (click)="onSubmitPost()"

@@ -61,7 +61,7 @@ export class NotificationsComponent {
       this.myProfile = this.accountService.getProfile(this.currentUid);
     }
     this.getNotificationsSub =
-      this.notificationsService.getCurrentNotifications.subscribe(
+      this.notificationsService.getCurrentSeenNotifications.subscribe(
         (notifications) => {
           this.notifications = notifications;
           // this.paginationService.pagination = res.pagination;
@@ -81,15 +81,22 @@ export class NotificationsComponent {
     this.getNotificationsSub.unsubscribe();
   }
 
-  seeNotificationDetail(reportedId: string) {
-    this.postService.getReportPostDetails(reportedId).subscribe((res) => {
-      const dialogRef = this.dialog.open(PostEditDialogComponent, {
-        width: '1000px',
-        data: res.data,
-      });
-      dialogRef.afterClosed().subscribe((result) => {
-        console.log(`Dialog result: + $(result)`);
-      });
+  seeNotificationDetail(noti: any) {
+    console.log(
+      '🚀 ~ NotificationsComponent ~ seeNotificationDetail ~ noti:',
+      noti
+    );
+
+    this.postService.getReportPostDetails(noti).subscribe((res) => {
+      if (res.data) {
+      }
+      // const dialogRef = this.dialog.open(PostEditDialogComponent, {
+      //   width: '1000px',
+      //   data: res.data,
+      // });
+      // dialogRef.afterClosed().subscribe((result) => {
+      //   console.log(`Dialog result: + $(result)`);
+      // });
     });
   }
 

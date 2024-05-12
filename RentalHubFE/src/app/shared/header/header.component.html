@@ -69,7 +69,7 @@
         </form>
       </div>
 
-      <!-- Login/Signup/Account/Post new/Filter/Notifications -->
+      <!-- Login/Signup/Account/Post new/Notifications -->
       <div class="flex items-center lg:order-2">
         <!-- Notifications -->
         <div *ngIf="isAuthenticatedUser">
@@ -88,84 +88,95 @@
             #menu="matMenu"
             yPosition="below"
             xPosition="before"
-            class=""
+            class="max-h-128 overflow-scroll scroll-smooth scrollbar-hide"
             style="padding: 0px; min-width: 250px"
           >
             <a (click)="$event.stopPropagation()">
               <!-- Main Content for Notifications -->
               <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+                <!-- Unseen -->
                 <mat-tab
                   label="Chưa đọc"
                   class="text-blue-500 cursor-pointer hover:text-blue-600"
                 >
                   <div
-                    *ngFor="let noti of notificationList; index as i"
-                    class="flex flex-col text-sm pr-3 pl-3 pt-3"
+                    *ngIf="
+                      unseenNotificaionList.length > 0;
+                      else noUnseenNotifications
+                    "
                   >
-                    <p class="text-primary-text-color font-medium mb-0">
-                      {{ noti._title }}
-                    </p>
-                    <p
-                      mat-raised-button
-                      class="text-sub-text-color line-clamp-2"
-                      [matTooltip]="noti._message"
-                      [matTooltipPosition]="'left'"
-                      [matTooltipClass]="'mr-3'"
-                      matTooltipHideDelay="400"
+                    <div
+                      *ngFor="let noti of unseenNotificaionList; index as i"
+                      class="flex flex-col text-sm pr-3 pl-3 pt-3 hover:cursor-pointer hover:bg-gray-100"
+                      (click)="readNotiDetail(noti)"
                     >
-                      {{ noti._message }}
-                    </p>
+                      <p class="text-primary-text-color font-medium mb-0">
+                        {{ noti._title }}
+                      </p>
+                      <p class="text-sub-text-color line-clamp-2">
+                        {{ noti._message }}
+                      </p>
+                    </div>
                   </div>
-                  <mat-divider
-                    *ngIf="notificationList.length > 0"
-                  ></mat-divider>
-                  <p
-                    class="text-sm text-sub-text-color p-3"
-                    style="margin-bottom: 2px"
-                  >
-                    {{ notificationTotals }} thông báo
-                    <span
-                      (click)="toSeeAllNotifications()"
-                      class="text-blue-500 cursor-pointer hover:text-blue-600 ml-1"
-                      >Xem toàn bộ</span
-                    >
-                  </p>
+                  <ng-template #noUnseenNotifications>
+                    <p class="py-3 text-sm text-sub-text-color text-center">
+                      Không có thông báo mới
+                    </p>
+                  </ng-template>
                 </mat-tab>
-                <mat-tab label="Toàn bộ">
+                <!-- Seen Noti -->
+                <mat-tab label="Đã đọc">
+                  <ng-template #noSeenNotifications>
+                    <p class="py-3 text-sm text-sub-text-color text-center">
+                      Không có thông báo đã đọc
+                    </p>
+                  </ng-template>
                   <div
-                    *ngFor="let noti of notificationList; index as i"
-                    class="flex flex-col text-sm pr-3 pl-3 pt-3"
+                    *ngIf="
+                      this.seenNotiList.length > 0;
+                      else noSeenNotifications
+                    "
                   >
-                    <p class="text-primary-text-color font-medium mb-0">
-                      {{ noti._title }}
-                    </p>
-                    <p
-                      mat-raised-button
-                      class="text-sub-text-color line-clamp-2"
-                      [matTooltip]="noti._message"
-                      [matTooltipPosition]="'left'"
-                      [matTooltipClass]="'mr-3'"
-                      matTooltipHideDelay="400"
+                    <div
+                      *ngFor="let noti of seenNotiList; index as i"
+                      class="flex flex-col text-sm pr-3 pl-3 pt-3 bg-gray-100"
                     >
-                      {{ noti._message }}
-                    </p>
+                      <p class="text-primary-text-color font-medium mb-0">
+                        {{ noti._title }}
+                      </p>
+                      <p
+                        mat-raised-button
+                        class="text-sub-text-color line-clamp-2"
+                        [matTooltip]="noti._message"
+                        [matTooltipPosition]="'left'"
+                        [matTooltipClass]="'mr-3'"
+                        matTooltipHideDelay="400"
+                      >
+                        {{ noti._message }}
+                      </p>
+                    </div>
                   </div>
-                  <mat-divider
-                    *ngIf="notificationList.length > 0"
-                  ></mat-divider>
-                  <p
-                    class="text-sm text-sub-text-color p-3"
-                    style="margin-bottom: 2px"
-                  >
-                    {{ notificationTotals }} thông báo
-                    <span
-                      (click)="toSeeAllNotifications()"
-                      class="text-blue-500 cursor-pointer hover:text-blue-600 ml-1"
-                      >Xem toàn bộ</span
-                    >
-                  </p>
                 </mat-tab>
               </mat-tab-group>
+              <mat-divider
+                *ngIf="unseenNotificaionList.length > 0"
+              ></mat-divider>
+              <div
+                *ngIf="unseenNotificaionList.length > 0"
+                class="sticky bottom-0 text-center bg-gray-100 z-40"
+              >
+                <p
+                  class="text-sm text-sub-text-color p-3"
+                  style="margin-bottom: 2px"
+                >
+                  {{ notificationTotals }} thông báo chưa đọc
+                  <span
+                    (click)="markAsReadAll()"
+                    class="text-blue-500 cursor-pointer hover:text-blue-600 ml-1"
+                    >Đánh dấu đã đọc</span
+                  >
+                </p>
+              </div>
             </a>
           </mat-menu>
         </div>
@@ -203,7 +214,7 @@
             src="{{ user?._avatar }}"
             [matMenuTriggerFor]="setting"
             class="w-10 h-10 rounded-full relative bottom-1"
-            alt="Rounded avatar"
+            alt="avatar"
           />
           <a
             [matMenuTriggerFor]="setting"

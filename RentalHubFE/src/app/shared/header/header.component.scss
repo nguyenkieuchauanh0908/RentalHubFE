@@ -4,12 +4,6 @@ mat-icon.mat-accent,
 mat-icon.mat-warn {
   color: #ffff;
 }
-// ::ng-deep .mat-mdc-tab-header .mat-mdc-tab-labels {
-//   justify-content: space-around !important;
-// }
-// ::ng-deep .mat-mdc-tab {
-//   font-family: "Helvetica Neue" !important;
-// }
 
 ::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
   color: #2563eb !important;
@@ -33,4 +27,7 @@ mat-icon.mat-warn {
 
 ::ng-deep .mdc-tooltip__surface .mdc-tooltip__surface-animation {
   margin-right: 6px !important;
+}
+::ng-deep.mat-mdc-menu-panel {
+  max-width: 280px !important;
 }

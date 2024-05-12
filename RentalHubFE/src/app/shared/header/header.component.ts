@@ -12,6 +12,8 @@ import { resDataDTO } from '../resDataDTO';
 import { MatDialog } from '@angular/material/dialog';
 import { ThemePalette } from '@angular/material/core';
 import { ViewEncapsulation } from '@angular/compiler';
+import { DisplayNotiDialogComponent } from '../display-noti-dialog/display-noti-dialog.component';
+import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-edit-dialog/post-edit-dialog.component';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +32,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   user!: User | null;
   fullName!: string;
   isAuthenticatedUser: boolean = false;
-  notificationList!: any;
+  seenNotiList!: any;
+  unseenNotificaionList!: any;
   notificationTotals!: number;
   $destroy: Subject<boolean> = new Subject<boolean>();
 
@@ -40,7 +43,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private notifierService: NotifierService,
     private notificationService: NotificationService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog
   ) {
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
@@ -55,24 +59,30 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
 
     if (this.isAuthenticatedUser) {
-      this.notificationService.getCurrentNotifications.subscribe(
+      //Lấy các noti đã xem
+      this.notificationService.getCurrentSeenNotifications.subscribe(
         (notifications) => {
-          this.notificationList = notifications;
+          this.seenNotiList = notifications;
         }
       );
+
+      //Lấy các noti chưa xem
+      this.notificationService.getCurrentUnseenNotifications.subscribe(
+        (unseenNotifications) => {
+          this.unseenNotificaionList = unseenNotifications;
+        }
+      );
+
+      //Lấy tổng các noti chưa xem
       this.notificationService.getTotalNotifications.subscribe(
         (notificationTotal) => {
-          // console.log(
-          //   '🚀 ~ HeaderComponent ~ .subscribe ~ notificationTotal:',
-          //   notificationTotal
-          // );
           this.notificationTotals = notificationTotal;
-          // this.color = '#2563eb'
         }
       );
     } else {
       this.notificationTotals = 0;
-      this.notificationService.setCurrentNotifications([]);
+      this.notificationService.setCurrentSeenNotifications([]);
+      this.notificationService.setCurrentUnseenNotifications([]);
     }
   }
 
@@ -92,8 +102,49 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  toSeeAllNotifications() {
-    this.router.navigate(['/profile/notifications/', this.user?._id]);
+  // toSeeAllNotifications() {
+  //   this.router.navigate(['/profile/notifications/', this.user?._id]);
+  // }
+
+  markAsReadAll() {
+    this.notificationService.markAsReadAll().subscribe(
+      (res) => {
+        if (res.data) {
+          this.notifierService.notify(
+            'success',
+            'Đánh dấu đã đọc toàn bộ thông báo thành công'
+          );
+        }
+      },
+      (errMsg) => {
+        this.notifierService.notify(
+          'error',
+          'Đã có lỗi xảy ra, vui lòng thử lại sau'
+        );
+      }
+    );
+  }
+
+  readNotiDetail(noti: any) {
+    if (noti._type !== 'REPORTED_POST') {
+      const dialog = this.dialog.open(DisplayNotiDialogComponent, {
+        width: '600px',
+        data: noti,
+      });
+    } else {
+      //Hiện lên chi tiết bài post kèm message thông báo
+      this.postService.getReportPostDetails(noti._id).subscribe((res) => {
+        if (res.data) {
+          const dialogRef = this.dialog.open(PostEditDialogComponent, {
+            width: '1000px',
+            data: res.data,
+          });
+          dialogRef.afterClosed().subscribe((result) => {
+            console.log(`Dialog result: + $(result)`);
+          });
+        }
+      });
+    }
   }
 
   onSearchByKeyword(searchForm: any) {
@@ -148,22 +199,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    //   const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    //     width: '400px',
-    //     data: 'Bạn có chắc muốn đăng xuất?',
-    //   });
-    //   const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
-    //     let logoutObs: Observable<resDataDTO>;
-    //     logoutObs = this.authService.logout(this.user?.RFToken);
-    //     logoutObs.subscribe();
-    //     this.router.navigate(['/posts']);
-    //   });
-    //   dialogRef.afterClosed().subscribe(() => {
-    //     sub.unsubscribe();
-    //   });
-    let logoutObs: Observable<resDataDTO>;
-    logoutObs = this.authService.logout(this.user?.RFToken);
-    logoutObs.subscribe();
-    this.router.navigate(['/posts']);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn đăng xuất?',
+    });
+    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      let logoutObs: Observable<resDataDTO>;
+      logoutObs = this.authService.logout(this.user?.RFToken);
+      logoutObs.subscribe();
+      this.router.navigate(['/posts']);
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
   }
 }

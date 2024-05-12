@@ -15,8 +15,8 @@
     <div *ngIf="isLoading; else notiBlock" class="spinner__loading text-center">
       <mat-spinner diameter="30"></mat-spinner>
     </div>
-    <!-- Lists of products -->
-    <!-- Item -->
+    <!-- Lists of Noti -->
+    <!-- Noti -->
     <ng-template #notiBlock>
       <div class="grid grid-rows bg-white-background">
         <div *ngIf="notifications.length > 0; else noNotiBlock">
@@ -24,10 +24,6 @@
             *ngFor="let notification of notifications"
             class="grid gap-2 grid-cols-12 mb-4 w-full h-max-full bg-gray-50 rounded-md"
           >
-            <!-- Image -->
-            <!-- <div class="grid col-span-2"></div> -->
-            <!-- Info -->
-
             <div class="grid col-span-9 w-full p-4">
               <!-- Title -->
               <div class="row flex flex-row items-center mb-0">
@@ -50,7 +46,7 @@
             <!-- Detail button -->
             <div class="grid col-span-3 p-8 h-10">
               <button
-                (click)="seeNotificationDetail(notification._id)"
+                (click)="seeNotificationDetail(notification)"
                 class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 type="button"
               >

@@ -51,7 +51,7 @@ export class AuthService {
         tap((res) => {
           this.handleAuthentication(res.data);
           this.getFavoredPostLogin();
-          this.getPostsNotifictionsLogin();
+          this.getNotifications();
           this.setRegisteredAddressesWhenLogin(res.data._addressRental);
         })
       );
@@ -96,7 +96,7 @@ export class AuthService {
       this.autoLogout(expirationDuration, loadedUserData.RFToken);
       if (expirationDuration !== 0) {
         this.getFavoredPostLogin();
-        this.getPostsNotifictionsLogin();
+        this.getNotifications();
         let registeredAddresses = localStorage.getItem('registered-addresses');
         if (registeredAddresses) {
           this.addressesService.setcurrentRegisteredAddresses(
@@ -347,7 +347,8 @@ export class AuthService {
     );
   }
 
-  getPostsNotifictionsLogin() {
-    this.notiService.getPostNotifications().subscribe();
+  getNotifications() {
+    this.notiService.getSeenNotifications().subscribe();
+    this.notiService.getUnseenNotifications().subscribe();
   }
 }

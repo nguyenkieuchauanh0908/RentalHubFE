@@ -25,6 +25,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
 import { PostCardComponent } from '../posts/post-card/post-card.component';
 import { ChatBotComponent } from './chat-bot/chat-bot.component';
+import { DisplayNotiDialogComponent } from './display-noti-dialog/display-noti-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { ChatBotComponent } from './chat-bot/chat-bot.component';
     SendForgetPwEmailComponent,
     ReportDialogComponent,
     ChatBotComponent,
+    DisplayNotiDialogComponent,
   ],
   imports: [
     CommonModule,

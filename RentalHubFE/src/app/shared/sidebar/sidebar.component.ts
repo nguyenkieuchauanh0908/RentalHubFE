@@ -92,9 +92,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile/post-new', this.myProfile?._id]);
   }
 
-  toAllNotifications() {
-    this.router.navigate(['/profile/notifications', this.myProfile?._id]);
-  }
+  // toAllNotifications() {
+  //   this.router.navigate(['/profile/notifications', this.myProfile?._id]);
+  // }
 
   toAddressesManagement() {
     this.router.navigate(['/profile/manage-addresses', this.myProfile?._id]);

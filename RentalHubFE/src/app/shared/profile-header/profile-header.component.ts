@@ -8,6 +8,9 @@ import { PostService } from 'src/app/posts/post.service';
 import { NotificationService } from '../notifications/notification.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { resDataDTO } from '../resDataDTO';
+import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-edit-dialog/post-edit-dialog.component';
+import { DisplayNotiDialogComponent } from '../display-noti-dialog/display-noti-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-header',
@@ -23,7 +26,8 @@ export class ProfileHeaderComponent {
   user!: User | null;
   fullName!: string;
   isAuthenticatedUser: boolean = false;
-  notificationList!: any;
+  seenNotiList!: any;
+  unseenNotificaionList!: any;
   notificationTotals!: number;
   $destroy: Subject<boolean> = new Subject<boolean>();
 
@@ -33,7 +37,8 @@ export class ProfileHeaderComponent {
     private accountService: AccountService,
     private notifierService: NotifierService,
     private notificationService: NotificationService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog
   ) {
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
@@ -49,23 +54,30 @@ export class ProfileHeaderComponent {
       });
 
     if (this.isAuthenticatedUser) {
-      this.notificationService.getCurrentNotifications.subscribe(
+      //Lấy các noti đã xem
+      this.notificationService.getCurrentSeenNotifications.subscribe(
         (notifications) => {
-          this.notificationList = notifications;
+          this.seenNotiList = notifications;
         }
       );
+
+      //Lấy các noti chưa xem
+      this.notificationService.getCurrentUnseenNotifications.subscribe(
+        (unseenNotifications) => {
+          this.unseenNotificaionList = unseenNotifications;
+        }
+      );
+
+      //Lấy tổng các noti chưa xem
       this.notificationService.getTotalNotifications.subscribe(
         (notificationTotal) => {
-          console.log(
-            '🚀 ~ HeaderComponent ~ .subscribe ~ notificationTotal:',
-            notificationTotal
-          );
           this.notificationTotals = notificationTotal;
         }
       );
     } else {
       this.notificationTotals = 0;
-      this.notificationService.setCurrentNotifications([]);
+      this.notificationService.setCurrentSeenNotifications([]);
+      this.notificationService.setCurrentUnseenNotifications([]);
     }
   }
 
@@ -79,6 +91,47 @@ export class ProfileHeaderComponent {
         this.fullName = this.user?._fname + ' ' + this.user._lname;
       }
     });
+  }
+
+  markAsReadAll() {
+    this.notificationService.markAsReadAll().subscribe(
+      (res) => {
+        if (res.data) {
+          this.notifierService.notify(
+            'success',
+            'Đánh dấu đã đọc toàn bộ thông báo thành công'
+          );
+        }
+      },
+      (errMsg) => {
+        this.notifierService.notify(
+          'error',
+          'Đã có lỗi xảy ra, vui lòng thử lại sau'
+        );
+      }
+    );
+  }
+
+  readNotiDetail(noti: any) {
+    if (noti._type !== 'REPORTED_POST') {
+      const dialog = this.dialog.open(DisplayNotiDialogComponent, {
+        width: '600px',
+        data: noti,
+      });
+    } else {
+      //Hiện lên chi tiết bài post kèm message thông báo
+      this.postService.getReportPostDetails(noti._id).subscribe((res) => {
+        if (res.data) {
+          const dialogRef = this.dialog.open(PostEditDialogComponent, {
+            width: '1000px',
+            data: res.data,
+          });
+          dialogRef.afterClosed().subscribe((result) => {
+            console.log(`Dialog result: + $(result)`);
+          });
+        }
+      });
+    }
   }
 
   toUpdateLoginDetail() {
@@ -121,9 +174,9 @@ export class ProfileHeaderComponent {
     this.router.navigate(['/profile/posting-history', this.user?._id]);
   }
 
-  toAllNotifications() {
-    this.router.navigate(['/profile/notifications', this.user?._id]);
-  }
+  // toAllNotifications() {
+  //   this.router.navigate(['/profile/notifications', this.user?._id]);
+  // }
 
   onSearchByKeyword(searchForm: any) {
     console.log('Your keyword: ', searchForm.search);

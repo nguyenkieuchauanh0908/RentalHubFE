@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>{{ data._title }}</h2>
+<mat-dialog-content>
+  <h4>{{ data._message }}</h4>
+  <notifier-container></notifier-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    class="bg-blue-700 hover:bg-blue-800"
+    style="color: white; background-color: #1a56db"
+    (click)="markAsRead()"
+    mat-dialog-close
+    mat-button
+  >
+    Đánh dấu đã đọc
+  </button>
+</mat-dialog-actions>
+<notifier-container></notifier-container>
