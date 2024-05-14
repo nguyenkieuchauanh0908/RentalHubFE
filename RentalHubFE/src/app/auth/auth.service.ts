@@ -166,6 +166,9 @@ export class AuthService {
             this.postService.setCurrentFavorites([]);
             this.postService.setCurrentFavoritesId([]);
             this.accountService.setCurrentUser(null);
+            this.notiService.setCurrentSeenNotifications([]);
+            this.notiService.setCurrentUnseenNotifications([]);
+            this.notiService.setTotalNotifications(0);
           }
         })
       );
