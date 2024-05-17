@@ -1,0 +1,33 @@
+<div
+  *ngIf="this.recipienInfo"
+  class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
+>
+  <!-- Avatar -->
+  <div class="relative row-span-2">
+    <img
+      src="{{ this.recipienInfo!._avatar }}"
+      alt="User's avatar"
+      class="w-9 h-9 rounded-full"
+    />
+    <span [ngClass]="this.isOnline ? 'user-online' : ''"></span>
+  </div>
+  <!-- Chat sumary -->
+  <div class="row-span-10 w-full flex flex-col">
+    <div class="font-normal text-sm line-clamp-1">
+      {{ this.recipienInfo!._name }}
+    </div>
+
+    <div class="flex flex-row justify-between">
+      <p
+        class="text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
+      >
+        {{ this.chat.lsmessage }}
+      </p>
+      <p
+        class="text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
+      >
+        {{ this.chat.updatedAt.toLocaleDateString() }}
+      </p>
+    </div>
+  </div>
+</div>

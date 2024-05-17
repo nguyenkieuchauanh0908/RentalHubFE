@@ -10,6 +10,7 @@ import { AccountService } from '../accounts/accounts.service';
 import { PostService } from '../posts/post.service';
 import { NotificationService } from '../shared/notifications/notification.service';
 import { AddressesService } from '../accounts/register-address/addresses.service';
+import { ChatBotService } from '../shared/chat-bot/chat-bot.service';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,8 @@ export class AuthService {
     private accountService: AccountService,
     private postService: PostService,
     private notiService: NotificationService,
-    private addressesService: AddressesService
+    private addressesService: AddressesService,
+    private chatBotService: ChatBotService
   ) {
     this.user.subscribe((user) => {
       if (user) {
@@ -52,6 +54,7 @@ export class AuthService {
           this.handleAuthentication(res.data);
           this.getFavoredPostLogin();
           this.getNotifications();
+          this.chatBotService.initiateSocket();
           this.setRegisteredAddressesWhenLogin(res.data._addressRental);
         })
       );
@@ -83,7 +86,6 @@ export class AuthService {
         user?._ACToken,
         user?._ACExpiredTime
       );
-      // this.accountService.setCurrentUser(loadedUserData);
       if (loadedUserData.ACToken && loadedUserData.RFToken) {
         this.accountService.setCurrentUser(loadedUserData);
         expirationDuration = loadedUserData._RFExpiredTime - Date.now();
@@ -103,6 +105,7 @@ export class AuthService {
             JSON.parse(registeredAddresses)
           );
         }
+        this.chatBotService.initiateSocket();
       }
     } else {
       return;
@@ -161,14 +164,33 @@ export class AuthService {
         tap((res) => {
           if (res.data) {
             this.router.navigate(['/']);
-            localStorage.removeItem('userData');
-            localStorage.removeItem('favorite-posts');
+            if (
+              localStorage.getItem('userData') ||
+              localStorage.getItem('favorite-posts') ||
+              localStorage.getItem('registered-addresses')
+            ) {
+              localStorage.removeItem('userData');
+              localStorage.removeItem('favorite-posts');
+              localStorage.removeItem('registered-addresses');
+            }
+            //Xóa post yêu thích và current user
             this.postService.setCurrentFavorites([]);
             this.postService.setCurrentFavoritesId([]);
             this.accountService.setCurrentUser(null);
+
+            //Xóa thông báo
             this.notiService.setCurrentSeenNotifications([]);
             this.notiService.setCurrentUnseenNotifications([]);
             this.notiService.setTotalNotifications(0);
+
+            //Xóa thông tin chatbot
+            this.chatBotService.disconnectToSocket();
+            this.chatBotService.setOnlineUsers(null);
+            this.chatBotService.setSeeContactList(true);
+            this.chatBotService.setCurrentChat(null);
+            this.chatBotService.setCurrentRecipient(null);
+            this.chatBotService.setMessages(null);
+            this.chatBotService.setNewMessage(null);
           }
         })
       );
@@ -179,15 +201,6 @@ export class AuthService {
     this.tokenExpirationTimer = setTimeout(() => {
       this.logout(refreshToken);
       this.isUser = false;
-      if (
-        localStorage.getItem('userData') ||
-        localStorage.getItem('favorite-posts') ||
-        localStorage.getItem('registered-addresses')
-      ) {
-        localStorage.removeItem('userData');
-        localStorage.removeItem('favorite-posts');
-        localStorage.removeItem('registered-addresses');
-      }
     }, expirationDuration);
   }
 

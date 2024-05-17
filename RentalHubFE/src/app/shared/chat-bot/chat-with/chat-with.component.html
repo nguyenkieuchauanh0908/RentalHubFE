@@ -1,0 +1,143 @@
+<div
+  *ngIf="this.recipientInfor && this.currentUser"
+  [ngClass]="isLoading ? 'opacity-70' : ''"
+>
+  <div *ngIf="isLoading" class="spinner__loading">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <!-- Header -->
+  <div
+    class="flex align-middle items-center sticky top-0 hover:cursor-pointer bg-gray-100 p-2.5"
+  >
+    <mat-icon (click)="toContactList()" class="cursor-pointer"
+      >arrow_back</mat-icon
+    >
+    <div class="relative row-span-2">
+      <img
+        class="w-8 h-8 rounded-full"
+        src="{{ recipientInfor._avatar }}"
+        alt="recipient image"
+      />
+      <span [ngClass]="this.isOnline ? 'user-online' : ''"></span>
+    </div>
+
+    <span class="ml-1 text-sm line-clamp-1">
+      {{ this.recipientInfor._name }}
+    </span>
+  </div>
+
+  <!-- Chatbox Content -->
+  <div
+    *ngIf="this.currentMsgs; else noMsgs"
+    class="bg-white-background p-4 min-h-[480px]"
+  >
+    <div *ngFor="let message of this.currentMsgs">
+      <!-- Recipient -->
+      <div
+        *ngIf="message.senderId !== this.currentUser!._id; else recipient"
+        class="flex justify-start self-start gap-2 mt-2 mr-10"
+      >
+        <!-- Avatar -->
+        <img
+          class="w-8 h-8 rounded-full"
+          src="{{ recipientInfor._avatar }}"
+          alt="recipient image"
+        />
+        <!-- Message Content  -->
+        <div
+          class="flex flex-col max-w-[280px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
+        >
+          <span
+            class="text-xs font-medium text-gray-900 dark:text-white line-clamp-1"
+            >{{ recipientInfor._name }}</span
+          >
+          <p class="text-xs font-normal py-1 text-gray-900 dark:text-white">
+            {{ message.text }}
+          </p>
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-normal text-gray-500 dark:text-gray-400"
+              >Delivered</span
+            >
+            <span class="text-xs font-normal text-gray-500 dark:text-gray-400"
+              >11:46</span
+            >
+          </div>
+        </div>
+      </div>
+      <!-- Sender-->
+      <ng-template #recipient>
+        <div class="flex justify-end self-end gap-2 mt-2 ml-10">
+          <div
+            class="flex flex-col max-w-[280px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-s-xl rounded-ee-xl dark:bg-gray-700"
+          >
+            <p
+              class="text-xs text-right font-normal py-1 text-gray-900 dark:text-white"
+            >
+              {{ message.text }}
+            </p>
+            <div class="flex items-end space-x-2">
+              <span class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                >11:46</span
+              >
+              <span
+                class="text-xs text-right font-normal text-gray-500 dark:text-gray-400"
+                >Delivered</span
+              >
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <ng-template #noMsgs>
+    <p class="text-xs font-normal text-gray-500 dark:text-gray-400 text-center">
+      Các bạn có thể bắt đầu trò chuyện từ bây giờ!
+    </p>
+  </ng-template>
+
+  <!-- Chatbox Footer -->
+  <div class="p-2 sticky bottom-0 left-8 z-40 bg-white-background">
+    <form
+      #sendMsgForm="ngForm"
+      (ngSubmit)="sendMsg(sendMsgForm.value); sendMsgForm.reset()"
+    >
+      <div class="flex">
+        <label for="simple-search" class="sr-only">Search</label>
+        <div
+          class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+        >
+          <svg
+            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 18 20"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2"
+            />
+          </svg>
+        </div>
+        <textarea
+          type="text"
+          id="simple-search"
+          ngModel
+          name="newMsg"
+          class="h-12 max-h-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 scrollbar-hide"
+          placeholder="Nội dung tin nhắn..."
+          required
+        ></textarea>
+        <button
+          type="submit"
+          class="p-1 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -26,6 +26,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { PostCardComponent } from '../posts/post-card/post-card.component';
 import { ChatBotComponent } from './chat-bot/chat-bot.component';
 import { DisplayNotiDialogComponent } from './display-noti-dialog/display-noti-dialog.component';
+import { ChatUserComponent } from './chat-bot/chat-user/chat-user.component';
+import { ChatWithComponent } from './chat-bot/chat-with/chat-with.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,8 @@ import { DisplayNotiDialogComponent } from './display-noti-dialog/display-noti-d
     ReportDialogComponent,
     ChatBotComponent,
     DisplayNotiDialogComponent,
+    ChatUserComponent,
+    ChatWithComponent,
   ],
   imports: [
     CommonModule,
