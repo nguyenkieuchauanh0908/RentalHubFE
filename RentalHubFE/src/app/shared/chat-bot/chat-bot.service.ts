@@ -55,6 +55,12 @@ export class ChatBotService {
     this.currentSocket.next(socket);
   }
 
+  private chatBotMenuOpened = new BehaviorSubject<boolean>(false); //Quy định trạng thái đóng mở của chatBotMenu
+  getChatBotMenuOpened = this.chatBotMenuOpened.asObservable();
+  setChatBotMenuOpened(opened: boolean) {
+    this.chatBotMenuOpened.next(opened);
+  }
+
   private seeContactList = new BehaviorSubject<Boolean>(true); //Có đang xem contact list hay không
   getSeeContactList = this.seeContactList.asObservable();
   setSeeContactList(see: Boolean) {
@@ -63,7 +69,7 @@ export class ChatBotService {
 
   private currentUserChats = new BehaviorSubject<UserChatsType[] | null>(null); //Các chats hiện có của users
   getCurrentUserChats = this.currentUserChats.asObservable();
-  setCurrentUserChats(updatedChats: UserChatsType[]) {
+  setCurrentUserChats(updatedChats: UserChatsType[] | null) {
     return this.currentUserChats.next(updatedChats);
   }
 
@@ -191,16 +197,17 @@ export class ChatBotService {
                 '🚀 ~ ChatBotService ~ this.getNewMessage.subscribe ~ newMessage:',
                 newMessage
               );
-
               socket.emit('sendMessage', { ...newMessage, recipientId });
             }
           });
+
+          this.setNewMessage(null);
         }
       });
     });
   }
 
-  //API
+  //API lấy toàn bộ chats của một user
   fetchMyChats(uId: string) {
     let queryParams = new HttpParams().append('userId', uId);
     return this.http
@@ -218,7 +225,7 @@ export class ChatBotService {
       );
   }
 
-  //API
+  //API lấy thông tin chat hiện tại
   fetchCurrentChat(uId1: String, uId2: String) {
     let queryParams = new HttpParams()
       .append('firstId', uId1.toString())
@@ -238,7 +245,7 @@ export class ChatBotService {
       );
   }
 
-  //API
+  //API lấy toàn bộ messages của một đoạn chat
   fetchMessagesOfAChat(chatId: string) {
     let queryParams = new HttpParams().append('chatId', chatId);
     return this.http
@@ -255,7 +262,7 @@ export class ChatBotService {
       );
   }
 
-  //API
+  //API tạo message mới của một đoạn chat
   creatingNewMessage(chatId: string, senderId: string, message: string) {
     let updatedMsgs: MessageType[] | null = null;
     return this.http
@@ -283,7 +290,7 @@ export class ChatBotService {
       );
   }
 
-  //API
+  //API lấy thông tin người nhận
   fetchRecipientInfo(recipientId: string) {
     let paramQuery = new HttpParams().append('userId', recipientId);
     return this.http
@@ -295,6 +302,29 @@ export class ChatBotService {
         tap((res) => {
           if (res.data) {
             this.setCurrentRecipient(res.data);
+          }
+        })
+      );
+  }
+
+  //API tạo đoạn chat mới
+  createNewChat(uId1: string, uId2: string) {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'chat/create-chat', {
+        firstId: uId1,
+        secondId: uId2,
+      })
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            let updatedChats: UserChatsType[] | null = null;
+            this.getCurrentUserChats.subscribe((chats) => {
+              if (chats) {
+                updatedChats = chats;
+              }
+            });
+            this.setCurrentUserChats(updatedChats);
           }
         })
       );

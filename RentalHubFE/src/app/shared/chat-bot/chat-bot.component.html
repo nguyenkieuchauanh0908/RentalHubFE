@@ -1,9 +1,10 @@
 <!-- Chatbox Container -->
-<div *ngIf="isAuthenticated" class="chatbot">
+<div *ngIf="isAuthenticated">
   <!-- Chatbox icon -->
   <img
     *ngIf="isAuthenticated"
-    [matMenuTriggerFor]="chatbot"
+    [matMenuTriggerFor]="chatBot"
+    #chatBotTrigger="matMenuTrigger"
     class="tooltip-block"
     aria-hidden="false"
     class="fixed bottom-4 right-4 z-40 w-16 h-16 bg-white-background rounded-full p-2 cursor-pointer"
@@ -12,15 +13,21 @@
   />
   <!-- Chatbox -->
   <mat-menu
-    #chatbot="matMenu"
+    class="chatbot"
+    #chatBot="matMenu"
     yPosition="above"
     xPosition="after"
-    class="w-128 h-[480px] max-h-[480px] overflow-scroll scroll-smooth scrollbar-hide bg-white-background rounded-lg"
-    style="padding: 0px; min-width: 320px"
+    class="w-128 h-[480px] max-h-[480px] min-w-[320px] overflow-scroll scroll-smooth scrollbar-hide bg-white-background rounded-lg"
   >
-    <a (click)="$event.stopPropagation()">
+    <a
+      (click)="$event.stopPropagation()"
+      [ngClass]="isLoading ? 'opacity-70' : ''"
+    >
+      <div *ngIf="isLoading" class="spinner__loading">
+        <mat-spinner diameter="30"></mat-spinner>
+      </div>
       <!-- Chatbot -->
-      <div *ngIf="!this.seeContactList; else contactList">
+      <div *ngIf="!this.seeContactList; else contactList" class="h-[480px]">
         <app-chat-with></app-chat-with>
       </div>
       <!-- Contact list -->

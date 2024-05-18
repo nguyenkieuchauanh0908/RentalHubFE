@@ -9,6 +9,8 @@ import {
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { Subject, take, takeUntil } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
+import 'moment/locale/vi';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-chat-with',
@@ -22,6 +24,7 @@ export class ChatWithComponent implements OnInit, OnDestroy {
   recipientInfor: RecipientType | null = null;
   currentMsgs: MessageType[] | null = null;
   currentChat: UserChatsType | null = null;
+  moment!: any;
   $destroy: Subject<boolean> = new Subject<boolean>();
   constructor(
     private accountService: AccountService,
@@ -33,6 +36,9 @@ export class ChatWithComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.isLoading = true;
+    this.moment = moment;
+    this.moment.locale('vn');
+
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
@@ -81,6 +87,7 @@ export class ChatWithComponent implements OnInit, OnDestroy {
                         .subscribe((messages) => {
                           if (messages) {
                             this.currentMsgs = messages;
+                            this.isLoading = false;
                           }
                         });
                     }
@@ -94,12 +101,13 @@ export class ChatWithComponent implements OnInit, OnDestroy {
           //Update tin nhắn nhận được
           this.chatBotService.onReceivingChatMessageToUpdate();
         }
-        this.isLoading = false;
       });
   }
 
   toContactList() {
     this.chatBotService.setSeeContactList(true);
+    this.chatBotService.setCurrentChat(null);
+    this.chatBotService.setMessages(null);
     this.chatBotService
       .fetchMyChats(this.currentUser!._id.toString())
       .subscribe();

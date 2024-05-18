@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, take, takeUntil } from 'rxjs';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { ChatBotService, UserChatsType } from './chat-bot.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-chat-bot',
@@ -11,12 +12,13 @@ import { User } from 'src/app/auth/user.model';
   styleUrls: ['./chat-bot.component.scss'],
 })
 export class ChatBotComponent implements OnInit, OnDestroy {
+  @ViewChild('chatBotTrigger') chatBotManuTrigger!: MatMenuTrigger;
+  isLoading = false;
   seeContactList: Boolean = false;
   onChatBot = false;
   isAuthenticated = false;
   currentUser: User | null = null;
   currentChats: UserChatsType[] | null = null;
-
   $destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -24,6 +26,7 @@ export class ChatBotComponent implements OnInit, OnDestroy {
     private chatBotService: ChatBotService
   ) {}
   ngOnInit(): void {
+    this.isLoading = true;
     this.isAuthenticated = false;
     this.onChatBot = false;
     this.seeContactList = true;
@@ -43,16 +46,30 @@ export class ChatBotComponent implements OnInit, OnDestroy {
                   .pipe(takeUntil(this.$destroy))
                   .subscribe((chats) => {
                     this.currentChats = chats;
+                    this.isLoading = false;
                   });
               }
             });
 
           this.chatBotService.emittingAddingMeToOnlineUsers(user._id); //Thêm user vào onlineUser
           this.chatBotService.onGettingOnlineUsers(); //Lấy list các user đang online trong chats
-          this.chatBotService.getSeeContactList
+          this.chatBotService.getSeeContactList //true: Đang ở contact list, false: đang ở chatBot
             .pipe(takeUntil(this.$destroy))
             .subscribe((see) => {
               this.seeContactList = see;
+            });
+
+          //Mở đóng chatBot tự động
+          this.chatBotService.getChatBotMenuOpened
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((opened) => {
+              if (opened) {
+                this.chatBotManuTrigger.openMenu();
+              } else {
+                if (this.chatBotManuTrigger.menuClosed) {
+                  this.chatBotManuTrigger.closeMenu();
+                }
+              }
             });
         }
       });
