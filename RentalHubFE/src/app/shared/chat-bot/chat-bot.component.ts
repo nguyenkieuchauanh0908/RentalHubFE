@@ -17,6 +17,7 @@ export class ChatBotComponent implements OnInit, OnDestroy {
   seeContactList: Boolean = false;
   onChatBot = false;
   isAuthenticated = false;
+  totalUnreadMsgs: number | null = 0;
   currentUser: User | null = null;
   currentChats: UserChatsType[] | null = null;
   $destroy: Subject<boolean> = new Subject<boolean>();
@@ -37,21 +38,30 @@ export class ChatBotComponent implements OnInit, OnDestroy {
         if (user) {
           this.currentUser = user;
           //Lấy tất cả các chats của users
-          this.chatBotService
-            .fetchMyChats(user._id)
+          this.chatBotService.getCurrentUserChats
             .pipe(takeUntil(this.$destroy))
-            .subscribe((res) => {
-              if (res.data) {
-                this.chatBotService.getCurrentUserChats
+            .subscribe((chats) => {
+              if (!chats) {
+                this.chatBotService
+                  .fetchMyChats(user._id)
                   .pipe(takeUntil(this.$destroy))
-                  .subscribe((chats) => {
-                    this.currentChats = chats;
-                    this.isLoading = false;
+                  .subscribe((res) => {
+                    if (res.data) {
+                      this.chatBotService.getCurrentUserChats
+                        .pipe(takeUntil(this.$destroy))
+                        .subscribe((chats) => {
+                          this.currentChats = chats;
+                          this.isLoading = false;
+                        });
+                    }
                   });
+              } else {
+                console.log('dfsdfds');
+                this.currentChats = chats;
               }
             });
 
-          this.chatBotService.emittingAddingMeToOnlineUsers(user._id); //Thêm user vào onlineUser
+          this.chatBotService.emittingAddingMeToOnlineUsers(user); //Thêm user vào onlineUser
           this.chatBotService.onGettingOnlineUsers(); //Lấy list các user đang online trong chats
           this.chatBotService.getSeeContactList //true: Đang ở contact list, false: đang ở chatBot
             .pipe(takeUntil(this.$destroy))
@@ -71,6 +81,18 @@ export class ChatBotComponent implements OnInit, OnDestroy {
                 }
               }
             });
+
+          //Lấy số lượng các msg chưa đọc
+          this.chatBotService.getTotalUnreadMessages
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((totalMsg) => {
+              if (totalMsg) {
+                this.totalUnreadMsgs = totalMsg;
+              }
+            });
+
+          //Lấy unreaded msg của các chat nếu có
+          this.chatBotService.onGettingUnreadMessage();
         }
       });
   }

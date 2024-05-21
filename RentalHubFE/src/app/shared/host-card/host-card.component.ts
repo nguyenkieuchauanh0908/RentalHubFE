@@ -61,14 +61,24 @@ export class HostCardComponent implements OnInit, OnDestroy {
   }
   addToContactAndGoToChatBot() {
     if (this.currentUser && this.host) {
-      //Thêm chat mới vào chat's list; update lại currentChat; cập nhật lại trạng thái của chatBotMenu
+      //Thêm chat mới vào chat's list; update lại currentChat; update lại trạng thái của chatBotMenu, update lại chats hiển thị
       this.chatBotService
         .createNewChat(this.currentUser._id, this.host.hostId)
         .pipe(takeUntil(this.$destroy))
         .subscribe((res) => {
           if (res.data) {
+            let updatedChats: UserChatsType[] | null = null;
             this.chatBotService.setChatBotMenuOpened(true);
             this.chatBotService.setSeeContactList(false);
+            this.chatBotService.getCurrentUserChats.subscribe((chats) => {
+              if (chats) {
+                updatedChats = chats;
+              }
+            });
+            this.chatBotService.setCurrentUserChats([
+              res.data,
+              ...updatedChats!,
+            ]);
             this.chatBotService.setCurrentChat(res.data);
             if (this.currentChat) {
               this.chatBotService

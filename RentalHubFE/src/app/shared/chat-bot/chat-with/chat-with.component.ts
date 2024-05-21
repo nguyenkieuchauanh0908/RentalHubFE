@@ -108,9 +108,6 @@ export class ChatWithComponent implements OnInit, OnDestroy {
     this.chatBotService.setSeeContactList(true);
     this.chatBotService.setCurrentChat(null);
     this.chatBotService.setMessages(null);
-    this.chatBotService
-      .fetchMyChats(this.currentUser!._id.toString())
-      .subscribe();
   }
 
   sendMsg(form: any) {

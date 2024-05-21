@@ -5,7 +5,7 @@ import {
   UserChatsType,
   UserOnlineType,
 } from '../chat-bot.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { AccountService } from 'src/app/accounts/accounts.service';
 
 @Component({
@@ -16,6 +16,7 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 export class ChatUserComponent implements OnInit, OnDestroy {
   recipienInfo: RecipientType | null = null;
   isOnline: boolean | undefined = false;
+  seeContactList: Boolean = false;
   $destroy: Subject<boolean> = new Subject<boolean>();
 
   @Input({ required: true }) chat!: UserChatsType;
@@ -51,6 +52,11 @@ export class ChatUserComponent implements OnInit, OnDestroy {
               this.isOnline = onlUsers?.some(
                 (u: UserOnlineType) => u?.userId === recipientId
               );
+            });
+          this.chatBotService.getSeeContactList
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((see) => {
+              this.seeContactList = see;
             });
         }
       });

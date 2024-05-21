@@ -6,6 +6,7 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 import { environment } from 'src/environments/environment';
 import { handleError } from '../handle-errors';
 import { resDataDTO } from '../resDataDTO';
+import { User } from 'src/app/auth/user.model';
 
 export interface UserChatsType {
   _id: String;
@@ -14,6 +15,7 @@ export interface UserChatsType {
   lssender: String;
   createdAt: Date;
   updatedAt: Date;
+  totalUnRead: number;
 }
 
 export interface MessageType {
@@ -61,9 +63,42 @@ export class ChatBotService {
     this.chatBotMenuOpened.next(opened);
   }
 
+  private totalUnreadMessages = new BehaviorSubject<number>(0); //Tổng số message chưa đọc
+  getTotalUnreadMessages = this.totalUnreadMessages.asObservable();
+  setTotalUnreadMessages(totalUnreadMessages: number) {
+    this.totalUnreadMessages.next(totalUnreadMessages);
+  }
+
   private seeContactList = new BehaviorSubject<Boolean>(true); //Có đang xem contact list hay không
   getSeeContactList = this.seeContactList.asObservable();
   setSeeContactList(see: Boolean) {
+    let updatedChats: UserChatsType[] | null = null;
+    let currentChat: UserChatsType | null = null;
+    let totalUnReadedMsg: number | null = 0;
+    this.getCurrentChat.subscribe((chat) => {
+      if (chat) {
+        currentChat = chat;
+        this.getCurrentUserChats.subscribe((chats) => {
+          if (chats) {
+            updatedChats = chats.slice();
+          }
+        });
+
+        updatedChats = updatedChats!.map((chat) => {
+          if (chat._id === currentChat?._id) {
+            this.getTotalUnreadMessages.subscribe((totalUnreaded) => {
+              totalUnReadedMsg = totalUnreaded;
+            });
+            this.setTotalUnreadMessages(totalUnReadedMsg! - chat.totalUnRead);
+            chat.totalUnRead = 0;
+            chat.updatedAt = new Date();
+          }
+          return chat;
+        });
+        this.setCurrentUserChats(updatedChats);
+      }
+    });
+
     this.seeContactList.next(see);
   }
 
@@ -117,6 +152,11 @@ export class ChatBotService {
   //Connect to the socket
   initiateSocket() {
     this.setCurrentSocket(this.socket);
+    this.accountService.getCurrentUser.subscribe((user) => {
+      if (user) {
+        this.emittingAddingMeToOnlineUsers(user);
+      }
+    });
 
     return () => {
       this.socket.disconnect();
@@ -134,10 +174,10 @@ export class ChatBotService {
   }
 
   //Socket event's name: 'addNewUser'
-  emittingAddingMeToOnlineUsers(uId: String) {
+  emittingAddingMeToOnlineUsers(user: User) {
     this.getCurrentSocket.subscribe((socket) => {
       if (socket) {
-        socket.emit('addNewUser', uId);
+        socket.emit('addNewUser', { userId: user._id, role: 0 });
       }
     });
   }
@@ -167,7 +207,6 @@ export class ChatBotService {
     this.getCurrentSocket.subscribe((socket) => {
       if (socket) {
         socket.on('getMessage', (msg: MessageType) => {
-          console.log('🚀 ~ ChatBotService ~ socket.on ~ msg:', msg);
           this.getCurrentChat.subscribe((currentChat) => {
             if (currentChat?._id !== msg.chatId) return;
             this.getMessages.subscribe((messages) => {
@@ -184,23 +223,68 @@ export class ChatBotService {
     });
   };
 
+  //Socket event's name: 'getMessage', 'getUnreadMessage'
+  onGettingUnreadMessage() {
+    let updatedMsgs: MessageType[] | null = null;
+    this.getCurrentSocket.subscribe((socket) => {
+      if (socket) {
+        this.getSeeContactList.subscribe((see) => {
+          if (see) {
+            socket.on(
+              'getUnreadMessage',
+              (res: {
+                senderId: String;
+                isRead: Boolean;
+                date: String;
+                chatId: String;
+              }) => {
+                if (res.isRead === false) {
+                  console.log('On getting unread messages...');
+                  let updatedChats: UserChatsType[] | null = null;
+                  let totalUnReadedMsg: number | null = 0;
+                  this.getCurrentUserChats.subscribe((chats) => {
+                    if (chats) {
+                      updatedChats = chats.slice();
+                    }
+                  });
+
+                  for (let i = 0; i < updatedChats!.length; i++) {
+                    if (updatedChats![i]._id === res.chatId) {
+                      updatedChats![i].totalUnRead += 1;
+                      this.getTotalUnreadMessages.subscribe((totalUnreaded) => {
+                        totalUnReadedMsg = totalUnreaded;
+                      });
+                      this.setTotalUnreadMessages(totalUnReadedMsg + 1);
+                      break;
+                    }
+                  }
+                  this.setCurrentUserChats(updatedChats);
+                }
+              }
+            );
+          }
+        });
+      }
+    });
+  }
+
   //Socket event's name: 'sendMessage'
   emitSendingChatMessage(uId: string) {
     console.log('emitSendingChatMessage');
     this.getCurrentChat.subscribe((currentChat) => {
       let recipientId = currentChat?.members?.find((id) => id !== uId);
+      let chatId = currentChat?._id;
       this.getCurrentSocket.subscribe((socket) => {
         if (socket) {
           this.getNewMessage.subscribe((newMessage) => {
             if (newMessage) {
-              console.log(
-                '🚀 ~ ChatBotService ~ this.getNewMessage.subscribe ~ newMessage:',
-                newMessage
-              );
-              socket.emit('sendMessage', { ...newMessage, recipientId });
+              socket.emit('sendMessage', {
+                ...newMessage,
+                recipientId,
+                chatId,
+              });
             }
           });
-
           this.setNewMessage(null);
         }
       });
@@ -219,7 +303,8 @@ export class ChatBotService {
         tap((res) => {
           if (res.data) {
             console.log('Get chats successfully!', res.data);
-            this.setCurrentUserChats(res.data);
+            this.setCurrentUserChats(res.data.chats);
+            this.setTotalUnreadMessages(res.data.totalUnReadMessages);
           }
         })
       );
@@ -285,6 +370,21 @@ export class ChatBotService {
             } else {
               this.setMessages([res.data]);
             }
+
+            //Cập nhất lại msg mới nhất trong chat tương ứng của contact list
+            this.getCurrentUserChats.subscribe((chats) => {
+              let updatedChats: UserChatsType[] | null = null;
+              if (chats) {
+                updatedChats = chats;
+              }
+              for (let i = 0; i < updatedChats!.length; i++) {
+                if (updatedChats![i]._id === chatId) {
+                  updatedChats!![i].lsmessage = message;
+
+                  break;
+                }
+              }
+            });
           }
         })
       );

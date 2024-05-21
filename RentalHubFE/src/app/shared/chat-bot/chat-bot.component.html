@@ -1,16 +1,25 @@
 <!-- Chatbox Container -->
 <div *ngIf="isAuthenticated">
   <!-- Chatbox icon -->
-  <img
-    *ngIf="isAuthenticated"
-    [matMenuTriggerFor]="chatBot"
-    #chatBotTrigger="matMenuTrigger"
-    class="tooltip-block"
-    aria-hidden="false"
+
+  <div
+    [matBadge]="this.totalUnreadMsgs"
+    matBadgeColor="warn"
+    [matBadgePosition]="'before'"
     class="fixed bottom-4 right-4 z-40 w-16 h-16 bg-white-background rounded-full p-2 cursor-pointer"
-    src="../../../assets/images/icons8-paper-plane-94.png"
-    alt="send message here"
-  />
+  >
+    <img
+      *ngIf="isAuthenticated"
+      [matMenuTriggerFor]="chatBot"
+      #chatBotTrigger="matMenuTrigger"
+      class="tooltip-block"
+      aria-hidden="false"
+      class="fixed bottom-4 right-4 z-40 w-16 h-16 bg-white-background rounded-full p-2 cursor-pointer"
+      src="../../../assets/images/icons8-paper-plane-94.png"
+      alt="send message here"
+    />
+  </div>
+
   <!-- Chatbox -->
   <mat-menu
     class="chatbot"

@@ -13,8 +13,13 @@
   </div>
   <!-- Chat sumary -->
   <div class="row-span-10 w-full flex flex-col">
-    <div class="font-normal text-sm line-clamp-1">
-      {{ this.recipienInfo!._name }}
+    <div class="flex flex-row justify-between line-clamp-1">
+      <span class="font-normal text-sm">{{ this.recipienInfo!._name }}</span>
+      <span
+        class="relative top-1 text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
+      >
+        {{ this.chat.updatedAt.toLocaleDateString() }}
+      </span>
     </div>
 
     <div class="flex flex-row justify-between">
@@ -23,11 +28,14 @@
       >
         {{ this.chat.lsmessage }}
       </p>
-      <p
-        class="text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
-      >
-        {{ this.chat.updatedAt.toLocaleDateString() }}
-      </p>
+      <div class="flex flex-row flex-nowrap justify-around">
+        <p
+          *ngIf="this.chat.totalUnRead > 0"
+          class="bg-red-700 text-xs text-center text-white-text-color font-medium rounded-full w-4 h-4 mr-2"
+        >
+          {{ this.chat.totalUnRead }}
+        </p>
+      </div>
     </div>
   </div>
 </div>
