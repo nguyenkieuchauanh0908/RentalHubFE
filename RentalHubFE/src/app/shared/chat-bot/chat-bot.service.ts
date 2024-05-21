@@ -83,18 +83,27 @@ export class ChatBotService {
             updatedChats = chats.slice();
           }
         });
-
-        updatedChats = updatedChats!.map((chat) => {
-          if (chat._id === currentChat?._id) {
-            this.getTotalUnreadMessages.subscribe((totalUnreaded) => {
-              totalUnReadedMsg = totalUnreaded;
-            });
-            this.setTotalUnreadMessages(totalUnReadedMsg! - chat.totalUnRead);
-            chat.totalUnRead = 0;
-            chat.updatedAt = new Date();
-          }
-          return chat;
+        this.getTotalUnreadMessages.subscribe((totalUnreaded) => {
+          totalUnReadedMsg = totalUnreaded;
+          console.log(
+            '🚀 ~ ChatBotService ~ this.getTotalUnreadMessages.subscribe ~ totalUnReadedMsg:',
+            totalUnReadedMsg
+          );
         });
+        for (let i = 0; i < updatedChats!.length; i++) {
+          if (updatedChats![i]._id === currentChat._id) {
+            if (updatedChats![i].totalUnRead > 0) {
+              let updatedTotalUnreadMsg =
+                totalUnReadedMsg! - updatedChats![i].totalUnRead;
+              this.setTotalUnreadMessages(updatedTotalUnreadMsg);
+              updatedChats![i].totalUnRead = 0;
+              updatedChats![i].updatedAt = new Date();
+            }
+
+            break;
+          }
+        }
+
         this.setCurrentUserChats(updatedChats);
       }
     });

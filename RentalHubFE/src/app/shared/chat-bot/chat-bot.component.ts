@@ -83,13 +83,15 @@ export class ChatBotComponent implements OnInit, OnDestroy {
             });
 
           //Lấy số lượng các msg chưa đọc
-          this.chatBotService.getTotalUnreadMessages
-            .pipe(takeUntil(this.$destroy))
-            .subscribe((totalMsg) => {
-              if (totalMsg) {
-                this.totalUnreadMsgs = totalMsg;
-              }
-            });
+          this.chatBotService.getTotalUnreadMessages.subscribe((totalMsg) => {
+            if (totalMsg >= 0) {
+              this.totalUnreadMsgs = totalMsg;
+              console.log(
+                '🚀 ~ ChatBotComponent ~ .subscribe ~ this.totalUnreadMsgs:',
+                this.totalUnreadMsgs
+              );
+            }
+          });
 
           //Lấy unreaded msg của các chat nếu có
           this.chatBotService.onGettingUnreadMessage();
