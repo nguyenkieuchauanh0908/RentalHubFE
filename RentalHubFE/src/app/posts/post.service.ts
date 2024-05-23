@@ -122,8 +122,9 @@ export class PostService {
     body.append('_title', form.titleInputControl);
     body.append('_desc', form.descInputControlsc);
     body.append('_content', form.contentInputControl);
-    body.append('_street', form.streetInputControl);
-    body.append('_district', form.districtInputControl);
+    body.append('_address', form.addressInputControl);
+    // body.append('_street', form.streetInputControl);
+    // body.append('_district', form.districtInputControl);
     body.append('_area', form.areaInputControl);
     body.append('_price', form.renting_priceInputControl);
     body.append('_electricPrice', form.electricInputControl);
