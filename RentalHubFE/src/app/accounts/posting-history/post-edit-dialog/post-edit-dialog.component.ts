@@ -87,8 +87,14 @@ export class PostEditDialogComponent implements OnInit {
     private formBuilder: FormBuilder,
     private addressesService: AddressesService,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.currentPost = this.data;
+    console.log(
+      '🚀 ~ PostEditDialogComponent ~ this.currentPost:',
+      this.currentPost
+    );
     if (this.data._status === 4) {
       this.title = 'Chi tiết thông báo';
     } else {
@@ -136,9 +142,6 @@ export class PostEditDialogComponent implements OnInit {
           _filterForStringOptions(this.addressOptions, value || '')
         )
       );
-  }
-
-  ngOnInit(): void {
     this.previews = this.data._images;
     this.postService.getCurrentChosenTags.subscribe((tags) => {
       this.selectedTags = tags;
