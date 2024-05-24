@@ -91,10 +91,10 @@ export class PostEditDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentPost = this.data;
-    console.log(
-      '🚀 ~ PostEditDialogComponent ~ this.currentPost:',
-      this.currentPost
-    );
+    // console.log(
+    //   '🚀 ~ PostEditDialogComponent ~ this.currentPost:',
+    //   this.currentPost
+    // );
     if (this.data._status === 4) {
       this.title = 'Chi tiết thông báo';
     } else {

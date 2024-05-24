@@ -1,4 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import {
   ChatBotService,
   MessageType,
@@ -17,7 +28,8 @@ import * as moment from 'moment';
   templateUrl: './chat-with.component.html',
   styleUrls: ['./chat-with.component.scss'],
 })
-export class ChatWithComponent implements OnInit, OnDestroy {
+export class ChatWithComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild('chatContainer') private chatContainer: ElementRef | undefined;
   isLoading: boolean = false;
   isOnline: boolean | undefined = false;
   currentUser: User | null = null;
@@ -25,11 +37,22 @@ export class ChatWithComponent implements OnInit, OnDestroy {
   currentMsgs: MessageType[] | null = null;
   currentChat: UserChatsType | null = null;
   moment!: any;
+  seeContactList: Boolean | undefined = false;
+  shouldScrollToBottom: Boolean | undefined = true;
+
   $destroy: Subject<boolean> = new Subject<boolean>();
   constructor(
     private accountService: AccountService,
-    private chatBotService: ChatBotService
+    private chatBotService: ChatBotService,
+    private renderer: Renderer2
   ) {}
+
+  ngAfterViewChecked(): void {
+    if (!this.seeContactList && this.shouldScrollToBottom) {
+      this.scrollToBottom();
+    }
+  }
+
   ngOnDestroy(): void {
     // this.$destroy.unsubscribe();
     this.chatBotService.disconnectToSocket();
@@ -38,11 +61,21 @@ export class ChatWithComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.moment = moment;
     this.moment.locale('vn');
-
+    this.seeContactList = false;
+    this.shouldScrollToBottom = true;
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         if (user) {
+          //See contact list
+          this.chatBotService.getSeeContactList
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((see) => {
+              if (see) {
+                this.seeContactList = see;
+              }
+            });
+
           this.currentUser = user;
           //connect to socket
           this.chatBotService.initiateSocket();
@@ -123,8 +156,26 @@ export class ChatWithComponent implements OnInit, OnDestroy {
               form.newMsg
             )
             .pipe(takeUntil(this.$destroy))
-            .subscribe();
+            .subscribe((res) => {
+              if (res.data) {
+                this.shouldScrollToBottom = true;
+              }
+            });
         }
       });
+  }
+
+  private scrollToBottom(): void {
+    if (this.chatContainer && this.shouldScrollToBottom) {
+      try {
+        this.renderer.setProperty(
+          this.chatContainer.nativeElement,
+          'scrollTop',
+          this.chatContainer.nativeElement.scrollHeight
+        );
+      } catch (err) {
+        console.error('Error scrolling to bottom:', err);
+      }
+    }
   }
 }

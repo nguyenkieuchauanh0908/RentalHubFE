@@ -85,10 +85,6 @@ export class ChatBotService {
         });
         this.getTotalUnreadMessages.subscribe((totalUnreaded) => {
           totalUnReadedMsg = totalUnreaded;
-          console.log(
-            '🚀 ~ ChatBotService ~ this.getTotalUnreadMessages.subscribe ~ totalUnReadedMsg:',
-            totalUnReadedMsg
-          );
         });
         for (let i = 0; i < updatedChats!.length; i++) {
           if (updatedChats![i]._id === currentChat._id) {

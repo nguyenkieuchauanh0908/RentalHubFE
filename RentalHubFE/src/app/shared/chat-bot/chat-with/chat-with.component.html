@@ -28,10 +28,11 @@
 
   <!-- Chatbox Content -->
   <div
+    #chatContainer
     *ngIf="this.currentMsgs; else noMsgs"
-    class="bg-white-background p-4 min-h-[480px]"
+    class="h-[480px] overflow-scroll scroll-smooth bg-white-background p-4"
   >
-    <div *ngFor="let message of this.currentMsgs">
+    <div *ngFor="let message of this.currentMsgs; let last = last">
       <!-- Recipient -->
       <div
         *ngIf="message.senderId !== this.currentUser!._id; else recipient"

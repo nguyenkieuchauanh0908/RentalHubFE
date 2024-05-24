@@ -56,7 +56,6 @@ export class ChatBotComponent implements OnInit, OnDestroy {
                     }
                   });
               } else {
-                console.log('dfsdfds');
                 this.currentChats = chats;
               }
             });
@@ -86,10 +85,6 @@ export class ChatBotComponent implements OnInit, OnDestroy {
           this.chatBotService.getTotalUnreadMessages.subscribe((totalMsg) => {
             if (totalMsg >= 0) {
               this.totalUnreadMsgs = totalMsg;
-              console.log(
-                '🚀 ~ ChatBotComponent ~ .subscribe ~ this.totalUnreadMsgs:',
-                this.totalUnreadMsgs
-              );
             }
           });
 
