@@ -30,7 +30,7 @@
   <div
     #chatContainer
     *ngIf="this.currentMsgs; else noMsgs"
-    class="h-[480px] overflow-scroll scroll-smooth bg-white-background p-4"
+    class="h-[480px] overflow-scroll scroll-smooth scrollbar-hide bg-white-background p-4"
   >
     <div *ngFor="let message of this.currentMsgs; let last = last">
       <!-- Recipient -->
