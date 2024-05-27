@@ -91,10 +91,6 @@ export class PostEditDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentPost = this.data;
-    // console.log(
-    //   '🚀 ~ PostEditDialogComponent ~ this.currentPost:',
-    //   this.currentPost
-    // );
     if (this.data._status === 4) {
       this.title = 'Chi tiết thông báo';
     } else {
@@ -154,14 +150,14 @@ export class PostEditDialogComponent implements OnInit {
     this.isLoading = true;
     console.log('on submiting post ...');
     console.log('Form data: ', this.postEditForm.value);
-    console.log(
-      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
-      this.selectedTags
-    );
-    console.log(
-      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
-      this.selectedFiles
-    );
+    // console.log(
+    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
+    //   this.selectedTags
+    // );
+    // console.log(
+    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
+    //   this.selectedFiles
+    // );
     this.notifierService.hideAll();
     if (this.selectedFiles && this.selectedTags) {
       this.postService
@@ -256,10 +252,10 @@ export class PostEditDialogComponent implements OnInit {
     this.previews.splice(index, 1, '');
     if (!this.deletedImageIndexes.includes(index)) {
       this.deletedImageIndexes.push(index);
-      console.log(
-        '🚀 ~ file: post-edit-dialog.component.ts:101 ~ PostEditDialogComponent ~ updateFile ~ this.deletedImageIndexes:',
-        this.deletedImageIndexes
-      );
+      // console.log(
+      //   '🚀 ~ file: post-edit-dialog.component.ts:101 ~ PostEditDialogComponent ~ updateFile ~ this.deletedImageIndexes:',
+      //   this.deletedImageIndexes
+      // );
     }
   }
 
@@ -276,10 +272,10 @@ export class PostEditDialogComponent implements OnInit {
       historyPosts!.forEach((post) => {
         if (post._id === this.currentPost._id) {
           post._tags = this.selectedTags;
-          console.log(
-            '🚀 ~ file: post-edit-dialog.component.ts:191 ~ PostEditDialogComponent ~ this.historyPosts.forEach ~  post._tags:',
-            post._tags
-          );
+          // console.log(
+          //   '🚀 ~ file: post-edit-dialog.component.ts:191 ~ PostEditDialogComponent ~ this.historyPosts.forEach ~  post._tags:',
+          //   post._tags
+          // );
         }
       });
       this.postService.setCurrentChosenTags(this.selectedTags);
@@ -290,9 +286,9 @@ export class PostEditDialogComponent implements OnInit {
     const dialogRef = this.dialog.open(AddTagDialogComponent, {
       width: '400px',
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
-    });
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   console.log(`Dialog result: ${result}`);
+    // });
   }
 
   toHidePostDialog() {

@@ -117,6 +117,19 @@ export class PostService {
       .pipe(catchError(handleError));
   }
 
+  findPostByIdAndStatus(id: string, status: string | null) {
+    let queryParams = new HttpParams().append('postId', id);
+
+    if (status) {
+      queryParams = queryParams.append('status', status);
+    }
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'posts/search-post-by-id', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
+
   createPost(form: any, images: FileList, selectedTags: any) {
     let body = new FormData();
     body.append('_title', form.titleInputControl);

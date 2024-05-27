@@ -8,6 +8,24 @@
     <!-- New post edit modal -->
     <div>
       <form [formGroup]="postEditForm" (ngSubmit)="onSubmitPost()">
+        <!-- Title -->
+        <mat-form-field class="w-full">
+          <mat-label>ID bài viết</mat-label>
+          <input
+            id="title-input"
+            aria-label="ID bài viết"
+            matInput
+            formControlName="idInputControl"
+            class="cursor-not-allowed"
+          />
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.idInputControl.hasError('required')
+            "
+          >
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
         <!-- Reported Reasons Tags -->
         <div class="mb-6" *ngIf="data._status === 4">
           <label

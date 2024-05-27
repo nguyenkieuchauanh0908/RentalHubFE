@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 import { PostsListComponent } from 'src/app/posts/posts-list/posts-list.component';
 import { AccountService } from '../accounts.service';
@@ -35,6 +35,7 @@ import { PostItemComponent } from 'src/app/posts/posts-list/post-item/post-item.
 export class PostingHistoryComponent {
   private getProfileSub!: Subscription;
   private getPostHistorySub!: Subscription;
+  $destroy: Subject<boolean> = new Subject<boolean>();
   profile!: User | null;
   currentUid!: string | null;
   myProfile!: User | null;
@@ -65,12 +66,13 @@ export class PostingHistoryComponent {
 
   constructor(
     private accountService: AccountService,
-    private route: ActivatedRoute,
     private postService: PostService,
     private paginationService: PaginationService,
     public dialog: MatDialog,
     private notifierService: NotifierService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
@@ -79,10 +81,10 @@ export class PostingHistoryComponent {
       this.myProfile = this.accountService.getProfile(this.currentUid);
     }
     this.getPostHistorySub = this.postService
-      .getPostsHistory(0, 1, 5)
+      .getPostsHistory(0, this.currentPage, this.pageItemLimit)
       .subscribe(
         (res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.historyPosts = res.data;
           this.postService.getCurrentPostingHistory.subscribe(
             (postingHistory) => {
@@ -97,9 +99,6 @@ export class PostingHistoryComponent {
           this.isLoading = false;
         }
       );
-  }
-
-  ngOnInit() {
     this.getTagSub = this.postService.getAllTags().subscribe((res) => {
       if (res.data) {
         console.log('Get tags successfully...');
@@ -316,5 +315,61 @@ export class PostingHistoryComponent {
     dialogRef.afterClosed().subscribe(() => {
       sub.unsubscribe();
     });
+  }
+
+  search(form: any) {
+    console.log('On searching...');
+    if (form.keyword) {
+      this.isLoading = true;
+      this.postService
+        .findPostByIdAndStatus(
+          form.keyword,
+          this.currentActiveStatus.status.toString()
+        )
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              console.log(res.data);
+              this.isLoading = false;
+              this.historyPosts = [];
+              this.currentPage = 1;
+              this.totalPages = 1;
+              this.historyPosts.push(res.data);
+            }
+
+            this.isLoading = false;
+          },
+          (err) => {
+            this.isLoading = false;
+            this.notifierService.notify(
+              'error',
+              'Không có kết quả tìm kiếm trùng khớp!'
+            );
+          }
+        );
+    }
+  }
+
+  reloadData() {
+    this.isLoading = true;
+    this.currentPage = 1;
+    this.postService
+      .getPostsHistory(
+        this.currentActiveStatus.status,
+        this.currentPage,
+        this.pageItemLimit
+      )
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.historyPosts = res.data;
+            this.totalPages = res.pagination.total;
+            this.isLoading = false;
+          }
+        },
+        (errMsg) => {
+          this.isLoading = false;
+        }
+      );
   }
 }
