@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { resDataDTO } from 'src/app/shared/resDataDTO';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
@@ -20,6 +20,8 @@ import { SendForgetPwEmailComponent } from 'src/app/shared/send-forget-pw-email/
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginObs!: Observable<resDataDTO>;
+
+  $destroy: Subject<boolean> = new Subject<boolean>();
   password: string = 'password';
   isShow: boolean = false;
   isLoading = false;
@@ -37,7 +39,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.password = 'password';
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.$destroy.unsubscribe();
+  }
 
   onSubmit(form: NgForm) {
     if (!form.valid) {
@@ -46,24 +50,29 @@ export class LoginComponent implements OnInit, OnDestroy {
     const email = form.value.email;
     const pw = form.value.password;
 
-    this.loginObs = this.authService.login(email, pw);
+    this.authService
+      .login(email, pw)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(
+        (res) => {
+          this.notifierService.notify('success', 'Đăng nhập thành công!');
+          this.isLoading = false;
+          setTimeout(() => {
+            this.router.navigate(['']);
+          }, 1000);
+        },
+        (errorMsg) => {
+          this.isLoading = false;
+          this.error = errorMsg;
+          this.notifierService.notify('error', errorMsg);
+        }
+      );
     this.isLoading = true;
     this.notifierService.hideAll();
-    this.loginObs.subscribe(
-      (res) => {
-        this.notifierService.notify('success', 'Đăng nhập thành công!');
-        this.isLoading = false;
-        setTimeout(() => {
-          this.router.navigate(['']);
-        }, 1000);
-      },
-      (errorMsg) => {
-        this.isLoading = false;
-        this.error = errorMsg;
-        console.log(this.error);
-        this.notifierService.notify('error', errorMsg);
-      }
-    );
+  }
+
+  loginWithGG() {
+    this.authService.loginWithGG();
   }
 
   onEyesClick() {

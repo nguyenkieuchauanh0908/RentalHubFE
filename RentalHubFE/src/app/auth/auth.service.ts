@@ -16,13 +16,14 @@ import { ChatBotService } from '../shared/chat-bot/chat-bot.service';
   providedIn: 'root',
 })
 export class AuthService {
-  isUser = false;
-  isHost = true;
-
+  private typeOfLogin: BehaviorSubject<number> = new BehaviorSubject<number>(1); //0: Normal, 1: Login with GG
+  getTypeOfLogin = this.typeOfLogin.asObservable();
+  updateTypeOfLogin(type: number) {
+    this.typeOfLogin.next(type);
+  }
   user = new BehaviorSubject<User | null>(null);
   resetToken: User | undefined;
   private tokenExpirationTimer: any;
-
   resetUser: User | undefined;
 
   constructor(
@@ -43,6 +44,7 @@ export class AuthService {
 
   login(email: string, pw: string) {
     console.log('On log in........');
+    this.updateTypeOfLogin(0);
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/login', {
         _email: email,
@@ -56,6 +58,31 @@ export class AuthService {
           this.getNotifications();
           this.chatBotService.initiateSocket();
           this.setRegisteredAddressesWhenLogin(res.data._addressRental);
+        })
+      );
+  }
+
+  loginWithGG() {
+    this.updateTypeOfLogin(1);
+    window.location.href = 'http://localhost:3000/api/auth/google';
+  }
+
+  getUserGmailLoginIdentity() {
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'auth/login-google', {
+        withCredentials: true,
+      })
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            // this.accountService.setCurrentUser(res.data);
+            this.handleAuthentication(res.data);
+            this.getFavoredPostLogin();
+            this.getNotifications();
+            this.chatBotService.initiateSocket();
+            this.setRegisteredAddressesWhenLogin(res.data._addressRental);
+          }
         })
       );
   }
@@ -191,6 +218,9 @@ export class AuthService {
             this.chatBotService.setCurrentRecipient(null);
             this.chatBotService.setMessages(null);
             this.chatBotService.setNewMessage(null);
+
+            //Set lại login type mặc định (Gmail)
+            this.updateTypeOfLogin(1);
           }
         })
       );
@@ -200,7 +230,6 @@ export class AuthService {
     console.log('auto loggin out...');
     this.tokenExpirationTimer = setTimeout(() => {
       this.logout(refreshToken);
-      this.isUser = false;
     }, expirationDuration);
   }
 
@@ -240,17 +269,15 @@ export class AuthService {
                 res.data.accessToken,
                 res.data.expiredAccess
               );
-              this.isHost = currentUser._isHost;
-              console.log('After reset token, isHost: ', this.isHost);
               localStorage.setItem('userData', JSON.stringify(this.resetUser));
             }
           });
           if (this.resetUser) {
             this.accountService.setCurrentUser(this.resetUser);
-            console.log(
-              '🚀 ~ file: auth.service.ts:168 ~ AuthService ~ tap ~ this.user.next:',
-              this.accountService.getCurrentUser
-            );
+            // console.log(
+            //   '🚀 ~ file: auth.service.ts:168 ~ AuthService ~ tap ~ this.user.next:',
+            //   this.accountService.getCurrentUser
+            // );
           }
         })
       );

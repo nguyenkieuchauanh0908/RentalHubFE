@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PostItemComponent } from './post-item/post-item.component';
 import { PostItem } from './post-item/post-item.model';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { PostService } from '../post.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import {
@@ -11,6 +11,9 @@ import {
 } from 'src/app/shared/pagination/pagination.service';
 import { FormsModule } from '@angular/forms';
 import { PostCardComponent } from '../post-card/post-card.component';
+import { User } from 'src/app/auth/user.model';
+import { AccountService } from 'src/app/accounts/accounts.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 export interface Range {
   max: number;
@@ -60,18 +63,23 @@ export class PostsListComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   postList!: PostItem[];
   postListChangedSub: Subscription = new Subscription();
-
   currentPage: number = this.paginationService.currentPage;
   pageItemLimit: number = 16;
   totalPages!: number;
-
+  $destroy: Subject<boolean> = new Subject<boolean>();
+  currentUser: User | null = null;
+  typeOfLogin: number = 0;
   private fragment: string = '';
   constructor(
     private postService: PostService,
     private paginationService: PaginationService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {
+    private route: ActivatedRoute,
+    private accountService: AccountService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit() {
     this.resetFilter();
     this.route.fragment.subscribe((fragment) => {
       this.fragment = fragment!;
@@ -79,29 +87,91 @@ export class PostsListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.currentPage = 1;
 
-    this.postService
-      .getPostList(this.currentPage, this.pageItemLimit, this.filterCriteria)
-      .subscribe((res) => {
-        this.priceRanges = res.data[res.data.length - 1];
-      });
+    this.authService.getTypeOfLogin.subscribe((type) => {
+      //Đăng nhập bằng GG
+      if (type === 1) {
+        console.log('On getting user identity in case loggin in with GG');
+        this.authService
+          .getUserGmailLoginIdentity()
+          .pipe(takeUntil(this.$destroy))
+          .subscribe((res) => {
+            if (res.data) {
+              this.accountService.getCurrentUser
+                .pipe(takeUntil(this.$destroy))
+                .subscribe((user) => {
+                  console.log(
+                    '🚀 ~ PostsListComponent ~ .subscribe ~ user:',
+                    user
+                  );
+                  if (!user) {
+                    console.log('Login with GG failed...');
+                    this.router.navigate(['/auth/login']);
+                  } else {
+                    this.currentUser = user;
+                    this.postService
+                      .getPostList(
+                        this.currentPage,
+                        this.pageItemLimit,
+                        this.filterCriteria
+                      )
+                      .subscribe((res) => {
+                        this.priceRanges = res.data[res.data.length - 1];
+                      });
 
-    this.postService.postListChanged.subscribe((posts: any[]) => {
-      this.postList = [...posts];
-      this.isLoading = false;
-    });
+                    this.postService.postListChanged.subscribe(
+                      (posts: any[]) => {
+                        this.postList = [...posts];
+                        this.isLoading = false;
+                      }
+                    );
 
-    this.paginationService.paginationChanged.subscribe(
-      (pagination: Pagination) => {
-        this.totalPages = pagination.total;
+                    this.paginationService.paginationChanged.subscribe(
+                      (pagination: Pagination) => {
+                        this.totalPages = pagination.total;
+                      }
+                    );
+
+                    this.postService.getCurrentFavoritesId.subscribe(
+                      (favourites) => {
+                        this.currentFavourites = favourites;
+                      }
+                    );
+                  }
+                });
+            }
+          });
       }
-    );
 
-    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
-      this.currentFavourites = favourites;
+      //Đăng nhập bình thường
+      else if (type === 0) {
+        console.log('On getting user identity in case loggin in normally');
+        this.postService
+          .getPostList(
+            this.currentPage,
+            this.pageItemLimit,
+            this.filterCriteria
+          )
+          .subscribe((res) => {
+            this.priceRanges = res.data[res.data.length - 1];
+          });
+
+        this.postService.postListChanged.subscribe((posts: any[]) => {
+          this.postList = [...posts];
+          this.isLoading = false;
+        });
+
+        this.paginationService.paginationChanged.subscribe(
+          (pagination: Pagination) => {
+            this.totalPages = pagination.total;
+          }
+        );
+
+        this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+          this.currentFavourites = favourites;
+        });
+      }
     });
   }
-
-  ngOnInit() {}
 
   navigateNextSilderImage(next: boolean) {
     let maxIndex = this.backgroundImages.length - 1;
