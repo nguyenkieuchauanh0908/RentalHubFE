@@ -16,7 +16,7 @@ import { ChatBotService } from '../shared/chat-bot/chat-bot.service';
   providedIn: 'root',
 })
 export class AuthService {
-  private typeOfLogin: BehaviorSubject<number> = new BehaviorSubject<number>(1); //0: Normal, 1: Login with GG
+  private typeOfLogin: BehaviorSubject<number> = new BehaviorSubject<number>(0); //0: Normal, 1: Login with GG
   getTypeOfLogin = this.typeOfLogin.asObservable();
   updateTypeOfLogin(type: number) {
     this.typeOfLogin.next(type);
@@ -219,8 +219,8 @@ export class AuthService {
             this.chatBotService.setMessages(null);
             this.chatBotService.setNewMessage(null);
 
-            //Set lại login type mặc định (Gmail)
-            this.updateTypeOfLogin(1);
+            //Set lại login type mặc định
+            this.updateTypeOfLogin(0);
           }
         })
       );
