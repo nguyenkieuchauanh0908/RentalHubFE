@@ -135,17 +135,17 @@ export class AccountService {
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/verify-indentity', body)
       .pipe(
-        catchError(handleError),
-        tap((res) => {
-          this.getCurrentUser.subscribe((currentUser) => {
-            if (currentUser) {
-              currentUser._isHost = true;
-              updatedUser = currentUser;
-              localStorage.setItem('userData', JSON.stringify(updatedUser));
-            }
-          });
-          this.setCurrentUser(updatedUser);
-        })
+        catchError(handleError)
+        // tap((res) => {
+        //   this.getCurrentUser.subscribe((currentUser) => {
+        //     if (currentUser) {
+        //       currentUser._isHost = true;
+        //       updatedUser = currentUser;
+        //       localStorage.setItem('userData', JSON.stringify(updatedUser));
+        //     }
+        //   });
+        //   this.setCurrentUser(updatedUser);
+        // })
       );
   }
 
