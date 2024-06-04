@@ -54,7 +54,7 @@ export class ChatWithComponent
   currentPage = 1;
   totalPages: number = 0;
   pageMsgLimit: number = 25;
-  currentScrollTopPosition: number = -1000;
+  currentScrollTopPosition: number = -1500;
 
   $destroy: Subject<boolean> = new Subject<boolean>();
   scrollSubscription: Subscription | undefined;
@@ -104,7 +104,7 @@ export class ChatWithComponent
     this.initialized = false;
     this.currentPage = 1;
     this.totalPages = 0;
-    this.currentScrollTopPosition = -1000;
+    this.currentScrollTopPosition = -1500;
     this.moment = moment;
     this.moment.locale('vn');
     this.seeContactList = false;
@@ -126,9 +126,7 @@ export class ChatWithComponent
           //connect to socket
           this.chatBotService.initiateSocket();
           //Lấy recipientInfo và messages của currentChat
-          // if (this.initialized === false) {
           console.log('Initializing chat');
-          // if (this.initialized === false) {
           this.chatBotService.getCurrentChat
             .pipe(takeUntil(this.$destroy))
             .subscribe((currentChat) => {
@@ -165,36 +163,41 @@ export class ChatWithComponent
                     this.pageMsgLimit
                   )
                   .pipe(takeUntil(this.$destroy))
-                  .subscribe((res) => {
-                    if (res.data) {
-                      this.isLoading = false;
-                      this.totalPages = res.pagination.total;
+                  .subscribe(
+                    (res) => {
                       if (res.data) {
-                        let messages = null;
-                        this.chatBotService.getMessages.subscribe((msgs) => {
-                          messages = msgs;
-                          this.currentMsgs = messages;
-                        });
-                        if (messages) {
-                          this.chatBotService.setMessages([
-                            ...messages,
-                            ...res.data,
-                          ]);
-                          this.currentMsgs = [...messages, ...res.data];
-                        } else {
-                          this.chatBotService.setMessages([...res.data]);
-                          this.currentMsgs = [...res.data];
+                        this.isLoading = false;
+                        this.totalPages = res.pagination.total;
+                        if (res.data) {
+                          let messages = null;
+                          this.chatBotService.getMessages.subscribe((msgs) => {
+                            messages = msgs;
+                            this.currentMsgs = messages;
+                          });
+                          if (messages) {
+                            this.chatBotService.setMessages([
+                              ...messages,
+                              ...res.data,
+                            ]);
+                            this.currentMsgs = [...messages, ...res.data];
+                          } else {
+                            this.chatBotService.setMessages([...res.data]);
+                            this.currentMsgs = [...res.data];
+                          }
                         }
                       }
+                    },
+                    (err) => {
+                      this.currentMsgs = null;
+                      this.isLoading = false;
                     }
-                  });
+                  );
               }
               this.initialized = true;
             });
 
           //Emit tin nhắn
           this.chatBotService.emitSendingChatMessage(user!._id);
-          // }
         }
       });
   }
