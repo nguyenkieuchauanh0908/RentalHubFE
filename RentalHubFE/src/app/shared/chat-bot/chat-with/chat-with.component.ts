@@ -74,7 +74,7 @@ export class ChatWithComponent
 
   ngOnDestroy(): void {
     this.$destroy.unsubscribe();
-    this.chatBotService.disconnectToSocket();
+    // this.chatBotService.disconnectToSocket();
     this.scrollSubscription?.unsubscribe();
   }
 
