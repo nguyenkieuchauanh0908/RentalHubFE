@@ -212,16 +212,22 @@ export class ChatBotService {
     this.getCurrentSocket.subscribe((socket) => {
       if (socket) {
         socket.on('getMessage', (msg: MessageType) => {
+          console.log('🚀 ~ ChatBotService ~ socket.on ~ getMessage:', msg);
           this.getCurrentChat.subscribe((currentChat) => {
             if (currentChat?._id !== msg.chatId) return;
             this.getMessages.subscribe((messages) => {
               updatedMsgs = messages;
             });
             if (updatedMsgs) {
-              this.setMessages([...updatedMsgs, msg]);
+              updatedMsgs.unshift(msg);
+              this.setMessages(updatedMsgs);
             } else {
               this.setMessages([msg]);
             }
+            console.log(
+              '🚀 ~ ChatBotService ~ this.getCurrentChat.subscribe ~ updatedMsgs:',
+              updatedMsgs
+            );
           });
         });
       }
@@ -283,6 +289,10 @@ export class ChatBotService {
         if (socket) {
           this.getNewMessage.subscribe((newMessage) => {
             if (newMessage) {
+              console.log(
+                '🚀 ~ ChatBotService ~ this.getNewMessage.subscribe ~ newMessage:',
+                newMessage
+              );
               socket.emit('sendMessage', {
                 ...newMessage,
                 recipientId,
@@ -352,6 +362,26 @@ export class ChatBotService {
       );
   }
 
+  //API lấy messages của một đoạn chat (có pagination)
+  fetchMessagesOfAChatWithPagination(
+    chatId: string,
+    page: number,
+    limit: number
+  ) {
+    let queryParams = new HttpParams()
+      .append('chatId', chatId)
+      .append('page', page)
+      .append('limit', limit);
+    return this.http
+      .get<resDataDTO>(
+        environment.baseUrl + 'message/get-messages-pagination',
+        {
+          params: queryParams,
+        }
+      )
+      .pipe(catchError(handleError));
+  }
+
   //API tạo message mới của một đoạn chat
   creatingNewMessage(chatId: string, senderId: string, message: string) {
     let updatedMsgs: MessageType[] | null = null;
@@ -385,7 +415,6 @@ export class ChatBotService {
               for (let i = 0; i < updatedChats!.length; i++) {
                 if (updatedChats![i]._id === chatId) {
                   updatedChats!![i].lsmessage = message;
-
                   break;
                 }
               }
