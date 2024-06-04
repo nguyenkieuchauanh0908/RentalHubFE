@@ -63,8 +63,16 @@ export class AuthService {
   }
 
   loginWithGG() {
+    let setLoginType: number | null = null;
     this.updateTypeOfLogin(1);
-    window.location.href = 'http://localhost:3000/api/auth/google';
+    this.getTypeOfLogin.subscribe((type) => {
+      setLoginType = type;
+    });
+    if (setLoginType === 1) {
+      setTimeout(() => {
+        window.location.href = 'http://localhost:3000/api/auth/google';
+      }, 100);
+    }
   }
 
   getUserGmailLoginIdentity() {
