@@ -1,9 +1,16 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  catchError,
+  takeUntil,
+  tap,
+  throwError,
+} from 'rxjs';
 import { handleError } from '../shared/handle-errors';
 import { User } from './user.model';
 import { AccountService } from '../accounts/accounts.service';
@@ -15,7 +22,7 @@ import { ChatBotService } from '../shared/chat-bot/chat-bot.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService implements OnInit, OnDestroy {
   private typeOfLogin: BehaviorSubject<number> = new BehaviorSubject<number>(0); //0: Normal, 1: Login with GG
   getTypeOfLogin = this.typeOfLogin.asObservable();
   updateTypeOfLogin(type: number) {
@@ -25,6 +32,7 @@ export class AuthService {
   resetToken: User | undefined;
   private tokenExpirationTimer: any;
   resetUser: User | undefined;
+  $destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private http: HttpClient,
@@ -40,6 +48,10 @@ export class AuthService {
         this.resetUser = user;
       }
     });
+  }
+  ngOnInit(): void {}
+  ngOnDestroy(): void {
+    this.$destroy.unsubscribe();
   }
 
   login(email: string, pw: string) {
@@ -58,6 +70,11 @@ export class AuthService {
           this.getNotifications();
           this.chatBotService.initiateSocket();
           this.setRegisteredAddressesWhenLogin(res.data._addressRental);
+          this.chatBotService
+            .fetchMyChats(res.data._id)
+            .pipe(takeUntil(this.$destroy))
+            .pipe(takeUntil(this.$destroy))
+            .subscribe();
         })
       );
   }
