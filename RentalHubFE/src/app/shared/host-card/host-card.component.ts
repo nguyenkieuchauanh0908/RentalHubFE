@@ -5,6 +5,7 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ChatBotService, UserChatsType } from '../chat-bot/chat-bot.service';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-host-card',
@@ -29,7 +30,8 @@ export class HostCardComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private chatBotService: ChatBotService
+    private chatBotService: ChatBotService,
+    private notifier: NotifierService
   ) {}
   ngOnInit(): void {
     this.accountService.getCurrentUser
@@ -56,18 +58,22 @@ export class HostCardComponent implements OnInit, OnDestroy {
     if (this.isAuthenticatedUser) {
       this.router.navigate(['/hosts/post-history', this.host.hostId]);
     } else {
-      console.log('You first need to login to perform this action...');
+      this.router.navigate(['/auth/login']);
+      this.notifier.notify(
+        'error',
+        'Phiên đăng nhập đã hết, vui lòng đăng nhập để tiếp tục!'
+      );
     }
   }
   addToContactAndGoToChatBot() {
     if (this.currentUser && this.host) {
-      //Thêm chat mới vào chat's list; update lại currentChat; update lại trạng thái của chatBotMenu, update lại chats hiển thị
+      //Thêm chat mới vào chat's list (nếu chưa có trong chat list); update lại currentChat; update lại trạng thái của chatBotMenu, update lại chats hiển thị
+      let updatedChats: UserChatsType[] | null = null;
       this.chatBotService
         .createNewChat(this.currentUser._id, this.host.hostId)
         .pipe(takeUntil(this.$destroy))
         .subscribe((res) => {
           if (res.data) {
-            let updatedChats: UserChatsType[] | null = null;
             this.chatBotService.setChatBotMenuOpened(true);
             this.chatBotService.setSeeContactList(false);
             this.chatBotService.getCurrentUserChats.subscribe((chats) => {
@@ -75,16 +81,22 @@ export class HostCardComponent implements OnInit, OnDestroy {
                 updatedChats = chats;
               }
             });
-            this.chatBotService.setCurrentUserChats([
-              res.data,
-              ...updatedChats!,
-            ]);
-            this.chatBotService.setCurrentChat(res.data);
-            if (this.currentChat) {
-              this.chatBotService
-                .fetchMessagesOfAChat(this.currentChat._id.toString())
-                .subscribe();
+            //Kiểm tra xem chat đã tồn tại chưa, nếu chưa thì cập nhật lại userChats
+            let chatExisted = false;
+            for (let i = 0; i < updatedChats!.length; i++) {
+              if (updatedChats![i]._id === res.data._id) {
+                chatExisted = true;
+                break;
+              }
             }
+            if (!chatExisted) {
+              this.chatBotService.setCurrentUserChats([
+                res.data,
+                ...updatedChats!,
+              ]);
+            }
+
+            this.chatBotService.setCurrentChat(res.data);
           }
         });
     }
