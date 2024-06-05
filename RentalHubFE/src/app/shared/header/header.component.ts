@@ -1,4 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
@@ -20,7 +26,7 @@ import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-e
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input('matBadge')
   @Input('matTooltipClass')
   content: string | number | undefined | null;
@@ -45,7 +51,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private authService: AuthService,
     public dialog: MatDialog
-  ) {
+  ) {}
+  ngAfterViewInit(): void {
+    this.notificationService.onReceivingNewNotificationToUpdate();
+  }
+
+  ngOnInit() {
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
@@ -85,8 +96,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.notificationService.setCurrentUnseenNotifications([]);
     }
   }
-
-  ngOnInit() {}
 
   toMyPosting() {
     let uId = this.user?._id;

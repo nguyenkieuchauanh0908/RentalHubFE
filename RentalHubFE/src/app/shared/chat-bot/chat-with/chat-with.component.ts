@@ -34,9 +34,7 @@ import * as moment from 'moment';
   templateUrl: './chat-with.component.html',
   styleUrls: ['./chat-with.component.scss'],
 })
-export class ChatWithComponent
-  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit
-{
+export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
   // @ViewChild('scrollableDiv') scrollableDiv: ElementRef | undefined;
   @ViewChild('chatContainer', { static: false })
   private chatContainer!: ElementRef;
@@ -64,13 +62,6 @@ export class ChatWithComponent
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef
   ) {}
-
-  ngAfterViewChecked(): void {
-    // console.log('Scroll to bottom...');
-    // if (!this.seeContactList && this.shouldScrollToBottom) {
-    //   this.scrollToBottom();
-    // }
-  }
 
   ngOnDestroy(): void {
     this.$destroy.unsubscribe();
@@ -124,7 +115,7 @@ export class ChatWithComponent
 
           this.currentUser = user;
           //connect to socket
-          this.chatBotService.initiateSocket();
+          // this.chatBotService.initiateSocket();
           //Lấy recipientInfo và messages của currentChat
           console.log('Initializing chat');
           this.chatBotService.getCurrentChat

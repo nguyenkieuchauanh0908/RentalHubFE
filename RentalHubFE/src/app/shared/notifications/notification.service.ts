@@ -4,6 +4,20 @@ import { environment } from 'src/environments/environment';
 import { resDataDTO } from '../resDataDTO';
 import { handleError } from '../handle-errors';
 import { BehaviorSubject, catchError, tap } from 'rxjs';
+import { ChatBotService } from '../chat-bot/chat-bot.service';
+import { Notification } from './notification.model';
+
+export interface SocketNotification {
+  _uId: string;
+  _postId: string; //optional
+  _addressId: string; //optional
+  _title: string;
+  _message: string;
+  _read: boolean;
+  _type: string;
+  _recipientRole: number;
+  _recipientId: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +41,7 @@ export class NotificationService {
   setCurrentUnseenNotifications(updatedUnseenNotifications: any[]) {
     this.currentUnseenNotifications.next(updatedUnseenNotifications);
   }
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private chatService: ChatBotService) {}
 
   //Lấy seen notification
   getSeenNotifications() {
@@ -64,6 +78,7 @@ export class NotificationService {
     );
   }
 
+  //Đánh dấu đã đọc theo id
   markNotiFicationAsReadById(id: string) {
     let queryParam = new HttpParams().append('notiId', id);
     return this.http
@@ -116,6 +131,7 @@ export class NotificationService {
       );
   }
 
+  //Đánh dấu đã đọc toàn bộ
   markAsReadAll() {
     return this.http
       .patch<resDataDTO>(
@@ -139,4 +155,51 @@ export class NotificationService {
         })
       );
   }
+
+  //Socket event's name: getNotification
+  onReceivingNewNotificationToUpdate = () => {
+    console.log('Receiving new noti...');
+    let newNotiComing: Notification | null = null;
+    let unseenNotificaionList: Notification[] | null = null;
+    let totalNotisUnseen: number = 0;
+    this.chatService.getCurrentSocket.subscribe((socket) => {
+      if (socket) {
+        console.log('aaaaaaaaaaaaa');
+        socket.on('getNotification', (noti: SocketNotification) => {
+          console.log('🚀 ~ NotificationService ~ socket.on ~ noti:', noti);
+          newNotiComing = {
+            _id: noti._uId,
+            _uId: noti._uId,
+            _postId: noti._postId,
+            _title: noti._title,
+            _message: noti._message,
+            _read: noti._read,
+            _type: noti._type,
+          };
+          //Thêm newNotiComing vào unseenNotificaionList và lưu lại
+          this.getCurrentUnseenNotifications.subscribe((unseenNotis: any[]) => {
+            unseenNotificaionList = unseenNotis;
+          });
+
+          if (newNotiComing) {
+            if (unseenNotificaionList) {
+              unseenNotificaionList.unshift(newNotiComing);
+            } else {
+              unseenNotificaionList = [newNotiComing];
+            }
+            console.log(
+              '🚀 ~ NotificationService ~ socket.on ~ unseenNotificaionList:',
+              unseenNotificaionList
+            );
+          }
+
+          this.setCurrentUnseenNotifications(unseenNotificaionList!);
+          this.getTotalNotifications.subscribe((unseenNotificaionList) => {
+            totalNotisUnseen = unseenNotificaionList;
+          });
+          this.setTotalNotifications(totalNotisUnseen + 1);
+        });
+      }
+    });
+  };
 }

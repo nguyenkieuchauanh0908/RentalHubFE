@@ -73,7 +73,6 @@ export class AuthService implements OnInit, OnDestroy {
           this.chatBotService
             .fetchMyChats(res.data._id)
             .pipe(takeUntil(this.$destroy))
-            .pipe(takeUntil(this.$destroy))
             .subscribe();
         })
       );
@@ -270,39 +269,40 @@ export class AuthService implements OnInit, OnDestroy {
           console.log('on reset AC token function');
           console.log(res);
           // cập nhật lại user với AC token mới
-          this.accountService.getCurrentUser.subscribe((currentUser) => {
-            console.log('Current user: ', currentUser);
-            if (currentUser) {
-              console.log('On updating user with reseting AC token...');
-              this.resetUser = new User(
-                currentUser._id,
-                currentUser._fname,
-                currentUser._lname,
-                currentUser._phone,
-                currentUser._dob,
-                currentUser._active,
-                currentUser._rating,
-                currentUser._email,
-                currentUser._address,
-                currentUser._avatar,
-                currentUser._role,
-                currentUser._isHost,
-                currentUser._addressRental,
-                currentUser._temptHostBlocked,
-                res.data.refreshToken,
-                res.data.expiredRefresh,
-                res.data.accessToken,
-                res.data.expiredAccess
-              );
-              localStorage.setItem('userData', JSON.stringify(this.resetUser));
-            }
-          });
+          this.accountService.getCurrentUser
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((currentUser) => {
+              console.log('Current user: ', currentUser);
+              if (currentUser) {
+                console.log('On updating user with reseting AC token...');
+                this.resetUser = new User(
+                  currentUser._id,
+                  currentUser._fname,
+                  currentUser._lname,
+                  currentUser._phone,
+                  currentUser._dob,
+                  currentUser._active,
+                  currentUser._rating,
+                  currentUser._email,
+                  currentUser._address,
+                  currentUser._avatar,
+                  currentUser._role,
+                  currentUser._isHost,
+                  currentUser._addressRental,
+                  currentUser._temptHostBlocked,
+                  res.data.refreshToken,
+                  res.data.expiredRefresh,
+                  res.data.accessToken,
+                  res.data.expiredAccess
+                );
+                localStorage.setItem(
+                  'userData',
+                  JSON.stringify(this.resetUser)
+                );
+              }
+            });
           if (this.resetUser) {
             this.accountService.setCurrentUser(this.resetUser);
-            // console.log(
-            //   '🚀 ~ file: auth.service.ts:168 ~ AuthService ~ tap ~ this.user.next:',
-            //   this.accountService.getCurrentUser
-            // );
           }
         })
       );
@@ -390,10 +390,15 @@ export class AuthService implements OnInit, OnDestroy {
     }
     //Nếu không có trong local storage thì lấy từ server rồi lưu vào local storage
     else {
-      this.postService.getFavoritesId().subscribe();
-      this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
-        favorites = favoritesId;
-      });
+      this.postService
+        .getFavoritesId()
+        .pipe(takeUntil(this.$destroy))
+        .subscribe();
+      this.postService.getCurrentFavoritesId
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((favoritesId) => {
+          favorites = favoritesId;
+        });
       localStorage.setItem('favorite-posts', JSON.stringify(favorites));
     }
   }
@@ -416,7 +421,13 @@ export class AuthService implements OnInit, OnDestroy {
   }
 
   getNotifications() {
-    this.notiService.getSeenNotifications().subscribe();
-    this.notiService.getUnseenNotifications().subscribe();
+    this.notiService
+      .getSeenNotifications()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe();
+    this.notiService
+      .getUnseenNotifications()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe();
   }
 }
