@@ -23,11 +23,7 @@ import { ChatBotService } from '../shared/chat-bot/chat-bot.service';
   providedIn: 'root',
 })
 export class AuthService implements OnInit, OnDestroy {
-  private typeOfLogin: BehaviorSubject<number> = new BehaviorSubject<number>(0); //0: Normal, 1: Login with GG
-  getTypeOfLogin = this.typeOfLogin.asObservable();
-  updateTypeOfLogin(type: number) {
-    this.typeOfLogin.next(type);
-  }
+  //LoginType : 0 || 1 (normal || gmail)
   user = new BehaviorSubject<User | null>(null);
   resetToken: User | undefined;
   private tokenExpirationTimer: any;
@@ -56,7 +52,7 @@ export class AuthService implements OnInit, OnDestroy {
 
   login(email: string, pw: string) {
     console.log('On log in........');
-    this.updateTypeOfLogin(0);
+    localStorage.setItem('loginType', '0');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/login', {
         _email: email,
@@ -80,16 +76,8 @@ export class AuthService implements OnInit, OnDestroy {
   }
 
   loginWithGG() {
-    let setLoginType: number | null = null;
-    this.updateTypeOfLogin(1);
-    this.getTypeOfLogin.subscribe((type) => {
-      setLoginType = type;
-    });
-    if (setLoginType === 1) {
-      setTimeout(() => {
-        window.location.href = 'http://localhost:3000/api/auth/google';
-      }, 100);
-    }
+    localStorage.setItem('loginType', '1');
+    window.location.href = 'http://localhost:3000/api/auth/google';
   }
 
   getUserGmailLoginIdentity() {
@@ -219,11 +207,13 @@ export class AuthService implements OnInit, OnDestroy {
             if (
               localStorage.getItem('userData') ||
               localStorage.getItem('favorite-posts') ||
-              localStorage.getItem('registered-addresses')
+              localStorage.getItem('registered-addresses') ||
+              localStorage.getItem('loginType')
             ) {
               localStorage.removeItem('userData');
               localStorage.removeItem('favorite-posts');
               localStorage.removeItem('registered-addresses');
+              localStorage.removeItem('loginType');
             }
             //Xóa post yêu thích và current user
             this.postService.setCurrentFavorites([]);
@@ -245,7 +235,7 @@ export class AuthService implements OnInit, OnDestroy {
             this.chatBotService.setNewMessage(null);
 
             //Set lại login type mặc định
-            this.updateTypeOfLogin(0);
+            localStorage.setItem('loginType', '0');
           }
         })
       );
@@ -299,10 +289,6 @@ export class AuthService implements OnInit, OnDestroy {
           });
           if (this.resetUser) {
             this.accountService.setCurrentUser(this.resetUser);
-            // console.log(
-            //   '🚀 ~ file: auth.service.ts:168 ~ AuthService ~ tap ~ this.user.next:',
-            //   this.accountService.getCurrentUser
-            // );
           }
         })
       );

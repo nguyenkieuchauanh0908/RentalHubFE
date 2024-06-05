@@ -45,48 +45,50 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private authService: AuthService,
     public dialog: MatDialog
-  ) {
-    this.accountService.getCurrentUser
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((user) => {
-        console.log('On rendering headers...');
-        this.isAuthenticatedUser = !!user;
-        console.log('User is authenticated: ', this.isAuthenticatedUser);
-        this.user = user;
-        if (this.user?._fname && this.user?._lname) {
-          this.fullName = this.user?._fname + ' ' + this.user._lname;
-        }
-      });
+  ) {}
 
-    if (this.isAuthenticatedUser) {
-      //Lấy các noti đã xem
-      this.notificationService.getCurrentSeenNotifications.subscribe(
-        (notifications) => {
-          this.seenNotiList = notifications;
-        }
-      );
+  ngOnInit() {
+    setTimeout(() => {
+      this.accountService.getCurrentUser
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((user) => {
+          console.log('On rendering headers...');
+          this.isAuthenticatedUser = !!user;
+          console.log('User is authenticated: ', this.isAuthenticatedUser);
+          this.user = user;
+          if (this.user?._fname && this.user?._lname) {
+            this.fullName = this.user?._fname + ' ' + this.user._lname;
+          }
+        });
 
-      //Lấy các noti chưa xem
-      this.notificationService.getCurrentUnseenNotifications.subscribe(
-        (unseenNotifications) => {
-          this.unseenNotificaionList = unseenNotifications;
-        }
-      );
+      if (this.isAuthenticatedUser) {
+        //Lấy các noti đã xem
+        this.notificationService.getCurrentSeenNotifications.subscribe(
+          (notifications) => {
+            this.seenNotiList = notifications;
+          }
+        );
 
-      //Lấy tổng các noti chưa xem
-      this.notificationService.getTotalNotifications.subscribe(
-        (notificationTotal) => {
-          this.notificationTotals = notificationTotal;
-        }
-      );
-    } else {
-      this.notificationTotals = 0;
-      this.notificationService.setCurrentSeenNotifications([]);
-      this.notificationService.setCurrentUnseenNotifications([]);
-    }
+        //Lấy các noti chưa xem
+        this.notificationService.getCurrentUnseenNotifications.subscribe(
+          (unseenNotifications) => {
+            this.unseenNotificaionList = unseenNotifications;
+          }
+        );
+
+        //Lấy tổng các noti chưa xem
+        this.notificationService.getTotalNotifications.subscribe(
+          (notificationTotal) => {
+            this.notificationTotals = notificationTotal;
+          }
+        );
+      } else {
+        this.notificationTotals = 0;
+        this.notificationService.setCurrentSeenNotifications([]);
+        this.notificationService.setCurrentUnseenNotifications([]);
+      }
+    }, 1000);
   }
-
-  ngOnInit() {}
 
   toMyPosting() {
     let uId = this.user?._id;

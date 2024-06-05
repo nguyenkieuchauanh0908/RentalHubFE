@@ -86,91 +86,85 @@ export class PostsListComponent implements OnInit, OnDestroy {
     });
     this.isLoading = true;
     this.currentPage = 1;
-
-    this.authService.getTypeOfLogin.subscribe((type) => {
-      //Đăng nhập bằng GG
-      if (type === 1) {
-        console.log('On getting user identity in case loggin in with GG');
-        this.authService
-          .getUserGmailLoginIdentity()
-          .pipe(takeUntil(this.$destroy))
-          .subscribe((res) => {
-            if (res.data) {
-              this.accountService.getCurrentUser
-                .pipe(takeUntil(this.$destroy))
-                .subscribe((user) => {
+    let loginType = localStorage.getItem('loginType');
+    // this.authService.getTypeOfLogin.subscribe((type) => {
+    //Đăng nhập bằng GG
+    if (loginType === '1') {
+      console.log('On getting user identity in case loggin in with GG');
+      this.authService
+        .getUserGmailLoginIdentity()
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((res) => {
+          if (res.data) {
+            this.accountService.getCurrentUser
+              .pipe(takeUntil(this.$destroy))
+              .subscribe((user) => {
+                if (!user) {
+                  console.log('Login with GG failed...');
+                  this.router.navigate(['/auth/login']);
+                } else {
+                  this.currentUser = user;
                   console.log(
-                    '🚀 ~ PostsListComponent ~ .subscribe ~ user:',
-                    user
+                    '🚀 ~ PostsListComponent ~ .subscribe ~ this.currentUser:',
+                    this.currentUser
                   );
-                  if (!user) {
-                    console.log('Login with GG failed...');
-                    this.router.navigate(['/auth/login']);
-                  } else {
-                    this.currentUser = user;
-                    this.postService
-                      .getPostList(
-                        this.currentPage,
-                        this.pageItemLimit,
-                        this.filterCriteria
-                      )
-                      .subscribe((res) => {
-                        this.priceRanges = res.data[res.data.length - 1];
-                      });
+                  this.postService
+                    .getPostList(
+                      this.currentPage,
+                      this.pageItemLimit,
+                      this.filterCriteria
+                    )
+                    .subscribe((res) => {
+                      this.priceRanges = res.data[res.data.length - 1];
+                    });
 
-                    this.postService.postListChanged.subscribe(
-                      (posts: any[]) => {
-                        this.postList = [...posts];
-                        this.isLoading = false;
-                      }
-                    );
+                  this.postService.postListChanged.subscribe((posts: any[]) => {
+                    this.postList = [...posts];
+                    this.isLoading = false;
+                  });
 
-                    this.paginationService.paginationChanged.subscribe(
-                      (pagination: Pagination) => {
-                        this.totalPages = pagination.total;
-                      }
-                    );
+                  this.paginationService.paginationChanged.subscribe(
+                    (pagination: Pagination) => {
+                      this.totalPages = pagination.total;
+                    }
+                  );
 
-                    this.postService.getCurrentFavoritesId.subscribe(
-                      (favourites) => {
-                        this.currentFavourites = favourites;
-                      }
-                    );
-                  }
-                });
-            }
-          });
-      }
-
-      //Đăng nhập bình thường
-      else if (type === 0) {
-        console.log('On getting user identity in case loggin in normally');
-        this.postService
-          .getPostList(
-            this.currentPage,
-            this.pageItemLimit,
-            this.filterCriteria
-          )
-          .subscribe((res) => {
-            this.priceRanges = res.data[res.data.length - 1];
-          });
-
-        this.postService.postListChanged.subscribe((posts: any[]) => {
-          this.postList = [...posts];
-          this.isLoading = false;
-        });
-
-        this.paginationService.paginationChanged.subscribe(
-          (pagination: Pagination) => {
-            this.totalPages = pagination.total;
+                  this.postService.getCurrentFavoritesId.subscribe(
+                    (favourites) => {
+                      this.currentFavourites = favourites;
+                    }
+                  );
+                }
+              });
           }
-        );
-
-        this.postService.getCurrentFavoritesId.subscribe((favourites) => {
-          this.currentFavourites = favourites;
         });
-      }
-    });
+    }
+
+    //Đăng nhập bình thường
+    else {
+      console.log('On getting user identity in case loggin in normally');
+      this.postService
+        .getPostList(this.currentPage, this.pageItemLimit, this.filterCriteria)
+        .subscribe((res) => {
+          this.priceRanges = res.data[res.data.length - 1];
+        });
+
+      this.postService.postListChanged.subscribe((posts: any[]) => {
+        this.postList = [...posts];
+        this.isLoading = false;
+      });
+
+      this.paginationService.paginationChanged.subscribe(
+        (pagination: Pagination) => {
+          this.totalPages = pagination.total;
+        }
+      );
+
+      this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+        this.currentFavourites = favourites;
+      });
+    }
+    // });
   }
 
   navigateNextSilderImage(next: boolean) {
