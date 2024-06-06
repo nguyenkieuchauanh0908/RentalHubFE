@@ -283,12 +283,21 @@ export class ChatBotService {
   emitSendingChatMessage(uId: string) {
     console.log('emitSendingChatMessage');
     this.getCurrentChat.subscribe((currentChat) => {
+      console.log(
+        '🚀 ~ ChatBotService ~ this.getCurrentChat.subscribe ~ currentChat:',
+        currentChat
+      );
       let recipientId = currentChat?.members?.find((id) => id !== uId);
       let chatId = currentChat?._id;
       this.getCurrentSocket.subscribe((socket) => {
         if (socket) {
+          console.log('aaaaaaaaaaaaaaaaaaaaaaa');
           this.getNewMessage.subscribe((newMessage) => {
-            if (newMessage) {
+            if (newMessage && recipientId && chatId) {
+              console.log(
+                '🚀 ~ ChatBotService ~ this.getNewMessage.subscribe ~ recipientId:',
+                recipientId
+              );
               console.log(
                 '🚀 ~ ChatBotService ~ this.getNewMessage.subscribe ~ newMessage:',
                 newMessage
@@ -395,6 +404,7 @@ export class ChatBotService {
         catchError(handleError),
         tap((res) => {
           if (res.data) {
+            console.log('ccccccccccccccccccccccccccc');
             this.setNewMessage(res.data);
             //Cập nhật lại msgs của chat
             this.getMessages.subscribe((msg) => {
