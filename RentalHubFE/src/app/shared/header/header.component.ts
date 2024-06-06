@@ -52,9 +52,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: AuthService,
     public dialog: MatDialog
   ) {}
-  ngAfterViewInit(): void {
-    this.notificationService.onReceivingNewNotificationToUpdate();
-  }
+  ngAfterViewInit(): void {}
 
   ngOnInit() {
     this.accountService.getCurrentUser
@@ -64,6 +62,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isAuthenticatedUser = !!user;
         console.log('User is authenticated: ', this.isAuthenticatedUser);
         this.user = user;
+        this.notificationService.onReceivingNewNotificationToUpdate();
         if (this.user?._fname && this.user?._lname) {
           this.fullName = this.user?._fname + ' ' + this.user._lname;
         }

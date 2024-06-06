@@ -95,37 +95,46 @@ export class NotificationService {
           let updatedSeenNotifications: any[] = [];
           let totalNotifications: number = 0;
           if (res.data) {
+            //Xóa noti ra khỏi list unseenNotifications
+            let thisNoti: any | null = null;
             this.getCurrentUnseenNotifications.subscribe(
               (unseenNotifications) => {
                 if (unseenNotifications) {
+                  //Lưu lại noti được đánh dấu đọc thành công
+                  for (let i = 0; i < unseenNotifications.length; i++) {
+                    if (unseenNotifications[i]._id === id) {
+                      thisNoti = unseenNotifications[i];
+                      break;
+                    }
+                  }
+                  //Lọc noti đã đánh dấu đọc ra khỏi list unseenNotifications
                   updatedUnseenNotifications = unseenNotifications.filter(
                     (noti) => {
-                      // if (noti._id === id) {
-                      //   this.getCurrentSeenNotifications.subscribe(
-                      //     (seenNotis) => {
-                      //       updatedSeenNotifications = seenNotis;
-                      //     }
-                      //   );
-                      //   updatedSeenNotifications.unshift(noti);
-                      //   this.setCurrentSeenNotifications(
-                      //     updatedSeenNotifications
-                      //   );
-                      // }
                       return noti._id !== id;
                     }
                   );
                 }
               }
             );
-            console.log(
-              '🚀 ~ NotificationService ~ tap ~ updatedUnseenNotifications:',
-              updatedUnseenNotifications
-            );
             this.setCurrentUnseenNotifications(updatedUnseenNotifications);
+
+            //Thêm noti vào list seenNotifications
+            this.getCurrentSeenNotifications.subscribe((seenNotis) => {
+              updatedSeenNotifications = seenNotis;
+            });
+            updatedSeenNotifications.push(thisNoti);
+            this.setCurrentSeenNotifications(updatedSeenNotifications);
+
+            //Cập nhật lại tổng số noti unseen
             this.getTotalNotifications.subscribe((total) => {
               totalNotifications = total - 1;
             });
             this.setTotalNotifications(totalNotifications);
+            console.log(
+              '🚀 ~ NotificationService ~ tap ~ updatedUnseenNotifications, updatedSeenNotifications:',
+              updatedUnseenNotifications,
+              updatedSeenNotifications
+            );
           }
         })
       );
@@ -164,7 +173,6 @@ export class NotificationService {
     let totalNotisUnseen: number = 0;
     this.chatService.getCurrentSocket.subscribe((socket) => {
       if (socket) {
-        console.log('aaaaaaaaaaaaa');
         socket.on('getNotification', (noti: SocketNotification) => {
           console.log('🚀 ~ NotificationService ~ socket.on ~ noti:', noti);
           newNotiComing = {
@@ -183,7 +191,7 @@ export class NotificationService {
 
           if (newNotiComing) {
             if (unseenNotificaionList) {
-              unseenNotificaionList.unshift(newNotiComing);
+              unseenNotificaionList.push(newNotiComing);
             } else {
               unseenNotificaionList = [newNotiComing];
             }
