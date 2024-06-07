@@ -64,8 +64,9 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnDestroy(): void {
+    // this.$destroy.next(false);
     this.$destroy.unsubscribe();
-    // this.chatBotService.disconnectToSocket();
+    this.chatBotService.destroy();
     this.scrollSubscription?.unsubscribe();
   }
 
@@ -197,6 +198,7 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
     this.chatBotService.setSeeContactList(true);
     this.chatBotService.setCurrentChat(null);
     this.chatBotService.setMessages(null);
+    this.chatBotService.setNewMessage(null);
   }
 
   sendMsg(form: any) {

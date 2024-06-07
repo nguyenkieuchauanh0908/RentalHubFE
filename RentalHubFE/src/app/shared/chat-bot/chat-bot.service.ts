@@ -1,6 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject, catchError, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  Subscription,
+  catchError,
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  last,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { environment } from 'src/environments/environment';
@@ -147,6 +158,7 @@ export class ChatBotService {
     return this.newMessage.next(newMessage);
   }
 
+  private subscriptions: Subscription[] = [];
   private isAuthenticated: Boolean = false;
 
   constructor(
@@ -176,6 +188,11 @@ export class ChatBotService {
         console.log('socket disconnected!');
       }
     });
+  }
+
+  //destroy
+  destroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   //Socket event's name: 'addNewUser'
@@ -282,18 +299,26 @@ export class ChatBotService {
   //Socket event's name: 'sendMessage'
   emitSendingChatMessage(uId: string) {
     console.log('emitSendingChatMessage');
-    this.getCurrentChat.subscribe((currentChat) => {
-      console.log(
-        '🚀 ~ ChatBotService ~ this.getCurrentChat.subscribe ~ currentChat:',
-        currentChat
-      );
-      let recipientId = currentChat?.members?.find((id) => id !== uId);
-      let chatId = currentChat?._id;
-      this.getCurrentSocket.subscribe((socket) => {
-        if (socket) {
-          console.log('aaaaaaaaaaaaaaaaaaaaaaa');
-          this.getNewMessage.subscribe((newMessage) => {
-            if (newMessage && recipientId && chatId) {
+    let recipientId!: String | undefined | null;
+    let chatId: String | undefined | null;
+    let currentChat: UserChatsType | null | any;
+
+    this.currentSocket.subscribe((socket) => {
+      if (socket) {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaa');
+        let chatSub = this.currentChat.subscribe((chat) => {
+          currentChat = chat;
+
+          recipientId = currentChat.members.find((id: string) => id !== uId);
+          console.log(
+            '🚀 ~ ChatBotService ~ this.currentChat.subscribe ~ currentChat:',
+            currentChat
+          );
+          chatId = currentChat._id;
+        });
+        let msgSub = this.newMessage.subscribe((newMessage) => {
+          if (newMessage && currentChat) {
+            if (recipientId) {
               console.log(
                 '🚀 ~ ChatBotService ~ this.getNewMessage.subscribe ~ recipientId:',
                 recipientId
@@ -307,11 +332,13 @@ export class ChatBotService {
                 recipientId,
                 chatId,
               });
+              this.setNewMessage(null);
             }
-          });
-          this.setNewMessage(null);
-        }
-      });
+          }
+        });
+        this.subscriptions.push(chatSub);
+        this.subscriptions.push(msgSub);
+      }
     });
   }
 

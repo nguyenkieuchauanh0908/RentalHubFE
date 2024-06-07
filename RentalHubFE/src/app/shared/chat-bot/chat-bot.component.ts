@@ -98,6 +98,7 @@ export class ChatBotComponent implements OnInit, OnDestroy {
   }
 
   toChatBot(chat: UserChatsType) {
+    console.log('To chat bot id:', chat._id);
     this.chatBotService.setSeeContactList(false);
     this.chatBotService
       .fetchCurrentChat(chat.members[0], chat.members[1])
