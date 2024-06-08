@@ -60,8 +60,8 @@ export class ChatBotComponent implements OnInit, OnDestroy {
               }
             });
 
-          this.chatBotService.emittingAddingMeToOnlineUsers(user); //Thêm user vào onlineUser
-          this.chatBotService.onGettingOnlineUsers(); //Lấy list các user đang online trong chats
+          // this.chatBotService.emittingAddingMeToOnlineUsers(user); //Thêm user vào onlineUser
+          // this.chatBotService.onGettingOnlineUsers(); //Lấy list các user đang online trong chats
           this.chatBotService.getSeeContactList //true: Đang ở contact list, false: đang ở chatBot
             .pipe(takeUntil(this.$destroy))
             .subscribe((see) => {

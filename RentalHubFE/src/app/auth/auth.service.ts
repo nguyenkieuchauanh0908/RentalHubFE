@@ -18,6 +18,7 @@ import { PostService } from '../posts/post.service';
 import { NotificationService } from '../shared/notifications/notification.service';
 import { AddressesService } from '../accounts/register-address/addresses.service';
 import { ChatBotService } from '../shared/chat-bot/chat-bot.service';
+import { Socket } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root',

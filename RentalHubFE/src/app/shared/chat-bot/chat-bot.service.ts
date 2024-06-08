@@ -65,6 +65,7 @@ export class ChatBotService {
   private currentSocket = new BehaviorSubject<Socket | null>(null); //Socket
   getCurrentSocket = this.currentSocket.asObservable();
   setCurrentSocket(socket: Socket | null) {
+    this.currentSocket.next(null);
     this.currentSocket.next(socket);
   }
 
@@ -164,16 +165,19 @@ export class ChatBotService {
   constructor(
     private http: HttpClient,
     private accountService: AccountService
-  ) {}
+  ) {
+    this.accountService.getCurrentUser.subscribe((user) => {
+      if (user) {
+        this.emittingAddingMeToOnlineUsers(user);
+        this.onReceivingChatMessageToUpdate();
+        this.onGettingOnlineUsers();
+      }
+    });
+  }
 
   //Connect to the socket
   initiateSocket() {
     this.setCurrentSocket(this.socket);
-    this.accountService.getCurrentUser.subscribe((user) => {
-      if (user) {
-        this.emittingAddingMeToOnlineUsers(user);
-      }
-    });
 
     return () => {
       this.socket.disconnect();
@@ -192,7 +196,14 @@ export class ChatBotService {
 
   //destroy
   destroy() {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    console.log('destroying subscription of chat service!');
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
+    });
+    console.log(
+      'destroying subscription of chat service!',
+      this.subscriptions.length
+    );
   }
 
   //Socket event's name: 'addNewUser'
@@ -224,28 +235,58 @@ export class ChatBotService {
 
   //Socket event's name: 'getMessage'
   onReceivingChatMessageToUpdate = () => {
-    console.log('Receiving new message...');
+    console.log('Listening the Receiving new message event...');
+    let currentChat: UserChatsType | null = null;
     let updatedMsgs: MessageType[] | null = null;
-    this.getCurrentSocket.subscribe((socket) => {
+    let seeContactList: Boolean = false;
+    let newMsg: MessageType | null = null;
+    let socketSub = this.getCurrentSocket.subscribe((socket) => {
       if (socket) {
+        console.log('Chau Anh');
         socket.on('getMessage', (msg: MessageType) => {
-          console.log('🚀 ~ ChatBotService ~ socket.on ~ getMessage:', msg);
-          this.getCurrentChat.subscribe((currentChat) => {
+          newMsg = msg;
+          let chatSub = this.currentChat.subscribe((chat) => {
+            currentChat = chat;
             if (currentChat?._id !== msg.chatId) return;
-            this.getMessages.subscribe((messages) => {
+          });
+          console.log('sjgsdfjgnjfsdhgsjkdfhgjkshfgkjdhgsdhgk');
+          let msgSub = this.messages.subscribe((messages) => {
+            if (messages) {
               updatedMsgs = messages;
-            });
-            if (updatedMsgs) {
-              updatedMsgs.unshift(msg);
-              this.setMessages(updatedMsgs);
-            } else {
-              this.setMessages([msg]);
             }
+          });
+          let seeContactListSub = this.seeContactList.subscribe((see) => {
+            seeContactList = see;
             console.log(
-              '🚀 ~ ChatBotService ~ this.getCurrentChat.subscribe ~ updatedMsgs:',
-              updatedMsgs
+              '🚀 ~ ChatBotService ~ seeContactListSub ~ seeContactList:',
+              seeContactList
             );
           });
+          if (!seeContactList && updatedMsgs) {
+            if (updatedMsgs) {
+              updatedMsgs.unshift(newMsg);
+              this.setMessages(updatedMsgs);
+              console.log(
+                '🚀 ~ ChatBotService ~ chatSub ~ updatedMsgs111:',
+                updatedMsgs
+              );
+            }
+          }
+          if (!updatedMsgs) {
+            console.log(
+              '🚀 ~ ChatBotService ~ chatSub ~ updatedMsgs:',
+              updatedMsgs
+            );
+            this.setMessages(updatedMsgs);
+          }
+
+          this.subscriptions.push(msgSub);
+          this.subscriptions.push(seeContactListSub);
+          this.subscriptions.push(chatSub);
+          this.subscriptions.push(socketSub);
+          return () => {
+            socket.off('getMessage');
+          };
         });
       }
     });
@@ -303,7 +344,7 @@ export class ChatBotService {
     let chatId: String | undefined | null;
     let currentChat: UserChatsType | null | any;
 
-    this.currentSocket.subscribe((socket) => {
+    let socketSub = this.currentSocket.subscribe((socket) => {
       if (socket) {
         console.log('aaaaaaaaaaaaaaaaaaaaaaa');
         let chatSub = this.currentChat.subscribe((chat) => {
@@ -340,6 +381,7 @@ export class ChatBotService {
         this.subscriptions.push(msgSub);
       }
     });
+    this.subscriptions.push(socketSub);
   }
 
   //API lấy toàn bộ chats của một user
@@ -431,14 +473,14 @@ export class ChatBotService {
         catchError(handleError),
         tap((res) => {
           if (res.data) {
-            console.log('ccccccccccccccccccccccccccc');
             this.setNewMessage(res.data);
             //Cập nhật lại msgs của chat
             this.getMessages.subscribe((msg) => {
               updatedMsgs = msg;
             });
             if (updatedMsgs) {
-              this.setMessages([...updatedMsgs, res.data]);
+              updatedMsgs.unshift(res.data);
+              this.setMessages(updatedMsgs);
             } else {
               this.setMessages([res.data]);
             }
