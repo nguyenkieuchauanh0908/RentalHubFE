@@ -62,7 +62,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isAuthenticatedUser = !!user;
         console.log('User is authenticated: ', this.isAuthenticatedUser);
         this.user = user;
-        this.notificationService.onReceivingNewNotificationToUpdate();
         if (this.user?._fname && this.user?._lname) {
           this.fullName = this.user?._fname + ' ' + this.user._lname;
         }
@@ -70,30 +69,36 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.isAuthenticatedUser) {
       //Lấy các noti đã xem
-      this.notificationService.getCurrentSeenNotifications.subscribe(
-        (notifications) => {
+      this.notificationService.getCurrentSeenNotifications
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((notifications) => {
           this.seenNotiList = notifications;
-        }
-      );
+        });
 
       //Lấy các noti chưa xem
-      this.notificationService.getCurrentUnseenNotifications.subscribe(
-        (unseenNotifications) => {
+      this.notificationService.getCurrentUnseenNotifications
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((unseenNotifications) => {
           this.unseenNotificaionList = unseenNotifications;
-        }
-      );
+        });
 
       //Lấy tổng các noti chưa xem
-      this.notificationService.getTotalNotifications.subscribe(
-        (notificationTotal) => {
+      this.notificationService.getTotalNotifications
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((notificationTotal) => {
           this.notificationTotals = notificationTotal;
-        }
-      );
+        });
     } else {
       this.notificationTotals = 0;
       this.notificationService.setCurrentSeenNotifications([]);
       this.notificationService.setCurrentUnseenNotifications([]);
     }
+  }
+
+  ngOnDestroy() {
+    this.$destroy.next(false);
+    this.$destroy.unsubscribe();
+    this.notificationService.destroy();
   }
 
   toMyPosting() {
@@ -110,27 +115,26 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // toSeeAllNotifications() {
-  //   this.router.navigate(['/profile/notifications/', this.user?._id]);
-  // }
-
   markAsReadAll() {
-    this.notificationService.markAsReadAll().subscribe(
-      (res) => {
-        if (res.data) {
+    this.notificationService
+      .markAsReadAll()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.notifierService.notify(
+              'success',
+              'Đánh dấu đã đọc toàn bộ thông báo thành công'
+            );
+          }
+        },
+        (errMsg) => {
           this.notifierService.notify(
-            'success',
-            'Đánh dấu đã đọc toàn bộ thông báo thành công'
+            'error',
+            'Đã có lỗi xảy ra, vui lòng thử lại sau'
           );
         }
-      },
-      (errMsg) => {
-        this.notifierService.notify(
-          'error',
-          'Đã có lỗi xảy ra, vui lòng thử lại sau'
-        );
-      }
-    );
+      );
   }
 
   readNotiDetail(noti: any) {
@@ -141,17 +145,20 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     } else {
       //Hiện lên chi tiết bài post kèm message thông báo
-      this.postService.getReportPostDetails(noti._id).subscribe((res) => {
-        if (res.data) {
-          const dialogRef = this.dialog.open(PostEditDialogComponent, {
-            width: '1000px',
-            data: res.data,
-          });
-          dialogRef.afterClosed().subscribe((result) => {
-            console.log(`Dialog result: + $(result)`);
-          });
-        }
-      });
+      this.postService
+        .getReportPostDetails(noti._id)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((res) => {
+          if (res.data) {
+            const dialogRef = this.dialog.open(PostEditDialogComponent, {
+              width: '1000px',
+              data: res.data,
+            });
+            dialogRef.afterClosed().subscribe((result) => {
+              console.log(`Dialog result: + $(result)`);
+            });
+          }
+        });
     }
   }
 
@@ -197,13 +204,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toHome() {
     this.router.navigate(['']);
-    // .then(() => {
-    //   window.location.reload();
-    // });
-  }
-
-  ngOnDestroy() {
-    this.$destroy.next(true);
   }
 
   logout() {
@@ -211,14 +211,19 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       width: '400px',
       data: 'Bạn có chắc muốn đăng xuất?',
     });
-    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
-      let logoutObs: Observable<resDataDTO>;
-      logoutObs = this.authService.logout(this.user?.RFToken);
-      logoutObs.subscribe();
-      this.router.navigate(['/posts']);
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      sub.unsubscribe();
-    });
+    const sub = dialogRef.componentInstance.confirmYes
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
+        let logoutObs: Observable<resDataDTO>;
+        logoutObs = this.authService.logout(this.user?.RFToken);
+        logoutObs.pipe(takeUntil(this.$destroy)).subscribe();
+        this.router.navigate(['/posts']);
+      });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
+        sub.unsubscribe();
+      });
   }
 }

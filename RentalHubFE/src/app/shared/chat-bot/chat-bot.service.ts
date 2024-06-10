@@ -1,17 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
-import {
-  BehaviorSubject,
-  Subject,
-  Subscription,
-  catchError,
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
-  last,
-  take,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject, Subscription, catchError, tap } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { environment } from 'src/environments/environment';
@@ -59,7 +48,6 @@ export interface UserOnlineType {
   providedIn: 'root',
 })
 export class ChatBotService {
-  $destroy: Subject<boolean> = new Subject<boolean>();
   socket = io('http://localhost:3000');
 
   private currentSocket = new BehaviorSubject<Socket | null>(null); //Socket
@@ -242,7 +230,6 @@ export class ChatBotService {
     let newMsg: MessageType | null = null;
     let socketSub = this.getCurrentSocket.subscribe((socket) => {
       if (socket) {
-        console.log('Chau Anh');
         socket.on('getMessage', (msg: MessageType) => {
           newMsg = msg;
           let chatSub = this.currentChat.subscribe((chat) => {

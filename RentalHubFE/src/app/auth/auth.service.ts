@@ -23,7 +23,7 @@ import { Socket } from 'socket.io-client';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements OnInit, OnDestroy {
+export class AuthService {
   private typeOfLogin: BehaviorSubject<number> = new BehaviorSubject<number>(0); //0: Normal, 1: Login with GG
   getTypeOfLogin = this.typeOfLogin.asObservable();
   updateTypeOfLogin(type: number) {
@@ -33,7 +33,6 @@ export class AuthService implements OnInit, OnDestroy {
   resetToken: User | undefined;
   private tokenExpirationTimer: any;
   resetUser: User | undefined;
-  $destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private http: HttpClient,
@@ -49,10 +48,6 @@ export class AuthService implements OnInit, OnDestroy {
         this.resetUser = user;
       }
     });
-  }
-  ngOnInit(): void {}
-  ngOnDestroy(): void {
-    this.$destroy.unsubscribe();
   }
 
   login(email: string, pw: string) {
@@ -71,10 +66,7 @@ export class AuthService implements OnInit, OnDestroy {
           this.getNotifications();
           this.chatBotService.initiateSocket();
           this.setRegisteredAddressesWhenLogin(res.data._addressRental);
-          this.chatBotService
-            .fetchMyChats(res.data._id)
-            .pipe(takeUntil(this.$destroy))
-            .subscribe();
+          this.chatBotService.fetchMyChats(res.data._id).subscribe();
         })
       );
   }
@@ -270,38 +262,33 @@ export class AuthService implements OnInit, OnDestroy {
           console.log('on reset AC token function');
           console.log(res);
           // cập nhật lại user với AC token mới
-          this.accountService.getCurrentUser
-            .pipe(takeUntil(this.$destroy))
-            .subscribe((currentUser) => {
-              console.log('Current user: ', currentUser);
-              if (currentUser) {
-                console.log('On updating user with reseting AC token...');
-                this.resetUser = new User(
-                  currentUser._id,
-                  currentUser._fname,
-                  currentUser._lname,
-                  currentUser._phone,
-                  currentUser._dob,
-                  currentUser._active,
-                  currentUser._rating,
-                  currentUser._email,
-                  currentUser._address,
-                  currentUser._avatar,
-                  currentUser._role,
-                  currentUser._isHost,
-                  currentUser._addressRental,
-                  currentUser._temptHostBlocked,
-                  res.data.refreshToken,
-                  res.data.expiredRefresh,
-                  res.data.accessToken,
-                  res.data.expiredAccess
-                );
-                localStorage.setItem(
-                  'userData',
-                  JSON.stringify(this.resetUser)
-                );
-              }
-            });
+          this.accountService.getCurrentUser.subscribe((currentUser) => {
+            console.log('Current user: ', currentUser);
+            if (currentUser) {
+              console.log('On updating user with reseting AC token...');
+              this.resetUser = new User(
+                currentUser._id,
+                currentUser._fname,
+                currentUser._lname,
+                currentUser._phone,
+                currentUser._dob,
+                currentUser._active,
+                currentUser._rating,
+                currentUser._email,
+                currentUser._address,
+                currentUser._avatar,
+                currentUser._role,
+                currentUser._isHost,
+                currentUser._addressRental,
+                currentUser._temptHostBlocked,
+                res.data.refreshToken,
+                res.data.expiredRefresh,
+                res.data.accessToken,
+                res.data.expiredAccess
+              );
+              localStorage.setItem('userData', JSON.stringify(this.resetUser));
+            }
+          });
           if (this.resetUser) {
             this.accountService.setCurrentUser(this.resetUser);
           }
@@ -393,13 +380,11 @@ export class AuthService implements OnInit, OnDestroy {
     else {
       this.postService
         .getFavoritesId()
-        .pipe(takeUntil(this.$destroy))
+
         .subscribe();
-      this.postService.getCurrentFavoritesId
-        .pipe(takeUntil(this.$destroy))
-        .subscribe((favoritesId) => {
-          favorites = favoritesId;
-        });
+      this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
+        favorites = favoritesId;
+      });
       localStorage.setItem('favorite-posts', JSON.stringify(favorites));
     }
   }
@@ -422,13 +407,7 @@ export class AuthService implements OnInit, OnDestroy {
   }
 
   getNotifications() {
-    this.notiService
-      .getSeenNotifications()
-      .pipe(takeUntil(this.$destroy))
-      .subscribe();
-    this.notiService
-      .getUnseenNotifications()
-      .pipe(takeUntil(this.$destroy))
-      .subscribe();
+    this.notiService.getSeenNotifications().subscribe();
+    this.notiService.getUnseenNotifications().subscribe();
   }
 }

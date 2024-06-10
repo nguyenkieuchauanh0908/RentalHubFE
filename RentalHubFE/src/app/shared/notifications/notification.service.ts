@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { resDataDTO } from '../resDataDTO';
 import { handleError } from '../handle-errors';
-import { BehaviorSubject, catchError, tap } from 'rxjs';
+import { BehaviorSubject, Subscription, catchError, tap } from 'rxjs';
 import { ChatBotService } from '../chat-bot/chat-bot.service';
 import { Notification } from './notification.model';
 
@@ -41,7 +41,21 @@ export class NotificationService {
   setCurrentUnseenNotifications(updatedUnseenNotifications: any[]) {
     this.currentUnseenNotifications.next(updatedUnseenNotifications);
   }
-  constructor(private http: HttpClient, private chatService: ChatBotService) {}
+  private subscriptions: Subscription[] = [];
+  constructor(private http: HttpClient, private chatService: ChatBotService) {
+    this.onReceivingNewNotificationToUpdate();
+  }
+
+  //destroy
+  destroy() {
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
+    });
+    console.log(
+      'destroying subscription of noti service!',
+      this.subscriptions.length
+    );
+  }
 
   //Lấy seen notification
   getSeenNotifications() {
@@ -171,7 +185,7 @@ export class NotificationService {
     let newNotiComing: Notification | null = null;
     let unseenNotificaionList: Notification[] | null = null;
     let totalNotisUnseen: number = 0;
-    this.chatService.getCurrentSocket.subscribe((socket) => {
+    let socketSub = this.chatService.getCurrentSocket.subscribe((socket) => {
       if (socket) {
         socket.on('getNotification', (noti: SocketNotification) => {
           console.log('🚀 ~ NotificationService ~ socket.on ~ noti:', noti);
@@ -185,9 +199,11 @@ export class NotificationService {
             _type: noti._type,
           };
           //Thêm newNotiComing vào unseenNotificaionList và lưu lại
-          this.getCurrentUnseenNotifications.subscribe((unseenNotis: any[]) => {
-            unseenNotificaionList = unseenNotis;
-          });
+          let unseenNotiSub = this.getCurrentUnseenNotifications.subscribe(
+            (unseenNotis: any[]) => {
+              unseenNotificaionList = unseenNotis;
+            }
+          );
 
           if (newNotiComing) {
             if (unseenNotificaionList) {
@@ -202,10 +218,15 @@ export class NotificationService {
           }
 
           this.setCurrentUnseenNotifications(unseenNotificaionList!);
-          this.getTotalNotifications.subscribe((unseenNotificaionList) => {
-            totalNotisUnseen = unseenNotificaionList;
-          });
+          let totalNotiSub = this.getTotalNotifications.subscribe(
+            (unseenNotificaionList) => {
+              totalNotisUnseen = unseenNotificaionList;
+            }
+          );
           this.setTotalNotifications(totalNotisUnseen + 1);
+          this.subscriptions.push(socketSub);
+          this.subscriptions.push(unseenNotiSub);
+          this.subscriptions.push(totalNotiSub);
         });
       }
     });
