@@ -1,6 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, Subscription, catchError, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  Subscription,
+  catchError,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { Socket, io } from 'socket.io-client';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { environment } from 'src/environments/environment';
@@ -50,6 +57,7 @@ export interface UserOnlineType {
 export class ChatBotService {
   socket = io('http://localhost:3000');
 
+  $destroy: Subject<boolean> = new Subject<boolean>();
   private currentSocket = new BehaviorSubject<Socket | null>(null); //Socket
   getCurrentSocket = this.currentSocket.asObservable();
   setCurrentSocket(socket: Socket | null) {
@@ -76,6 +84,7 @@ export class ChatBotService {
     let currentChat: UserChatsType | null = null;
     let totalUnReadedMsg: number | null = 0;
     this.getCurrentChat.subscribe((chat) => {
+      console.log('set see contact list....');
       if (chat) {
         currentChat = chat;
         this.getCurrentUserChats.subscribe((chats) => {
@@ -99,7 +108,6 @@ export class ChatBotService {
             break;
           }
         }
-
         this.setCurrentUserChats(updatedChats);
       }
     });
@@ -159,6 +167,7 @@ export class ChatBotService {
         this.emittingAddingMeToOnlineUsers(user);
         this.onReceivingChatMessageToUpdate();
         this.onGettingOnlineUsers();
+        this.onGettingUnreadMessage();
       }
     });
   }
@@ -188,6 +197,7 @@ export class ChatBotService {
     this.subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });
+    // this.$destroy.unsubscribe();
     console.log(
       'destroying subscription of chat service!',
       this.subscriptions.length
@@ -282,44 +292,57 @@ export class ChatBotService {
   //Socket event's name: 'getMessage', 'getUnreadMessage'
   onGettingUnreadMessage() {
     let updatedMsgs: MessageType[] | null = null;
-    this.getCurrentSocket.subscribe((socket) => {
+    let seeContactList: Boolean = false;
+    this.getCurrentSocket.pipe(takeUntil(this.$destroy)).subscribe((socket) => {
       if (socket) {
-        this.getSeeContactList.subscribe((see) => {
-          if (see) {
-            socket.on(
-              'getUnreadMessage',
-              (res: {
-                senderId: String;
-                isRead: Boolean;
-                date: String;
-                chatId: String;
-              }) => {
-                if (res.isRead === false) {
-                  console.log('On getting unread messages...');
-                  let updatedChats: UserChatsType[] | null = null;
-                  let totalUnReadedMsg: number | null = 0;
-                  this.getCurrentUserChats.subscribe((chats) => {
-                    if (chats) {
-                      updatedChats = chats.slice();
-                    }
-                  });
-
-                  for (let i = 0; i < updatedChats!.length; i++) {
-                    if (updatedChats![i]._id === res.chatId) {
-                      updatedChats![i].totalUnRead += 1;
-                      this.getTotalUnreadMessages.subscribe((totalUnreaded) => {
-                        totalUnReadedMsg = totalUnreaded;
-                      });
-                      this.setTotalUnreadMessages(totalUnReadedMsg + 1);
-                      break;
-                    }
+        this.getSeeContactList
+          .pipe(takeUntil(this.$destroy))
+          .subscribe((see) => {
+            console.log('Chau Anh xenh dep');
+            if (see) {
+              seeContactList = see;
+            }
+          });
+        socket.on(
+          'getUnreadMessage',
+          (res: {
+            senderId: String;
+            isRead: Boolean;
+            date: String;
+            chatId: String;
+          }) => {
+            if (res.isRead === false) {
+              console.log('On getting unread messages...');
+              let updatedChats: UserChatsType[] | null = null;
+              let totalUnReadedMsg: number | null = 0;
+              this.getCurrentUserChats
+                .pipe(takeUntil(this.$destroy))
+                .subscribe((chats) => {
+                  if (chats) {
+                    updatedChats = chats.slice();
                   }
-                  this.setCurrentUserChats(updatedChats);
+                });
+              console.log(updatedChats);
+              for (let i = 0; i < updatedChats!.length; i++) {
+                if (updatedChats![i]._id === res.chatId) {
+                  updatedChats![i].totalUnRead += 1;
+                  console.log(
+                    '🚀 ~ ChatBotService ~ .subscribe ~ updatedChats![i].totalUnRead:',
+                    updatedChats![i].totalUnRead
+                  );
+                  this.getTotalUnreadMessages
+                    .pipe(takeUntil(this.$destroy))
+                    .subscribe((totalUnreaded) => {
+                      totalUnReadedMsg = totalUnreaded;
+                    });
+                  this.setTotalUnreadMessages(totalUnReadedMsg + 1);
+                  break;
                 }
               }
-            );
+              this.setCurrentUserChats(updatedChats);
+            }
           }
-        });
+        );
       }
     });
   }

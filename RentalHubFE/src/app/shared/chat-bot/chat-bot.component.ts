@@ -89,12 +89,13 @@ export class ChatBotComponent implements OnInit, OnDestroy {
           });
 
           //Lấy unreaded msg của các chat nếu có
-          this.chatBotService.onGettingUnreadMessage();
+          // this.chatBotService.onGettingUnreadMessage();
         }
       });
   }
   ngOnDestroy(): void {
     this.$destroy.unsubscribe();
+    this.chatBotService.$destroy.unsubscribe();
   }
 
   toChatBot(chat: UserChatsType) {
