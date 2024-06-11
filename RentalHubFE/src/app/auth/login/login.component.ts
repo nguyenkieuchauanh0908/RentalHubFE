@@ -19,8 +19,6 @@ import { SendForgetPwEmailComponent } from 'src/app/shared/send-forget-pw-email/
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  loginObs!: Observable<resDataDTO>;
-
   $destroy: Subject<boolean> = new Subject<boolean>();
   password: string = 'password';
   isShow: boolean = false;
@@ -55,11 +53,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
-          this.notifierService.notify('success', 'Đăng nhập thành công!');
-          this.isLoading = false;
-          setTimeout(() => {
-            this.router.navigate(['']);
-          }, 1000);
+          if (res.data) {
+            this.notifierService.notify('success', 'Đăng nhập thành công!');
+            this.isLoading = false;
+            setTimeout(() => {
+              this.router.navigate(['']);
+            }, 1000);
+          }
         },
         (errorMsg) => {
           this.isLoading = false;
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       dialogRef.close();
     });
     dialogRef.afterClosed().subscribe((result) => {
-      this.forgetPassEmail = result;
+      sub.unsubscribe();
     });
   }
 }

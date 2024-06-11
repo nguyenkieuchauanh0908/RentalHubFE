@@ -29,7 +29,7 @@
   <!-- Chatbox Content -->
   <div
     #chatContainer
-    *ngIf="this.currentMsgs; else noMsgs"
+    *ngIf="this.currentMsgs!.length > 0; else noMsgs"
     class="h-[480px] overflow-scroll scroll-smooth scrollbar-hide bg-white-background p-4 flex flex-col-reverse"
   >
     <div *ngFor="let message of this.currentMsgs; let last = last">

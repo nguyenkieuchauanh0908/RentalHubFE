@@ -3,7 +3,21 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { resDataDTO } from '../resDataDTO';
 import { handleError } from '../handle-errors';
-import { BehaviorSubject, catchError, tap } from 'rxjs';
+import { BehaviorSubject, Subscription, catchError, tap } from 'rxjs';
+import { ChatBotService } from '../chat-bot/chat-bot.service';
+import { Notification } from './notification.model';
+
+export interface SocketNotification {
+  _uId: string;
+  _postId: string; //optional
+  _addressId: string; //optional
+  _title: string;
+  _message: string;
+  _read: boolean;
+  _type: string;
+  _recipientRole: number;
+  _recipientId: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +41,21 @@ export class NotificationService {
   setCurrentUnseenNotifications(updatedUnseenNotifications: any[]) {
     this.currentUnseenNotifications.next(updatedUnseenNotifications);
   }
-  constructor(private http: HttpClient) {}
+  private subscriptions: Subscription[] = [];
+  constructor(private http: HttpClient, private chatService: ChatBotService) {
+    this.onReceivingNewNotificationToUpdate();
+  }
+
+  //destroy
+  destroy() {
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
+    });
+    console.log(
+      'destroying subscription of noti service!',
+      this.subscriptions.length
+    );
+  }
 
   //Lấy seen notification
   getSeenNotifications() {
@@ -64,6 +92,7 @@ export class NotificationService {
     );
   }
 
+  //Đánh dấu đã đọc theo id
   markNotiFicationAsReadById(id: string) {
     let queryParam = new HttpParams().append('notiId', id);
     return this.http
@@ -80,42 +109,52 @@ export class NotificationService {
           let updatedSeenNotifications: any[] = [];
           let totalNotifications: number = 0;
           if (res.data) {
+            //Xóa noti ra khỏi list unseenNotifications
+            let thisNoti: any | null = null;
             this.getCurrentUnseenNotifications.subscribe(
               (unseenNotifications) => {
                 if (unseenNotifications) {
+                  //Lưu lại noti được đánh dấu đọc thành công
+                  for (let i = 0; i < unseenNotifications.length; i++) {
+                    if (unseenNotifications[i]._id === id) {
+                      thisNoti = unseenNotifications[i];
+                      break;
+                    }
+                  }
+                  //Lọc noti đã đánh dấu đọc ra khỏi list unseenNotifications
                   updatedUnseenNotifications = unseenNotifications.filter(
                     (noti) => {
-                      // if (noti._id === id) {
-                      //   this.getCurrentSeenNotifications.subscribe(
-                      //     (seenNotis) => {
-                      //       updatedSeenNotifications = seenNotis;
-                      //     }
-                      //   );
-                      //   updatedSeenNotifications.unshift(noti);
-                      //   this.setCurrentSeenNotifications(
-                      //     updatedSeenNotifications
-                      //   );
-                      // }
                       return noti._id !== id;
                     }
                   );
                 }
               }
             );
-            console.log(
-              '🚀 ~ NotificationService ~ tap ~ updatedUnseenNotifications:',
-              updatedUnseenNotifications
-            );
             this.setCurrentUnseenNotifications(updatedUnseenNotifications);
+
+            //Thêm noti vào list seenNotifications
+            this.getCurrentSeenNotifications.subscribe((seenNotis) => {
+              updatedSeenNotifications = seenNotis;
+            });
+            updatedSeenNotifications.push(thisNoti);
+            this.setCurrentSeenNotifications(updatedSeenNotifications);
+
+            //Cập nhật lại tổng số noti unseen
             this.getTotalNotifications.subscribe((total) => {
               totalNotifications = total - 1;
             });
             this.setTotalNotifications(totalNotifications);
+            console.log(
+              '🚀 ~ NotificationService ~ tap ~ updatedUnseenNotifications, updatedSeenNotifications:',
+              updatedUnseenNotifications,
+              updatedSeenNotifications
+            );
           }
         })
       );
   }
 
+  //Đánh dấu đã đọc toàn bộ
   markAsReadAll() {
     return this.http
       .patch<resDataDTO>(
@@ -139,4 +178,57 @@ export class NotificationService {
         })
       );
   }
+
+  //Socket event's name: getNotification
+  onReceivingNewNotificationToUpdate = () => {
+    console.log('Receiving new noti...');
+    let newNotiComing: Notification | null = null;
+    let unseenNotificaionList: Notification[] | null = null;
+    let totalNotisUnseen: number = 0;
+    let socketSub = this.chatService.getCurrentSocket.subscribe((socket) => {
+      if (socket) {
+        socket.on('getNotification', (noti: SocketNotification) => {
+          console.log('🚀 ~ NotificationService ~ socket.on ~ noti:', noti);
+          newNotiComing = {
+            _id: noti._uId,
+            _uId: noti._uId,
+            _postId: noti._postId,
+            _title: noti._title,
+            _message: noti._message,
+            _read: noti._read,
+            _type: noti._type,
+          };
+          //Thêm newNotiComing vào unseenNotificaionList và lưu lại
+          let unseenNotiSub = this.getCurrentUnseenNotifications.subscribe(
+            (unseenNotis: any[]) => {
+              unseenNotificaionList = unseenNotis;
+            }
+          );
+
+          if (newNotiComing) {
+            if (unseenNotificaionList) {
+              unseenNotificaionList.push(newNotiComing);
+            } else {
+              unseenNotificaionList = [newNotiComing];
+            }
+            console.log(
+              '🚀 ~ NotificationService ~ socket.on ~ unseenNotificaionList:',
+              unseenNotificaionList
+            );
+          }
+
+          this.setCurrentUnseenNotifications(unseenNotificaionList!);
+          let totalNotiSub = this.getTotalNotifications.subscribe(
+            (unseenNotificaionList) => {
+              totalNotisUnseen = unseenNotificaionList;
+            }
+          );
+          this.setTotalNotifications(totalNotisUnseen + 1);
+          this.subscriptions.push(socketSub);
+          this.subscriptions.push(unseenNotiSub);
+          this.subscriptions.push(totalNotiSub);
+        });
+      }
+    });
+  };
 }

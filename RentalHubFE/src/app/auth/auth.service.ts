@@ -18,17 +18,21 @@ import { PostService } from '../posts/post.service';
 import { NotificationService } from '../shared/notifications/notification.service';
 import { AddressesService } from '../accounts/register-address/addresses.service';
 import { ChatBotService } from '../shared/chat-bot/chat-bot.service';
+import { Socket } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements OnInit, OnDestroy {
-  //LoginType : 0 || 1 (normal || gmail)
+export class AuthService {
+  private typeOfLogin: BehaviorSubject<number> = new BehaviorSubject<number>(0); //0: Normal, 1: Login with GG
+  getTypeOfLogin = this.typeOfLogin.asObservable();
+  updateTypeOfLogin(type: number) {
+    this.typeOfLogin.next(type);
+  }
   user = new BehaviorSubject<User | null>(null);
   resetToken: User | undefined;
   private tokenExpirationTimer: any;
   resetUser: User | undefined;
-  $destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private http: HttpClient,
@@ -44,10 +48,6 @@ export class AuthService implements OnInit, OnDestroy {
         this.resetUser = user;
       }
     });
-  }
-  ngOnInit(): void {}
-  ngOnDestroy(): void {
-    this.$destroy.unsubscribe();
   }
 
   login(email: string, pw: string) {
@@ -66,11 +66,7 @@ export class AuthService implements OnInit, OnDestroy {
           this.getNotifications();
           this.chatBotService.initiateSocket();
           this.setRegisteredAddressesWhenLogin(res.data._addressRental);
-          this.chatBotService
-            .fetchMyChats(res.data._id)
-            .pipe(takeUntil(this.$destroy))
-            .pipe(takeUntil(this.$destroy))
-            .subscribe();
+          this.chatBotService.fetchMyChats(res.data._id).subscribe();
         })
       );
   }
@@ -376,7 +372,10 @@ export class AuthService implements OnInit, OnDestroy {
     }
     //Nếu không có trong local storage thì lấy từ server rồi lưu vào local storage
     else {
-      this.postService.getFavoritesId().subscribe();
+      this.postService
+        .getFavoritesId()
+
+        .subscribe();
       this.postService.getCurrentFavoritesId.subscribe((favoritesId) => {
         favorites = favoritesId;
       });

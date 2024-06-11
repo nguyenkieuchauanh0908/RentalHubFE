@@ -34,9 +34,7 @@ import * as moment from 'moment';
   templateUrl: './chat-with.component.html',
   styleUrls: ['./chat-with.component.scss'],
 })
-export class ChatWithComponent
-  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit
-{
+export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
   // @ViewChild('scrollableDiv') scrollableDiv: ElementRef | undefined;
   @ViewChild('chatContainer', { static: false })
   private chatContainer!: ElementRef;
@@ -54,7 +52,7 @@ export class ChatWithComponent
   currentPage = 1;
   totalPages: number = 0;
   pageMsgLimit: number = 25;
-  currentScrollTopPosition: number = -1500;
+  currentScrollTopPosition: number = -2000;
 
   $destroy: Subject<boolean> = new Subject<boolean>();
   scrollSubscription: Subscription | undefined;
@@ -65,16 +63,10 @@ export class ChatWithComponent
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngAfterViewChecked(): void {
-    // console.log('Scroll to bottom...');
-    // if (!this.seeContactList && this.shouldScrollToBottom) {
-    //   this.scrollToBottom();
-    // }
-  }
-
   ngOnDestroy(): void {
+    // this.$destroy.next(false);
     this.$destroy.unsubscribe();
-    // this.chatBotService.disconnectToSocket();
+    this.chatBotService.destroy();
     this.scrollSubscription?.unsubscribe();
   }
 
@@ -83,8 +75,6 @@ export class ChatWithComponent
     setTimeout(() => {
       this.initializeScrollEvent();
     }, 100);
-    //Update tin nhắn nhận được
-    this.chatBotService.onReceivingChatMessageToUpdate();
   }
 
   initializeScrollEvent() {
@@ -104,7 +94,7 @@ export class ChatWithComponent
     this.initialized = false;
     this.currentPage = 1;
     this.totalPages = 0;
-    this.currentScrollTopPosition = -1500;
+    this.currentScrollTopPosition = -2000;
     this.moment = moment;
     this.moment.locale('vn');
     this.seeContactList = false;
@@ -124,7 +114,7 @@ export class ChatWithComponent
 
           this.currentUser = user;
           //connect to socket
-          this.chatBotService.initiateSocket();
+          // this.chatBotService.initiateSocket();
           //Lấy recipientInfo và messages của currentChat
           console.log('Initializing chat');
           this.chatBotService.getCurrentChat
@@ -170,25 +160,33 @@ export class ChatWithComponent
                         this.totalPages = res.pagination.total;
                         if (res.data) {
                           let messages = null;
-                          this.chatBotService.getMessages.subscribe((msgs) => {
-                            messages = msgs;
-                            this.currentMsgs = messages;
-                          });
+                          this.chatBotService.getMessages
+                            .pipe(takeUntil(this.$destroy))
+                            .subscribe((msgs) => {
+                              messages = msgs;
+                              this.currentMsgs = messages;
+                            });
                           if (messages) {
                             this.chatBotService.setMessages([
                               ...messages,
                               ...res.data,
                             ]);
-                            this.currentMsgs = [...messages, ...res.data];
+                            // this.currentMsgs = [...messages, ...res.data];
                           } else {
                             this.chatBotService.setMessages([...res.data]);
-                            this.currentMsgs = [...res.data];
+                            // this.currentMsgs = [...res.data];
                           }
                         }
                       }
                     },
                     (err) => {
-                      this.currentMsgs = null;
+                      this.chatBotService.setMessages([]);
+                      this.currentMsgs = [];
+                      this.chatBotService.getMessages
+                        .pipe(takeUntil(this.$destroy))
+                        .subscribe((msgs) => {
+                          this.currentMsgs = msgs;
+                        });
                       this.isLoading = false;
                     }
                   );
@@ -198,6 +196,8 @@ export class ChatWithComponent
 
           //Emit tin nhắn
           this.chatBotService.emitSendingChatMessage(user!._id);
+          //Update tin nhắn nhận được
+          // this.chatBotService.onReceivingChatMessageToUpdate();
         }
       });
   }
@@ -206,6 +206,7 @@ export class ChatWithComponent
     this.chatBotService.setSeeContactList(true);
     this.chatBotService.setCurrentChat(null);
     this.chatBotService.setMessages(null);
+    this.chatBotService.setNewMessage(null);
   }
 
   sendMsg(form: any) {
@@ -223,26 +224,12 @@ export class ChatWithComponent
             .pipe(takeUntil(this.$destroy))
             .subscribe((res) => {
               if (res.data) {
-                this.currentMsgs?.unshift(res.data);
+                // this.currentMsgs?.unshift(res.data);
                 // this.shouldScrollToBottom = true;
               }
             });
         }
       });
-  }
-
-  private scrollToBottom(): void {
-    if (this.chatContainer && this.shouldScrollToBottom) {
-      try {
-        this.renderer.setProperty(
-          this.chatContainer.nativeElement,
-          'scrollTop',
-          0
-        );
-      } catch (err) {
-        console.error('Error scrolling to bottom:', err);
-      }
-    }
   }
 
   loadMessages() {
@@ -287,7 +274,7 @@ export class ChatWithComponent
                       this.currentScrollTopPosition
                     );
                     this.currentScrollTopPosition =
-                      this.chatContainer.nativeElement.scrollTop - 1000;
+                      this.chatContainer.nativeElement.scrollTop - 2000;
                   }
                 }, 100);
               } else {
@@ -295,41 +282,6 @@ export class ChatWithComponent
                 this.currentMsgs = [...res.data];
               }
             }
-            // this.chatBotService.getMessages
-            //   .pipe(takeUntil(this.$destroy))
-            //   .subscribe((messages) => {
-            //     if (messages) {
-            //       this.currentMsgs = null;
-            //       this.currentMsgs = [...messages];
-            //       this.isLoading = false;
-            //       // Trigger change detection
-            //       //this.cdr.detectChanges();
-
-            //       // Attach the scroll event listener after the messages are loaded
-            //       //this.attachScrollEvent();
-
-            //       // Maintain scroll position
-            //       setTimeout(() => {
-            //         if (this.currentPage < this.totalPages) {
-            //           console.log('Maintain scroll position');
-            //           this.renderer.setProperty(
-            //             this.chatContainer.nativeElement,
-            //             'scrollTop',
-            //             this.currentScrollTopPosition
-            //           );
-            //           this.currentScrollTopPosition =
-            //             this.chatContainer.nativeElement.scrollTop + 1000;
-            //         }
-            //         if (this.currentPage === this.totalPages) {
-            //           console.log(
-            //             'Reseting pagination when reaching limit...'
-            //           );
-            //           this.totalPages = 0;
-            //           this.currentPage = 1;
-            //         }
-            //       }, 100);
-            //     }
-            //   });
           }
         });
     }

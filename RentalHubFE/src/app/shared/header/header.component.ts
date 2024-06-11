@@ -1,4 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
@@ -48,46 +54,50 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    setTimeout(() => {
-      this.accountService.getCurrentUser
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        console.log('On rendering headers...');
+        this.isAuthenticatedUser = !!user;
+        console.log('User is authenticated: ', this.isAuthenticatedUser);
+        this.user = user;
+        if (this.user?._fname && this.user?._lname) {
+          this.fullName = this.user?._fname + ' ' + this.user._lname;
+        }
+      });
+
+    if (this.isAuthenticatedUser) {
+      //Lấy các noti đã xem
+      this.notificationService.getCurrentSeenNotifications
         .pipe(takeUntil(this.$destroy))
-        .subscribe((user) => {
-          console.log('On rendering headers...');
-          this.isAuthenticatedUser = !!user;
-          console.log('User is authenticated: ', this.isAuthenticatedUser);
-          this.user = user;
-          if (this.user?._fname && this.user?._lname) {
-            this.fullName = this.user?._fname + ' ' + this.user._lname;
-          }
+        .subscribe((notifications) => {
+          this.seenNotiList = notifications;
         });
 
-      if (this.isAuthenticatedUser) {
-        //Lấy các noti đã xem
-        this.notificationService.getCurrentSeenNotifications.subscribe(
-          (notifications) => {
-            this.seenNotiList = notifications;
-          }
-        );
+      //Lấy các noti chưa xem
+      this.notificationService.getCurrentUnseenNotifications
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((unseenNotifications) => {
+          this.unseenNotificaionList = unseenNotifications;
+        });
 
-        //Lấy các noti chưa xem
-        this.notificationService.getCurrentUnseenNotifications.subscribe(
-          (unseenNotifications) => {
-            this.unseenNotificaionList = unseenNotifications;
-          }
-        );
+      //Lấy tổng các noti chưa xem
+      this.notificationService.getTotalNotifications
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((notificationTotal) => {
+          this.notificationTotals = notificationTotal;
+        });
+    } else {
+      this.notificationTotals = 0;
+      this.notificationService.setCurrentSeenNotifications([]);
+      this.notificationService.setCurrentUnseenNotifications([]);
+    }
+  }
 
-        //Lấy tổng các noti chưa xem
-        this.notificationService.getTotalNotifications.subscribe(
-          (notificationTotal) => {
-            this.notificationTotals = notificationTotal;
-          }
-        );
-      } else {
-        this.notificationTotals = 0;
-        this.notificationService.setCurrentSeenNotifications([]);
-        this.notificationService.setCurrentUnseenNotifications([]);
-      }
-    }, 1000);
+  ngOnDestroy() {
+    this.$destroy.next(false);
+    this.$destroy.unsubscribe();
+    this.notificationService.destroy();
   }
 
   toMyPosting() {
@@ -104,27 +114,26 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  // toSeeAllNotifications() {
-  //   this.router.navigate(['/profile/notifications/', this.user?._id]);
-  // }
-
   markAsReadAll() {
-    this.notificationService.markAsReadAll().subscribe(
-      (res) => {
-        if (res.data) {
+    this.notificationService
+      .markAsReadAll()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.notifierService.notify(
+              'success',
+              'Đánh dấu đã đọc toàn bộ thông báo thành công'
+            );
+          }
+        },
+        (errMsg) => {
           this.notifierService.notify(
-            'success',
-            'Đánh dấu đã đọc toàn bộ thông báo thành công'
+            'error',
+            'Đã có lỗi xảy ra, vui lòng thử lại sau'
           );
         }
-      },
-      (errMsg) => {
-        this.notifierService.notify(
-          'error',
-          'Đã có lỗi xảy ra, vui lòng thử lại sau'
-        );
-      }
-    );
+      );
   }
 
   readNotiDetail(noti: any) {
@@ -135,17 +144,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
     } else {
       //Hiện lên chi tiết bài post kèm message thông báo
-      this.postService.getReportPostDetails(noti._id).subscribe((res) => {
-        if (res.data) {
-          const dialogRef = this.dialog.open(PostEditDialogComponent, {
-            width: '1000px',
-            data: res.data,
-          });
-          dialogRef.afterClosed().subscribe((result) => {
-            console.log(`Dialog result: + $(result)`);
-          });
-        }
-      });
+      this.postService
+        .getReportPostDetails(noti._id)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((res) => {
+          if (res.data) {
+            const dialogRef = this.dialog.open(PostEditDialogComponent, {
+              width: '1000px',
+              data: res.data,
+            });
+            dialogRef.afterClosed().subscribe((result) => {
+              console.log(`Dialog result: + $(result)`);
+            });
+          }
+        });
     }
   }
 
@@ -191,13 +203,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toHome() {
     this.router.navigate(['']);
-    // .then(() => {
-    //   window.location.reload();
-    // });
-  }
-
-  ngOnDestroy() {
-    this.$destroy.next(true);
   }
 
   logout() {
@@ -205,14 +210,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
       width: '400px',
       data: 'Bạn có chắc muốn đăng xuất?',
     });
-    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
-      let logoutObs: Observable<resDataDTO>;
-      logoutObs = this.authService.logout(this.user?.RFToken);
-      logoutObs.subscribe();
-      this.router.navigate(['/posts']);
-    });
-    dialogRef.afterClosed().subscribe(() => {
-      sub.unsubscribe();
-    });
+    const sub = dialogRef.componentInstance.confirmYes
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
+        let logoutObs: Observable<resDataDTO>;
+        logoutObs = this.authService.logout(this.user?.RFToken);
+        logoutObs.pipe(takeUntil(this.$destroy)).subscribe();
+        this.router.navigate(['/posts']);
+      });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
+        sub.unsubscribe();
+      });
   }
 }
