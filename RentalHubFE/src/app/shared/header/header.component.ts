@@ -26,7 +26,7 @@ import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-e
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   @Input('matBadge')
   @Input('matTooltipClass')
   content: string | number | undefined | null;
@@ -52,7 +52,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: AuthService,
     public dialog: MatDialog
   ) {}
-  ngAfterViewInit(): void {}
 
   ngOnInit() {
     this.accountService.getCurrentUser

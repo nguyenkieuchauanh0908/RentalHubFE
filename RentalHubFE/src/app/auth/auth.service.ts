@@ -52,7 +52,7 @@ export class AuthService {
 
   login(email: string, pw: string) {
     console.log('On log in........');
-    this.updateTypeOfLogin(0);
+    localStorage.setItem('loginType', '0');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/login', {
         _email: email,
@@ -72,16 +72,8 @@ export class AuthService {
   }
 
   loginWithGG() {
-    let setLoginType: number | null = null;
-    this.updateTypeOfLogin(1);
-    this.getTypeOfLogin.subscribe((type) => {
-      setLoginType = type;
-    });
-    if (setLoginType === 1) {
-      setTimeout(() => {
-        window.location.href = 'http://localhost:3000/api/auth/google';
-      }, 100);
-    }
+    localStorage.setItem('loginType', '1');
+    window.location.href = 'http://localhost:3000/api/auth/google';
   }
 
   getUserGmailLoginIdentity() {
@@ -211,11 +203,13 @@ export class AuthService {
             if (
               localStorage.getItem('userData') ||
               localStorage.getItem('favorite-posts') ||
-              localStorage.getItem('registered-addresses')
+              localStorage.getItem('registered-addresses') ||
+              localStorage.getItem('loginType')
             ) {
               localStorage.removeItem('userData');
               localStorage.removeItem('favorite-posts');
               localStorage.removeItem('registered-addresses');
+              localStorage.removeItem('loginType');
             }
             //Xóa post yêu thích và current user
             this.postService.setCurrentFavorites([]);
@@ -237,7 +231,7 @@ export class AuthService {
             this.chatBotService.setNewMessage(null);
 
             //Set lại login type mặc định
-            this.updateTypeOfLogin(0);
+            localStorage.setItem('loginType', '0');
           }
         })
       );
