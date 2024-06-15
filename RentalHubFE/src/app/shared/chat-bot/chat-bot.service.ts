@@ -174,6 +174,7 @@ export class ChatBotService {
 
   //Connect to the socket
   initiateSocket() {
+    console.log('Connecting to socket...');
     this.setCurrentSocket(this.socket);
 
     return () => {
@@ -289,11 +290,12 @@ export class ChatBotService {
     });
   };
 
-  //Socket event's name: 'getMessage', 'getUnreadMessage'
+  //Socket event's name:'getUnreadMessage'
   onGettingUnreadMessage() {
     let updatedMsgs: MessageType[] | null = null;
     let seeContactList: Boolean = false;
     this.getCurrentSocket.pipe(takeUntil(this.$destroy)).subscribe((socket) => {
+      console.log('Getting socket');
       if (socket) {
         this.getSeeContactList
           .pipe(takeUntil(this.$destroy))

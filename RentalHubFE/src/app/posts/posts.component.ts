@@ -11,10 +11,19 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./posts.component.scss'],
 })
 export class PostsComponent implements OnInit, OnDestroy {
-  constructor() {}
+  $destroy: Subject<boolean> = new Subject<boolean>();
+  isAuthenticated: boolean = false;
+  constructor(private accountService: AccountService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        this.isAuthenticated = !!user;
+      });
+  }
   ngOnDestroy(): void {
-    // this.$destroy.unsubscribe();
+    this.$destroy.next(false);
+    this.$destroy.unsubscribe();
   }
 }

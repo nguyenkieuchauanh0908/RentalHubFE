@@ -9,6 +9,7 @@ import { MainLayoutComponent } from './shared/layout/main-layout/main-layout.com
 import { AuthGuard } from './auth/auth.guard';
 import { ProfileLayoutComponent } from './shared/layout/profile-layout/profile-layout.component';
 import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
+import { ForumLayoutComponent } from './forum/forum-layout/forum-layout.component';
 export const routerOptions: ExtraOptions = {
   anchorScrolling: 'enabled',
 };
@@ -41,6 +42,13 @@ const routes: Routes = [
     path: 'hosts',
     component: MainLayoutComponent,
     loadChildren: () => import('./host/host.module').then((m) => m.HostsModule),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'forum',
+    component: ForumLayoutComponent,
+    loadChildren: () =>
+      import('./forum/forum.module').then((m) => m.ForumModule),
     canActivate: [AuthGuard],
   },
   {

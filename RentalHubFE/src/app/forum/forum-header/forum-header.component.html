@@ -1,0 +1,233 @@
+<header>
+  <nav
+    class="bg-primary-600 border-gray-200 px-4 lg:px-20 py-2.5 dark:bg-gray-800 fixed top-0 w-full z-50"
+  >
+    <div
+      class="flex flex-nowrap justify-between items-center mx-auto max-w-screen-xl"
+    >
+      <!-- Logo -->
+      <a (click)="toHome()" class="flex items-center cursor-pointer">
+        <img
+          src="https://flowbite.com/docs/images/logo.svg"
+          class="mr-3 h-6 sm:h-9"
+          alt="Rental Hub logo"
+        />
+        <span
+          class="xs:hidden md:block self-center text-xl font-semibold whitespace-nowrap text-white"
+          >Rental Hub</span
+        >
+      </a>
+
+      <!-- Search input -->
+      <div class="w-1/2">
+        <form
+          #searchForm="ngForm"
+          (keyup.enter)="onSearchByKeyword(searchForm.value)"
+          (ngSubmit)="onSearchByKeyword(searchForm.value); searchForm.reset()"
+        >
+          <label
+            for="default-search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            >Search</label
+          >
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+            >
+              <svg
+                class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </div>
+            <input
+              ngModel
+              type="search"
+              id="default-search"
+              name="search"
+              class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Tìm kiếm người hoặc bài viết..."
+              required
+            />
+            <button
+              type="submit"
+              class="xs:hidden md:block text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Login/Signup/Account/Post new/Notifications -->
+      <div class="flex items-center lg:order-2">
+        <!-- Notifications -->
+        <div *ngIf="isAuthenticatedUser">
+          <button
+            *ngIf="isAuthenticatedUser"
+            [matMenuTriggerFor]="menu"
+            class="tooltip-block"
+            [matBadge]="notificationTotals"
+            aria-hidden="false"
+            matBadgeColor="warn"
+            class="cursor-pointer mr-3"
+          >
+            <mat-icon> notifications</mat-icon>
+          </button>
+          <mat-menu
+            #menu="matMenu"
+            yPosition="below"
+            xPosition="before"
+            class="max-h-128 overflow-scroll scroll-smooth scrollbar-hide"
+            style="padding: 0px; min-width: 250px"
+          >
+            <a (click)="$event.stopPropagation()">
+              <!-- Main Content for Notifications -->
+              <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+                <!-- Unseen -->
+                <mat-tab
+                  label="Chưa đọc"
+                  class="text-blue-500 cursor-pointer hover:text-blue-600"
+                >
+                  <div
+                    *ngIf="
+                      unseenNotificaionList.length > 0;
+                      else noUnseenNotifications
+                    "
+                    class="flex flex-col-reverse"
+                  >
+                    <div
+                      *ngFor="let noti of unseenNotificaionList; index as i"
+                      class="flex flex-col text-sm pr-3 pl-3 pt-3 hover:cursor-pointer hover:bg-gray-100"
+                      (click)="readNotiDetail(noti)"
+                    >
+                      <p class="text-primary-text-color font-medium mb-0">
+                        {{ noti._title }}
+                      </p>
+                      <p class="text-sub-text-color line-clamp-2">
+                        {{ noti._message }}
+                      </p>
+                    </div>
+                  </div>
+                  <ng-template #noUnseenNotifications>
+                    <p class="py-3 text-sm text-sub-text-color text-center">
+                      Không có thông báo mới
+                    </p>
+                  </ng-template>
+                </mat-tab>
+                <!-- Seen Noti -->
+                <mat-tab label="Đã đọc">
+                  <ng-template #noSeenNotifications>
+                    <p class="py-3 text-sm text-sub-text-color text-center">
+                      Không có thông báo đã đọc
+                    </p>
+                  </ng-template>
+                  <div
+                    *ngIf="
+                      this.seenNotiList.length > 0;
+                      else noSeenNotifications
+                    "
+                    class="flex flex-col-reverse"
+                  >
+                    <div
+                      *ngFor="let noti of seenNotiList; index as i"
+                      class="flex flex-col text-sm pr-3 pl-3 pt-3 bg-gray-100"
+                    >
+                      <p class="text-primary-text-color font-medium mb-0">
+                        {{ noti._title }}
+                      </p>
+                      <p
+                        mat-raised-button
+                        class="text-sub-text-color line-clamp-2"
+                        [matTooltip]="noti._message"
+                        [matTooltipPosition]="'left'"
+                        [matTooltipClass]="'mr-3'"
+                        matTooltipHideDelay="400"
+                      >
+                        {{ noti._message }}
+                      </p>
+                    </div>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+              <mat-divider
+                *ngIf="unseenNotificaionList.length > 0"
+              ></mat-divider>
+              <div
+                *ngIf="unseenNotificaionList.length > 0"
+                class="sticky bottom-0 text-center bg-gray-100 z-40"
+              >
+                <p
+                  class="text-sm text-sub-text-color p-3"
+                  style="margin-bottom: 2px"
+                >
+                  {{ notificationTotals }} thông báo chưa đọc
+                  <span
+                    (click)="markAsReadAll()"
+                    class="text-blue-500 cursor-pointer hover:text-blue-600 ml-1"
+                    >Đánh dấu đã đọc</span
+                  >
+                </p>
+              </div>
+            </a>
+          </mat-menu>
+        </div>
+        <!-- Login -->
+        <a
+          *ngIf="!isAuthenticatedUser"
+          [routerLink]="['/auth/login']"
+          class="text-white-text-color text-800 dark:text-white hover:bg-gray-50 hover:text-black focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 lg:px-4 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 cursor-pointer"
+          >Đăng nhập</a
+        >
+
+        <!-- Sign up -->
+        <a
+          *ngIf="!isAuthenticatedUser"
+          [routerLink]="['/auth/signup']"
+          class="text-white-text-color text-800 dark:text-white hover:bg-gray-50 hover:text-black focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 lg:px-4 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800 cursor-pointer"
+          >Đăng ký</a
+        >
+
+        <!-- Avatar and name -->
+        <div *ngIf="this.user" class="ml-1 flex flex-row gap-1 cursor-pointer">
+          <img
+            *ngIf="user._avatar"
+            src="{{ user._avatar }}"
+            [matMenuTriggerFor]="setting"
+            class="w-10 h-10 rounded-full relative bottom-1"
+            alt="avatar"
+          />
+          <a
+            [matMenuTriggerFor]="setting"
+            class="xs:hidden md:block text-white-text-color text-800 dark:text-white focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm lg:py-2.5 ml-1 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+            >{{ fullName }}</a
+          >
+          <mat-menu #setting="matMenu" style="width: fit-content">
+            <button mat-menu-item (click)="toMyWall()">
+              <mat-icon>perm_identity</mat-icon>
+              <span class="text-primary-text-color mb-0 text-sm"
+                >Tường nhà</span
+              >
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span class="text-primary-text-color mb-0 text-sm"
+                >Đăng xuất</span
+              >
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
