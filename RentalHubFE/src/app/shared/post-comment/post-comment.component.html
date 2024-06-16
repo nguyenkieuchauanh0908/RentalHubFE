@@ -1,0 +1,28 @@
+<!-- Comment -->
+<div class="flex flex-col relative gap-1 ml-10 mb-6 p-2 shadow-lg rounded-md">
+  <!-- Avatar - name - time - comment-->
+  <div class="flex gap-2">
+    <img
+      src="../../../../assets/images/user.png"
+      alt="User avatar"
+      class="w-8 h-8 rounded-full"
+    />
+    <div class="flex flex-col text-left">
+      <span class="font-medium text-black-color">Lâm Hoàng Duyên</span>
+      <span class="font-normal text-gray-600">Hôm qua, lúc 15:00</span>
+      <!--Nội dung Comment -->
+      <div class="mt-2">
+        <span> Cho hỏi ghép đủ người chưa ạ? </span>
+      </div>
+    </div>
+  </div>
+  <!--Icon to open Child comments -->
+  <div class="absolute ml-4 -bottom-6 cursor-pointer">
+    <span class="text-gray-500"
+      >2 phản hồi
+      <mat-icon [ngStyle]="{ color: 'gray' }" class="relative top-1.5"
+        >reply</mat-icon
+      ></span
+    >
+  </div>
+</div>

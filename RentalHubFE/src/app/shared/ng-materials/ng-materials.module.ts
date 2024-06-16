@@ -23,6 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSidenavModule } from '@angular/material/sidenav';
 @NgModule({
   declarations: [],
   imports: [
@@ -49,6 +50,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatTabsModule,
     MatRippleModule,
     MatSliderModule,
+    MatSidenavModule,
   ],
   exports: [
     MatDividerModule,
@@ -73,6 +75,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatTabsModule,
     MatRippleModule,
     MatSliderModule,
+    MatSidenavModule,
   ],
 })
 export class NgMaterialsModule {}
