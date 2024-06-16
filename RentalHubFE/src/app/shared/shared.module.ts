@@ -29,6 +29,7 @@ import { DisplayNotiDialogComponent } from './display-noti-dialog/display-noti-d
 import { ChatUserComponent } from './chat-bot/chat-user/chat-user.component';
 import { ChatWithComponent } from './chat-bot/chat-with/chat-with.component';
 import { ForumIconLinkComponent } from './forum-icon-link/forum-icon-link.component';
+import { PostCommentComponent } from './post-comment/post-comment.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { ForumIconLinkComponent } from './forum-icon-link/forum-icon-link.compon
     ChatUserComponent,
     ChatWithComponent,
     ForumIconLinkComponent,
+    PostCommentComponent,
   ],
   imports: [
     CommonModule,
@@ -81,6 +83,7 @@ import { ForumIconLinkComponent } from './forum-icon-link/forum-icon-link.compon
     PostCardComponent,
     ChatBotComponent,
     ForumIconLinkComponent,
+    PostCommentComponent,
   ],
 })
 export class SharedModule {}

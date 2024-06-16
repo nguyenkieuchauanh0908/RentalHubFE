@@ -7,6 +7,7 @@ import { ForumRoutingModule } from './forum-routing.module';
 import { ProfileComponent } from './profile/profile.component';
 import { ForumHeaderComponent } from './forum-header/forum-header.component';
 import { FormsModule } from '@angular/forms';
+import { ForumPostComponent } from './forum-post/forum-post.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
     ForumLayoutComponent,
     ProfileComponent,
     ForumHeaderComponent,
+    ForumPostComponent,
   ],
   imports: [CommonModule, ForumRoutingModule, SharedModule, FormsModule],
   providers: [],

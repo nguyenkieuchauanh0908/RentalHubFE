@@ -57,6 +57,11 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
   }
+  .element-center-horizontal {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .mat-icon-style {
     position: absolute;
     top: 50%;

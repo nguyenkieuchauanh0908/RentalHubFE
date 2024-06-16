@@ -1,9 +1,8 @@
 <div
-  (click)="goToForum()"
-  *ngIf="isAuthenticated"
   class="fixed bottom-4 left-4 z-40 w-16 h-16 bg-white-background rounded-full p-2 cursor-pointer"
 >
   <img
+    (click)="goToForum()"
     aria-hidden="false"
     #tooltip="matTooltip"
     matTooltip="Đi tới diễn đàn"

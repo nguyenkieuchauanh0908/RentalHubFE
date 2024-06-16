@@ -1,12 +1,49 @@
 <header>
   <nav
-    class="bg-primary-600 border-gray-200 px-4 lg:px-20 py-2.5 dark:bg-gray-800 fixed top-0 w-full z-50"
+    class="bg-primary-600 border-gray-200 px-4 lg:px-20 py-2.5 dark:bg-gray-800 fixed top-0 w-full z-30"
   >
     <div
       class="flex flex-nowrap justify-between items-center mx-auto max-w-screen-xl"
     >
+      <!-- Menu for xs screen -->
+      <div class="xs:block lg:hidden xs:text-right z-30">
+        <button
+          #matMenuTrigger
+          mat-raised-butto
+          [matMenuTriggerFor]="sidebar"
+          class="cursor-pointer mr-3"
+        >
+          <p class="text-black-color font-medium text-center">
+            <mat-icon class="relative top-2.5 ml-1"> menu</mat-icon>
+          </p>
+        </button>
+        <mat-menu #sidebar="matMenu" yPosition="below" class="lg:hidden">
+          <a (click)="$event.stopPropagation()">
+            <button mat-menu-item>
+              <mat-icon>perm_identity</mat-icon>
+              <span class="text-primary-text-color mb-0 text-sm">Diễn đàn</span>
+            </button>
+
+            <button mat-menu-item>
+              <mat-icon>account_box</mat-icon>
+              <span class="text-primary-text-color mb-0 text-sm"
+                >Tường nhà</span
+              >
+            </button>
+
+            <button mat-menu-item>
+              <mat-icon>add_location</mat-icon>
+              <span class="text-primary-text-color mb-0 text-sm">Đăng bài</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon> location_on</mat-icon>
+              <span class="text-primary-text-color mb-0 text-sm">Bảng tin</span>
+            </button>
+          </a>
+        </mat-menu>
+      </div>
       <!-- Logo -->
-      <a (click)="toHome()" class="flex items-center cursor-pointer">
+      <a (click)="toHome()" class="flex items-center cursor-pointer z-40">
         <img
           src="https://flowbite.com/docs/images/logo.svg"
           class="mr-3 h-6 sm:h-9"

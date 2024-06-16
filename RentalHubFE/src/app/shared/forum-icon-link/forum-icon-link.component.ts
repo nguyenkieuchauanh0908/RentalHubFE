@@ -11,7 +11,9 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 export class ForumIconLinkComponent implements OnInit, OnDestroy {
   $destroy: Subject<boolean> = new Subject<boolean>();
   isAuthenticated: boolean = false;
-  constructor(private accountService: AccountService, private router: Router) {}
+  constructor(private accountService: AccountService, private router: Router) {
+    console.log('Parent component - isAuthenticated:', this.isAuthenticated);
+  }
 
   ngOnInit(): void {
     this.accountService.getCurrentUser
@@ -27,6 +29,7 @@ export class ForumIconLinkComponent implements OnInit, OnDestroy {
 
   goToForum() {
     if (this.isAuthenticated) {
+      console.log('To forum.............');
       this.router.navigate(['/forum/home']);
     }
   }

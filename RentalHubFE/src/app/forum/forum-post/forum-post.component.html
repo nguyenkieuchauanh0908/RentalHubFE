@@ -1,0 +1,100 @@
+<div *ngIf="this.post" class="p-6 pb-12">
+  <!-- Post header (Creater - Time - Contact - Report) -->
+  <div class="flex justify-between">
+    <!-- Creater & time -->
+    <div class="flex gap-2">
+      <img src="{{ this.post._images }}" class="w-8 h-8 rounded-full" />
+      <div class="flex flex-col text-left">
+        <span class="font-medium text-black-color">{{
+          this.post._authorName
+        }}</span>
+        <span class="font-normal text-gray-600">{{
+          this.post._postingDateLocal
+        }}</span>
+      </div>
+    </div>
+    <!-- Contact & Report -->
+    <div>
+      <mat-icon
+        matRipple
+        [matRippleCentered]="true"
+        [matRippleUnbounded]="true"
+        class="cursor-pointer"
+        [ngStyle]="{ color: 'black' }"
+        [matMenuTriggerFor]="menu"
+        aria-label="menu to choose"
+        >more_vert</mat-icon
+      >
+
+      <mat-menu #menu="matMenu" style="width: fit-content">
+        <button mat-menu-item>
+          <mat-icon>send</mat-icon>
+          <span class="text-primary-text-color mb-0 text-sm">Liên hệ</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>report</mat-icon>
+          <span class="text-primary-text-color mb-0 text-sm">Báo cáo</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  <!-- Post content -->
+  <div class="flex flex-col text-justify mb-4">
+    <span class="font-medium mt-2"> {{ this.post._title }} </span>
+    <span [ngClass]="seeMore ? 'line-clamp-none' : 'line-clamp-4'">
+      {{ this.post._content }}
+    </span>
+    <span
+      *ngIf="!seeMore"
+      class="font-medium text-blue-500 cursor-pointer"
+      (click)="seeMoreContentClick()"
+    >
+      Xem thêm
+    </span>
+    <span
+      *ngIf="seeMore"
+      class="font-medium text-blue-500 cursor-pointer"
+      (click)="seeMoreContentClick()"
+    >
+      Ẩn bớt
+    </span>
+    <div>
+      <img
+        src="../../../../assets/images/background_1.jpg"
+        class="w-full h-full"
+      />
+    </div>
+  </div>
+  <!-- Post Footer (Like - Comment) -->
+  <div class="flex justify-between py-2">
+    <div class="flex items-center relative bottom-1 text-gray-500">
+      <mat-icon [ngStyle]="{ color: 'tomato' }" class="cursor-pointer ml-2"
+        >favorite</mat-icon
+      >
+      <span *ngIf="this.post._totalLike > 0"
+        >Bạn và {{ this.post._totalLike }} người khác</span
+      >
+    </div>
+    <div
+      class="flex items-center ml-2 relative bottom-1"
+      (click)="seeComments()"
+    >
+      <span>{{ this.post._totalComment }}</span>
+      <mat-icon
+        matRipple
+        [matRippleCentered]="true"
+        [matRippleUnbounded]="true"
+        [ngStyle]="{ color: 'black' }"
+        class="cursor-pointer"
+        >chat_bubble_outline</mat-icon
+      >
+    </div>
+  </div>
+
+  <!-- Comments -->
+  <div class="flex flex-col gap-6 text-left">
+    <app-post-comment></app-post-comment>
+    <app-post-comment></app-post-comment>
+    <app-post-comment></app-post-comment>
+  </div>
+</div>

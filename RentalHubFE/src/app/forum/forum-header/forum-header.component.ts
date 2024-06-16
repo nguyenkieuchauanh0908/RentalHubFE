@@ -12,7 +12,6 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { DisplayNotiDialogComponent } from 'src/app/shared/display-noti-dialog/display-noti-dialog.component';
 import { NotificationService } from 'src/app/shared/notifications/notification.service';
 import { resDataDTO } from 'src/app/shared/resDataDTO';
-
 @Component({
   selector: 'app-forum-header',
   templateUrl: './forum-header.component.html',
