@@ -5,38 +5,7 @@
   </div>
   <!-- Sidebar for md screen above -->
   <div class="relative grid xs:hidden lg:block md:col-span-2 mt-6 mb-8 z-40">
-    <div
-      class="grid-flow-row items-center sticky top-24 ml-1 min-w-[160px] max-w-[208px] cursor-auto"
-    >
-      <div class="max-w-md">
-        <div class="bg-white shadow-xl rounded-lg py-3">
-          <div class="flex flex-col gap-4">
-            <!-- Diễn đàn -->
-            <div class="flex flex-col gap-2 text-center cursor-pointer">
-              <a class="hover:text-primary-600 hover:font-medium">Diễn đàn</a>
-              <mat-divider></mat-divider>
-            </div>
-
-            <!-- Tường nhà -->
-            <div class="flex flex-col gap-2 text-center cursor-pointer">
-              <a class="hover:text-primary-600 hover:font-medium">Tường nhà</a>
-              <mat-divider></mat-divider>
-            </div>
-
-            <!-- Đăng bài -->
-            <div class="flex flex-col gap-2 text-center cursor-pointer">
-              <a class="hover:text-primary-600 hover:font-medium">Đăng bài</a>
-              <mat-divider></mat-divider>
-            </div>
-
-            <!-- Bảng tin-->
-            <div class="flex flex-col gap-2 text-center cursor-pointer">
-              <a class="hover:text-primary-600 hover:font-medium">Bảng tin</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-forum-sidemenu></app-forum-sidemenu>
   </div>
   <!-- Posts -->
   <div

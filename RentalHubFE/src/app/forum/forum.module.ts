@@ -8,6 +8,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { ForumHeaderComponent } from './forum-header/forum-header.component';
 import { FormsModule } from '@angular/forms';
 import { ForumPostComponent } from './forum-post/forum-post.component';
+import { SocialPostEditDialogComponent } from './social-post-edit-dialog/social-post-edit-dialog.component';
+import { ForumSidemenuComponent } from './forum-sidemenu/forum-sidemenu.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +18,8 @@ import { ForumPostComponent } from './forum-post/forum-post.component';
     ProfileComponent,
     ForumHeaderComponent,
     ForumPostComponent,
+    SocialPostEditDialogComponent,
+    ForumSidemenuComponent,
   ],
   imports: [CommonModule, ForumRoutingModule, SharedModule, FormsModule],
   providers: [],
