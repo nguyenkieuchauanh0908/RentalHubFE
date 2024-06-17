@@ -1,5 +1,4 @@
 import {
-  AfterViewChecked,
   AfterViewInit,
   ChangeDetectorRef,
   Component,
@@ -21,7 +20,6 @@ import {
   Subject,
   Subscription,
   fromEvent,
-  take,
   takeUntil,
   throttleTime,
 } from 'rxjs';
@@ -47,7 +45,6 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
   currentChat: UserChatsType | null = null;
   moment!: any;
   seeContactList: Boolean | undefined = false;
-  shouldScrollToBottom: Boolean | undefined = true;
 
   currentPage = 1;
   totalPages: number = 0;
@@ -59,8 +56,7 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private accountService: AccountService,
     private chatBotService: ChatBotService,
-    private renderer: Renderer2,
-    private cdr: ChangeDetectorRef
+    private renderer: Renderer2
   ) {}
 
   ngOnDestroy(): void {
@@ -98,7 +94,6 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
     this.moment = moment;
     this.moment.locale('vn');
     this.seeContactList = false;
-    this.shouldScrollToBottom = true;
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
