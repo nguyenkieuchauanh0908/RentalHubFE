@@ -213,10 +213,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const sub = dialogRef.componentInstance.confirmYes
       .pipe(takeUntil(this.$destroy))
       .subscribe(() => {
-        let logoutObs: Observable<resDataDTO>;
-        logoutObs = this.authService.logout(this.user?.RFToken);
-        logoutObs.pipe(takeUntil(this.$destroy)).subscribe();
-        this.router.navigate(['/posts']);
+        this.authService
+          .logout(this.user?.RFToken)
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
       });
     dialogRef
       .afterClosed()

@@ -11,6 +11,7 @@ import { resDataDTO } from '../resDataDTO';
 import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-edit-dialog/post-edit-dialog.component';
 import { DisplayNotiDialogComponent } from '../display-noti-dialog/display-noti-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-profile-header',
@@ -225,25 +226,25 @@ export class ProfileHeaderComponent {
   }
 
   logout() {
-    // this.dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    //   width: '400px',
-    //   data: 'Bạn có chắc muốn đăng xuất?',
-    // });
-    // const sub = this.dialogRef.componentInstance.confirmYes.subscribe(() => {
-    //   let logoutObs: Observable<resDataDTO>;
-    //   logoutObs = this.authService.logout(this.user?.RFToken);
-    //   logoutObs.subscribe();
-    //   this.router.navigate(['/posts']);
-    // });
-    // this.dialogRef.afterClosed().subscribe(() => {
-    //   sub.unsubscribe();
-    // });
-    let logoutObs: Observable<resDataDTO>;
-    logoutObs = this.authService.logout(this.user?.RFToken);
-    logoutObs.subscribe();
-    this.router.navigate(['/posts']);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn đăng xuất?',
+    });
+    const sub = dialogRef.componentInstance.confirmYes
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
+        this.authService
+          .logout(this.user?.RFToken)
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
+      });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
+        sub.unsubscribe();
+      });
   }
-
   toSeeAllNotifications() {
     this.router.navigate(['/profile/notifications/', this.user?._id]);
   }

@@ -198,39 +198,41 @@ export class AuthService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          this.router.navigate(['/']);
-          if (
-            localStorage.getItem('userData') ||
-            localStorage.getItem('favorite-posts') ||
-            localStorage.getItem('registered-addresses') ||
-            localStorage.getItem('loginType')
-          ) {
-            localStorage.removeItem('userData');
-            localStorage.removeItem('favorite-posts');
-            localStorage.removeItem('registered-addresses');
-            localStorage.removeItem('loginType');
+          if (res.data) {
+            this.router.navigate(['/']);
+            if (
+              localStorage.getItem('userData') ||
+              localStorage.getItem('favorite-posts') ||
+              localStorage.getItem('registered-addresses') ||
+              localStorage.getItem('loginType')
+            ) {
+              localStorage.removeItem('userData');
+              localStorage.removeItem('favorite-posts');
+              localStorage.removeItem('registered-addresses');
+              localStorage.removeItem('loginType');
+            }
+            //Xóa post yêu thích và current user
+            this.postService.setCurrentFavorites([]);
+            this.postService.setCurrentFavoritesId([]);
+            this.accountService.setCurrentUser(null);
+
+            //Xóa thông báo
+            this.notiService.setCurrentSeenNotifications([]);
+            this.notiService.setCurrentUnseenNotifications([]);
+            this.notiService.setTotalNotifications(0);
+
+            //Xóa thông tin chatbot
+            this.chatBotService.disconnectToSocket();
+            this.chatBotService.setOnlineUsers(null);
+            this.chatBotService.setSeeContactList(true);
+            this.chatBotService.setCurrentChat(null);
+            this.chatBotService.setCurrentRecipient(null);
+            this.chatBotService.setMessages(null);
+            this.chatBotService.setNewMessage(null);
+
+            //Set lại login type mặc định
+            localStorage.setItem('loginType', '0');
           }
-          //Xóa post yêu thích và current user
-          this.postService.setCurrentFavorites([]);
-          this.postService.setCurrentFavoritesId([]);
-          this.accountService.setCurrentUser(null);
-
-          //Xóa thông báo
-          this.notiService.setCurrentSeenNotifications([]);
-          this.notiService.setCurrentUnseenNotifications([]);
-          this.notiService.setTotalNotifications(0);
-
-          //Xóa thông tin chatbot
-          this.chatBotService.disconnectToSocket();
-          this.chatBotService.setOnlineUsers(null);
-          this.chatBotService.setSeeContactList(true);
-          this.chatBotService.setCurrentChat(null);
-          this.chatBotService.setCurrentRecipient(null);
-          this.chatBotService.setMessages(null);
-          this.chatBotService.setNewMessage(null);
-
-          //Set lại login type mặc định
-          localStorage.setItem('loginType', '0');
         })
       );
   }
