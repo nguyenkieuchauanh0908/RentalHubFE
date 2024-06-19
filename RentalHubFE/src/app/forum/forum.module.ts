@@ -10,6 +10,11 @@ import { FormsModule } from '@angular/forms';
 import { ForumPostComponent } from './forum-post/forum-post.component';
 import { SocialPostEditDialogComponent } from './social-post-edit-dialog/social-post-edit-dialog.component';
 import { ForumSidemenuComponent } from './forum-sidemenu/forum-sidemenu.component';
+import {
+  HtmlEditorService,
+  RichTextEditorModule,
+  ToolbarService,
+} from '@syncfusion/ej2-angular-richtexteditor';
 
 @NgModule({
   declarations: [
@@ -21,7 +26,13 @@ import { ForumSidemenuComponent } from './forum-sidemenu/forum-sidemenu.componen
     SocialPostEditDialogComponent,
     ForumSidemenuComponent,
   ],
-  imports: [CommonModule, ForumRoutingModule, SharedModule, FormsModule],
-  providers: [],
+  imports: [
+    CommonModule,
+    ForumRoutingModule,
+    SharedModule,
+    FormsModule,
+    RichTextEditorModule,
+  ],
+  providers: [ToolbarService, HtmlEditorService],
 })
 export class ForumModule {}

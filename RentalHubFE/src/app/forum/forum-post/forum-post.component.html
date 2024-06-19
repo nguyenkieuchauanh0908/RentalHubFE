@@ -3,11 +3,17 @@
   <div class="flex justify-between">
     <!-- Creater & time -->
     <div class="flex gap-2">
-      <img src="{{ this.post._images }}" class="w-8 h-8 rounded-full" />
+      <img
+        *ngIf="this.post._authorAvatar"
+        src="{{ this.post._authorAvatar }}"
+        class="w-8 h-8 rounded-full"
+      />
       <div class="flex flex-col text-left">
-        <span class="font-medium text-black-color">{{
-          this.post._authorName
-        }}</span>
+        <span
+          *ngIf="this.post._authorName"
+          class="font-medium text-black-color"
+          >{{ this.post._authorName }}</span
+        >
         <span class="font-normal text-gray-600">{{
           this.post._postingDateLocal
         }}</span>
@@ -40,10 +46,20 @@
   </div>
   <!-- Post content -->
   <div class="flex flex-col text-justify mb-4">
-    <span class="font-medium mt-2"> {{ this.post._title }} </span>
-    <span [ngClass]="seeMore ? 'line-clamp-none' : 'line-clamp-4'">
-      {{ this.post._content }}
+    <span *ngIf="this.post._title" class="font-medium mt-2">
+      {{ this.post._title }}
     </span>
+    <div
+      #contentToDisplay
+      [ngClass]="seeMore ? 'line-clamp-none' : 'line-clamp-4'"
+    ></div>
+    <!-- <span
+     
+      
+      
+    >
+      {{ this.post._content }}
+    </span> -->
     <span
       *ngIf="!seeMore"
       class="font-medium text-blue-500 cursor-pointer"
@@ -58,7 +74,7 @@
     >
       Ẩn bớt
     </span>
-    <div>
+    <div *ngIf="this.post._images">
       <img src="{{ this.post._images }}" class="w-full h-full rounded-md" />
     </div>
   </div>

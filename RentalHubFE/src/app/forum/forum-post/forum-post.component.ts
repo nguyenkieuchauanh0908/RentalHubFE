@@ -1,4 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
@@ -12,13 +20,17 @@ import { ForumService } from '../forum.service';
   templateUrl: './forum-post.component.html',
   styleUrls: ['./forum-post.component.scss'],
 })
-export class ForumPostComponent implements OnInit, OnDestroy {
+export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('contentToDisplay') contentToDisplay: ElementRef | undefined;
   @Input() post: any;
   $destroy: Subject<Boolean> = new Subject();
   isAuthenticated: boolean = false;
   seeMore: boolean = false;
 
   constructor(public dialog: MatDialog, private router: Router) {}
+  ngAfterViewInit(): void {
+    this.contentToDisplay!.nativeElement.innerHTML = this.post._content;
+  }
   ngOnInit(): void {}
 
   ngOnDestroy(): void {

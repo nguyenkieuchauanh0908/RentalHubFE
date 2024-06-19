@@ -2,80 +2,96 @@
   <div *ngIf="isLoading" class="spinner__loading text-center">
     <mat-spinner diameter="30"></mat-spinner>
   </div>
-  <h2 mat-dialog-title>Duyệt bài viết</h2>
+  <h2 mat-dialog-title>{{ this.title }}</h2>
   <mat-dialog-content>
     <!-- Edit modal -->
     <div class="p-4 md:p-5">
-      <form #createPostForm="ngForm" class="space-y-4">
+      <form [formGroup]="postEditForm" class="space-y-4">
         <!-- Post ID -->
-        <!-- <div class="mb-6">
-            <label
-              for="base-input"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >ID bài viết</label
-            >
-            <input
-              type="text"
-              id="postId-input"
-              name="postId"
-              [ngModel]="this.data._id"
-              ngModel
-              required
-              disabled
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-          </div> -->
-        <!-- Title -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Tiêu đề</label
-          >
+        <mat-form-field *ngIf="this.data" class="w-full">
+          <mat-label>ID</mat-label>
           <input
-            type="text"
-            id="title-input"
-            name="title"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            id="pid-input"
+            aria-label="ID"
+            matInput
+            formControlName="idInputControl"
           />
-        </div>
+        </mat-form-field>
+        <!-- Title -->
+        <mat-form-field class="w-full">
+          <mat-label>Tiêu đề</mat-label>
+          <input
+            id="title-input"
+            aria-label="Tiêu đề"
+            matInput
+            formControlName="titleInputControl"
+          />
+          <mat-error
+            *ngIf="
+              this.postEditForm.controls.titleInputControl.hasError('required')
+            "
+          >
+            Thông tin <strong>bắt buộc</strong>
+          </mat-error>
+        </mat-form-field>
 
         <!-- Content  -->
-        <div class="mb-6">
-          <label
-            for="base-input"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Nội dung chính</label
-          >
-          <textarea
-            rows="8"
-            type="text"
-            id="content-input"
-            name="content"
-            ngModel
-            required
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Viết mô tả chi tiết về phòng trọ ở đây..."
-          ></textarea>
-        </div>
+        <mat-label>Nội dung chính</mat-label>
+        <ejs-richtexteditor
+          [toolbarSettings]="customToolbar"
+          #postContent
+          class="mt-12"
+        >
+          <ng-template #valueTemplate>
+            <p></p>
+          </ng-template>
+        </ejs-richtexteditor>
+        <mat-error *ngIf="!this.postHtmlContent">
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
+        <!-- <div #div></div> -->
 
         <!-- Images -->
-        <div class="mb-6">
+        <div class="flex flex-col items-center justify-start w-full">
+          <mat-error *ngIf="this.previews.length === 0">
+            Vui lòng chọn <strong>tối đa 1 ảnh</strong>
+          </mat-error>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            for="multiple_files"
-            >Ảnh</label
+            for="dropzone-file-front"
+            class="flex flex-row items-start justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
           >
-          <input
-            (change)="selectFiles($event)"
-            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-            id="multiple_files"
-            type="file"
-            multiple
-          />
-          <div class="mt-4">
+            <div class="flex flex-row items-center justify-center">
+              <svg
+                class="w-8 h-12 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 16"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                />
+              </svg>
+
+              <p
+                class="relative top-1 text-xs text-gray-500 dark:text-gray-400"
+              >
+                Ảnh minh họa
+              </p>
+            </div>
+            <input
+              id="dropzone-file-front"
+              #dropzoneFileFront
+              type="file"
+              class="hidden"
+              (change)="selectFiles($event)"
+            />
+          </label>
+          <div class="flex justify-center p-4">
             <img
               *ngFor="let preview of previews"
               [src]="preview"
@@ -88,16 +104,12 @@
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
+    <!-- Test -->
+
     <!--Cancle -->
     <button mat-button mat-dialog-close>Hủy</button>
     <!-- Lưu -->
-    <button
-      [disabled]="!selectedFiles"
-      (click)="saveSocialPost(createPostForm)"
-      mat-button
-      class="bg-red-700 hover:bg-red-800"
-      style="color: white; background-color: rgba(255, 0, 0, 0.8)"
-    >
+    <button [disabled]="!selectedFiles" (click)="saveSocialPost()" mat-button>
       Lưu
     </button>
   </mat-dialog-actions>

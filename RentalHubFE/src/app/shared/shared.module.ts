@@ -30,6 +30,7 @@ import { ChatUserComponent } from './chat-bot/chat-user/chat-user.component';
 import { ChatWithComponent } from './chat-bot/chat-with/chat-with.component';
 import { ForumIconLinkComponent } from './forum-icon-link/forum-icon-link.component';
 import { PostCommentComponent } from './post-comment/post-comment.component';
+import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 
 @NgModule({
   declarations: [
