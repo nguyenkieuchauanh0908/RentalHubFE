@@ -9,6 +9,7 @@ import { catchError, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class ForumService {
+  //0: Đang đăng, 1: Khóa (do chủ bài đăng), 2: Bị report (đã được duyệt)
   constructor(private http: HttpClient) {}
 
   getSocialPosts(page: number, limit: number, status: number | null) {

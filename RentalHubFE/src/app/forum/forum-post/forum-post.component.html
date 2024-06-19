@@ -49,12 +49,17 @@
     <span *ngIf="this.post._title" class="font-medium mt-2">
       {{ this.post._title }}
     </span>
-    <span
-      *ngIf="this.post._content"
+    <div
+      #contentToDisplay
       [ngClass]="seeMore ? 'line-clamp-none' : 'line-clamp-4'"
+    ></div>
+    <!-- <span
+     
+      
+      
     >
       {{ this.post._content }}
-    </span>
+    </span> -->
     <span
       *ngIf="!seeMore"
       class="font-medium text-blue-500 cursor-pointer"

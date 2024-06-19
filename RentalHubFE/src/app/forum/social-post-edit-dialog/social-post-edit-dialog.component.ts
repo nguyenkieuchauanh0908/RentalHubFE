@@ -1,4 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { NotifierService } from 'angular-notifier';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { FileUploadService } from 'src/app/shared/file-upload.services';
@@ -6,6 +13,7 @@ import { ForumService } from '../forum.service';
 import { Form, FormBuilder, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor';
 
 @Component({
   selector: 'app-social-post-edit-dialog',
@@ -13,16 +21,40 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./social-post-edit-dialog.component.scss'],
 })
 export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
+  @ViewChild('postContent')
+  textEditorForPostContent!: RichTextEditorComponent;
+  postHtmlContent!: string;
+  btnElement!: HTMLElement | null;
+
+  title: string = '';
   isLoading: boolean = false;
   $destroy: Subject<boolean> = new Subject();
   error: string = '';
   currentPost!: any;
+
   selectedFiles?: FileList;
   selectedFileNames: string[] = [];
-
-  progressInfos: any[] = [];
   message: string[] = [];
   previews: string[] = [];
+
+  public customToolbar: Object = {
+    items: [
+      'Bold',
+      'Italic',
+      'Underline',
+      'FontColor',
+      'BackgroundColor',
+      'LowerCase',
+      'UpperCase',
+      'Alignments',
+      'OrderedList',
+      'UnorderedList',
+      'Outdent',
+      'Indent',
+      'Undo',
+      'Redo',
+    ],
+  };
 
   postEditForm = this.formBuilder.group({
     idInputControl: [{ value: '', disabled: true }],
@@ -44,11 +76,13 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     //Initite postEdit form value
     if (this.currentPost) {
+      this.title = 'Nội dung bài viết';
       this.postEditForm.patchValue({
         idInputControl: this.currentPost._id,
         titleInputControl: this.currentPost._title,
-        contentInputControl: this.currentPost._content,
       });
+    } else {
+      this.title = 'Tạo bài viết';
     }
   }
   ngOnDestroy(): void {
@@ -56,6 +90,10 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
   }
 
   saveSocialPost() {
+    this.postHtmlContent = this.textEditorForPostContent.getHtml();
+    this.postEditForm.patchValue({
+      contentInputControl: this.postHtmlContent,
+    });
     console.log('On saving social post...', this.postEditForm.value);
     this.isLoading = true;
     if (this.selectedFiles) {
@@ -108,4 +146,14 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
     this.message = [];
     this.isLoading = true;
   }
+
+  // getFormattedContent() {
+  //   this.btnElement = document.getElementById('button');
+  //   this.postHtmlContent = this.textEditorForPostContent.getHtml();
+  //   console.log(
+  //     '🚀 ~ PostsComponent ~ getFormattedContent ~ this.postHtmlContent:',
+  //     this.postHtmlContent
+  //   );
+  //   this.div!.nativeElement.innerHTML = this.postHtmlContent;
+  // }
 }
