@@ -32,15 +32,15 @@ export class ForumService {
       );
   }
 
-  createSocialPost(title: string, content: string, image: File) {
-    console.log(title, content, image);
+  createSocialPost(form: any, image: File) {
+    console.log(form);
     const headers = new HttpHeaders().set(
       'content-type',
       'multipart/form-data'
     );
     let body = new FormData();
-    body.append('_title', title);
-    body.append('_content', content);
+    body.append('_title', form.titleInputControl);
+    body.append('_content', form.contentInputControl);
     body.append('_image', image);
     return this.http
       .post<resDataDTO>(
