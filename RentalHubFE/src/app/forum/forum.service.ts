@@ -16,7 +16,7 @@ export class ForumService {
     let queryParams = new HttpParams()
       .append('limit', limit)
       .append('page', page);
-    if (status) {
+    if (status !== null) {
       queryParams = queryParams.append('status', status);
     }
     return this.http

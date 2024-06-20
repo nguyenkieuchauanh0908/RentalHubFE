@@ -13,8 +13,9 @@
   <div
     class="flex flex-col col-span-12 lg:col-span-7 mt-2.5 bg-white-background shadow-md rounded-md text-center"
   >
+    <!-- Avatar -->
     <div
-      class="relative bg-cover w-full h-64"
+      class="relative bg-cover w-full h-52"
       style="background-image: url('../../../assets/images/background_3.jpg')"
     >
       <!-- Avatar - name - edit avatar -->
@@ -22,7 +23,7 @@
       <div class="absolute bottom-2 left-6 gap-2">
         <div class="flex relative">
           <img
-            src="../../../assets/images/profile.png"
+            src="{{ this.currentUser?._avatar }}"
             class="w-12 h-12 rounded-full cursor-pointer"
           />
           <mat-icon
@@ -33,7 +34,10 @@
             >edit</mat-icon
           >
           <div class="flex flex-col relative ml-2 top-2 align-middle text-left">
-            <span class="text-lg font-bold text-white">Lâm Hoàng Duyên</span>
+            <span class="text-lg font-bold text-white"
+              >{{ this.currentUser?._fname }}
+              {{ this.currentUser?._lname }}</span
+            >
           </div>
         </div>
       </div>
@@ -46,6 +50,8 @@
         >edit</mat-icon
       >
     </div>
+    <!-- Post new -->
+    <!-- Posts -->
     <div
       #socialPostContainer
       class="scroll-container scroll-smooth scrollbar-hide min-h-screen"
@@ -53,9 +59,13 @@
       <div *ngFor="let post of this.socialPostsToDisplay">
         <app-forum-post [post]="post"></app-forum-post>
       </div>
+      <span class="mb-6" *ngIf="this.socialPostsToDisplay"
+        >Bạn đã xem hết các bài viết nào</span
+      >
+      <span class="mt-6" *ngIf="!this.socialPostsToDisplay"
+        >Bạn không có bài viết nào</span
+      >
     </div>
-
-    <span class="mb-6">Bạn đã xem hết các bài viết!</span>
   </div>
   <!-- Billboard -->
   <div

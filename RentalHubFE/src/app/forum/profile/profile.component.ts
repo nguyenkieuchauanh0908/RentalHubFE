@@ -18,6 +18,7 @@ import {
 } from 'rxjs';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { ForumService } from '../forum.service';
+import { User } from 'src/app/auth/user.model';
 
 @Component({
   selector: 'app-profile',
@@ -33,12 +34,13 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   isLoading = false;
   initialized: boolean = false;
   $destroy: Subject<Boolean> = new Subject();
+  currentUser: User | null = null;
   isAuthenticated: boolean = false;
   socialPostsToDisplay: any[] | null = null;
   currentPage: number = 1;
   pageLimit: number = 5;
   totalPages: number = 0;
-  currentPostStatus: number | null = null;
+  currentPostStatus: number | null = 0;
 
   constructor(
     private forumService: ForumService,
@@ -47,7 +49,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     private renderer: Renderer2
   ) {}
   ngAfterViewInit(): void {
-    console.log('forum-home component ngAfterViewInit');
+    console.log('forum-profile component ngAfterViewInit');
     setTimeout(() => {
       this.initializeScrollEvent();
     }, 100);
@@ -57,6 +59,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('ngOnInit called');
     this.isLoading = true;
     this.currentScrollTopPosition = 0;
+    this.currentPostStatus = 0;
     this.initialized = false;
     this.moment = moment;
     this.moment.locale('vn');
@@ -66,6 +69,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((user) => {
         console.log('Authentication status checked');
         this.isAuthenticated = !!user;
+        this.currentUser = user;
         if (this.isAuthenticated) {
           console.log('User is authenticated');
           this.loadSocialPosts();
@@ -82,36 +86,43 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadSocialPosts() {
+    console.log('loading social posts');
+    this.currentPostStatus = 0;
     this.isLoading = true;
     this.forumService
       .getSocialPosts(this.currentPage, this.pageLimit, this.currentPostStatus)
       .pipe(takeUntil(this.$destroy))
-      .subscribe((res) => {
-        if (res.data) {
-          this.isLoading = false;
-          this.currentPage = res.pagination.page;
-          this.totalPages = res.pagination.total;
-          if (!this.socialPostsToDisplay) {
-            this.socialPostsToDisplay = res.data;
-          } else {
-            this.socialPostsToDisplay = this.socialPostsToDisplay.concat(
-              res.data
-            );
-          }
-          setTimeout(() => {
-            if (this.currentPage < this.totalPages) {
-              console.log('Maintain scroll position');
-              this.renderer.setProperty(
-                this.socialPostContainer.nativeElement,
-                'scrollTop',
-                this.currentScrollTopPosition
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.isLoading = false;
+            this.currentPage = res.pagination.page;
+            this.totalPages = res.pagination.total;
+            if (!this.socialPostsToDisplay) {
+              this.socialPostsToDisplay = res.data;
+            } else {
+              this.socialPostsToDisplay = this.socialPostsToDisplay.concat(
+                res.data
               );
-              this.currentScrollTopPosition =
-                this.socialPostContainer.nativeElement.scrollTop + 3000;
             }
-          }, 100);
+            setTimeout(() => {
+              if (this.currentPage < this.totalPages) {
+                console.log('Maintain scroll position');
+                this.renderer.setProperty(
+                  this.socialPostContainer.nativeElement,
+                  'scrollTop',
+                  this.currentScrollTopPosition
+                );
+                this.currentScrollTopPosition =
+                  this.socialPostContainer.nativeElement.scrollTop + 3000;
+              }
+            }, 100);
+          }
+        },
+        (err) => {
+          this.isLoading = false;
         }
-      });
+      );
   }
 
   initializeScrollEvent() {
