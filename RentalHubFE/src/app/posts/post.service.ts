@@ -186,7 +186,7 @@ export class PostService {
     console.log(form.city);
     let body = new FormData();
     body.append('_title', form.titleInputControl);
-    body.append('_desc', form.descInputControlsc);
+    body.append('_desc', form.descInputControl);
     body.append('_content', form.contentInputControl);
     body.append('_street', form.streetInputControl);
     body.append('_district', form.districtInputControl);

@@ -1,6 +1,22 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { PostService } from 'src/app/posts/post.service';
-import { Subscription, Observable, interval, map, startWith } from 'rxjs';
+import {
+  Subscription,
+  Observable,
+  interval,
+  map,
+  startWith,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
 import { Tags } from 'src/app/shared/tags/tag.model';
@@ -14,20 +30,46 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
 import { AddressesService } from '../../register-address/addresses.service';
 import { _filterForStringOptions } from '../../posts-edit/posts-edit.component';
+import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor';
 
 @Component({
   selector: 'app-post-edit-dialog',
   templateUrl: './post-edit-dialog.component.html',
   styleUrls: ['./post-edit-dialog.component.scss'],
 })
-export class PostEditDialogComponent implements OnInit {
+export class PostEditDialogComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
+  @ViewChild('postContent')
+  textEditorForPostContent!: RichTextEditorComponent;
+  @ViewChild('contentValue') contentValue!: ElementRef | undefined;
+  postHtmlContent!: string;
+  btnElement!: HTMLElement | null;
+  public customToolbar: Object = {
+    items: [
+      'Bold',
+      'Italic',
+      'Underline',
+      'FontColor',
+      'BackgroundColor',
+      'LowerCase',
+      'UpperCase',
+      'Alignments',
+      'OrderedList',
+      'UnorderedList',
+      'Outdent',
+      'Indent',
+      'Undo',
+      'Redo',
+    ],
+  };
+
   title = 'Chi tiết bài viết';
+  $destroy: Subject<Boolean> = new Subject();
   isLoading: boolean = false;
   color: ThemePalette = 'primary';
   mode: ProgressSpinnerMode = 'determinate';
   value = 100;
-  private getProfileSub!: Subscription;
-  private getPostHistorySub!: Subscription;
   profile!: User | null;
   currentUid!: string | null;
   myProfile!: User | null;
@@ -88,6 +130,11 @@ export class PostEditDialogComponent implements OnInit {
     private addressesService: AddressesService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
+  ngOnDestroy(): void {
+    this.$destroy.next(false);
+    this.$destroy.unsubscribe();
+  }
+  ngAfterViewInit(): void {}
 
   ngOnInit(): void {
     this.currentPost = this.data;
@@ -159,7 +206,8 @@ export class PostEditDialogComponent implements OnInit {
     //   this.selectedFiles
     // );
     this.notifierService.hideAll();
-    if (this.selectedFiles && this.selectedTags) {
+    if (this.selectedTags.length > 0 && this.updatedFiles) {
+      console.log('🚀 ~ onSubmitPost ~ this.selectedTags:', this.selectedTags);
       this.postService
         .updatePost(
           this.postEditForm.value,
@@ -168,6 +216,7 @@ export class PostEditDialogComponent implements OnInit {
           this.selectedTags,
           this.data._id
         )
+        .pipe(takeUntil(this.$destroy))
         .subscribe(
           (res) => {
             if (res.data) {

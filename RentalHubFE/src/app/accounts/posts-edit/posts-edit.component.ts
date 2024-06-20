@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription, map, startWith, tap } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,6 +13,7 @@ import { PublicApiServiceService } from 'src/app/shared/public-api-service.servi
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
 import { AddressesService } from '../register-address/addresses.service';
+import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor';
 
 export const _filter = (
   optionsToFilter: PublicAPIData[],
@@ -40,6 +41,11 @@ export const _filterForStringOptions = (
   styleUrls: ['./posts-edit.component.scss'],
 })
 export class PostsEditComponent implements OnInit, OnDestroy {
+  @ViewChild('postContent')
+  textEditorForPostContent!: RichTextEditorComponent;
+  postHtmlContent!: string;
+  btnElement!: HTMLElement | null;
+
   isLoading = false;
   isHost: boolean = false;
   myProfile!: User | null;
@@ -56,6 +62,25 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   addressOptions: String[] = new Array<string>();
   filteredAddressOptions!: Observable<String[]> | undefined;
+
+  public customToolbar: Object = {
+    items: [
+      'Bold',
+      'Italic',
+      'Underline',
+      'FontColor',
+      'BackgroundColor',
+      'LowerCase',
+      'UpperCase',
+      'Alignments',
+      'OrderedList',
+      'UnorderedList',
+      'Outdent',
+      'Indent',
+      'Undo',
+      'Redo',
+    ],
+  };
 
   postEditForm = this.formBuilder.group({
     titleInputControl: ['', Validators.required],
@@ -139,8 +164,11 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   onSubmitPost() {
     this.isLoading = true;
-    console.log('on submiting post ...');
-    console.log('Form data: ', this.postEditForm.value);
+    // this.postHtmlContent = this.textEditorForPostContent.getHtml();
+    // this.postEditForm.patchValue({
+    //   contentInputControl: this.postHtmlContent,
+    // });
+    console.log('on submiting post ...Form data: ', this.postEditForm.value);
     console.log(
       '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
       this.selectedTags

@@ -24,6 +24,11 @@ import { ManageAddressesComponent } from './manage-addresses/manage-addresses.co
 import { AddressDetailComponent } from './manage-addresses/address-detail/address-detail.component';
 import { ManageIdentityComponent } from './manage-identity/manage-identity.component';
 import { IdentityUpdateDialogComponent } from './manage-identity/identity-update-dialog/identity-update-dialog.component';
+import {
+  ToolbarService,
+  HtmlEditorService,
+  RichTextEditorModule,
+} from '@syncfusion/ej2-angular-richtexteditor';
 
 @NgModule({
   declarations: [
@@ -54,6 +59,8 @@ import { IdentityUpdateDialogComponent } from './manage-identity/identity-update
     AccountRoutingModule,
     SharedModule,
     PostingHistoryComponent,
+    RichTextEditorModule,
   ],
+  providers: [ToolbarService, HtmlEditorService],
 })
 export class AccountsModule {}

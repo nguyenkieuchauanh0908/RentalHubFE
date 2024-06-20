@@ -84,7 +84,7 @@
           </mat-error>
         </mat-form-field>
         <!-- Content  -->
-        <mat-form-field class="w-full h-96">
+        <!-- <mat-form-field class="w-full h-96">
           <mat-label>Nội dung chính</mat-label>
           <input
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
@@ -103,7 +103,23 @@
           >
             Thông tin <strong>bắt buộc</strong>
           </mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
+
+        <!-- Content  -->
+        <mat-label>Nội dung chính</mat-label>
+        <ejs-richtexteditor
+          #fromRTE
+          formControlName="contentInputControl"
+          [toolbarSettings]="customToolbar"
+          #postContent
+        >
+          <!-- <ng-template #valueTemplate>
+            <p></p>
+          </ng-template> -->
+        </ejs-richtexteditor>
+        <mat-error *ngIf="!this.postHtmlContent">
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
 
         <!-- Address -->
         <mat-form-field class="w-full">

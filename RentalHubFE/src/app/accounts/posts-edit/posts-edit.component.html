@@ -75,7 +75,7 @@
           </mat-error>
         </mat-form-field>
         <!-- Content  -->
-        <mat-form-field class="w-full h-96">
+        <!-- <mat-form-field class="w-full h-96">
           <mat-label>Nội dung chính</mat-label>
           <input
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
@@ -93,7 +93,22 @@
           >
             Thông tin <strong>bắt buộc</strong>
           </mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
+        <!-- Content  -->
+        <mat-label>Nội dung chính</mat-label>
+        <ejs-richtexteditor
+          #fromRTE
+          formControlName="contentInputControl"
+          [toolbarSettings]="customToolbar"
+          #postContent
+        >
+          <ng-template #contentValue>
+            <p></p>
+          </ng-template>
+        </ejs-richtexteditor>
+        <mat-error *ngIf="!this.postHtmlContent">
+          Thông tin <strong>bắt buộc</strong>
+        </mat-error>
 
         <!-- Address -->
         <mat-form-field class="w-full">
@@ -107,7 +122,7 @@
           />
           <mat-error
             *ngIf="
-              this.postEditForm.controls.addressInputControl.hasError(
+              this.postEditForm.controls.contentInputControl.hasError(
                 'required'
               )
             "
