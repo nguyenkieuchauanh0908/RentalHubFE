@@ -21,7 +21,9 @@ import { ForumService } from '../forum.service';
   styleUrls: ['./forum-post.component.scss'],
 })
 export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('contentToDisplay') contentToDisplay: ElementRef | undefined;
+  @ViewChild('socialContentToDisplay') socialContentToDisplay:
+    | ElementRef
+    | undefined;
   @Input() post: any;
   $destroy: Subject<Boolean> = new Subject();
   isAuthenticated: boolean = false;
@@ -29,7 +31,7 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(public dialog: MatDialog, private router: Router) {}
   ngAfterViewInit(): void {
-    this.contentToDisplay!.nativeElement.innerHTML = this.post._content;
+    this.socialContentToDisplay!.nativeElement.innerHTML = this.post._content;
   }
   ngOnInit(): void {}
 

@@ -50,16 +50,9 @@
       {{ this.post._title }}
     </span>
     <div
-      #contentToDisplay
+      #socialContentToDisplay
       [ngClass]="seeMore ? 'line-clamp-none' : 'line-clamp-4'"
     ></div>
-    <!-- <span
-     
-      
-      
-    >
-      {{ this.post._content }}
-    </span> -->
     <span
       *ngIf="!seeMore"
       class="font-medium text-blue-500 cursor-pointer"
