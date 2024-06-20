@@ -18,7 +18,11 @@ const routes: Routes = [
         component: ProfileComponent,
         canActivate: [AuthGuard],
       },
-      //Host Messenger
+      {
+        path: '',
+        redirectTo: '/home',
+        pathMatch: 'full',
+      },
     ],
   },
 ];
