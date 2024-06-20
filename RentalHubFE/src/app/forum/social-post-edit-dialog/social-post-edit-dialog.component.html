@@ -38,15 +38,21 @@
         <!-- Content  -->
         <mat-label>Nội dung chính</mat-label>
         <ejs-richtexteditor
+          #fromRTE
+          formControlName="contentInputControl"
           [toolbarSettings]="customToolbar"
           #postContent
           class="mt-12"
         >
-          <ng-template #valueTemplate>
+          <!-- <ng-template #valueTemplate>
             <p></p>
-          </ng-template>
+          </ng-template> -->
         </ejs-richtexteditor>
-        <mat-error *ngIf="!this.postHtmlContent">
+        <mat-error
+          *ngIf="
+            this.postEditForm.controls.contentInputControl.hasError('required')
+          "
+        >
           Thông tin <strong>bắt buộc</strong>
         </mat-error>
         <!-- <div #div></div> -->

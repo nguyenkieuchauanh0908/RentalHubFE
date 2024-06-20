@@ -80,6 +80,7 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
       this.postEditForm.patchValue({
         idInputControl: this.currentPost._id,
         titleInputControl: this.currentPost._title,
+        contentInputControl: this.currentPost._content,
       });
     } else {
       this.title = 'Tạo bài viết';
@@ -90,32 +91,33 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
   }
 
   saveSocialPost() {
-    this.postHtmlContent = this.textEditorForPostContent.getHtml();
-    this.postEditForm.patchValue({
-      contentInputControl: this.postHtmlContent,
-    });
+    console.log(this.postEditForm.value);
+    // this.postHtmlContent = this.textEditorForPostContent.getHtml();
+    // this.postEditForm.patchValue({
+    //   contentInputControl: this.postHtmlContent,
+    // });
     console.log('On saving social post...', this.postEditForm.value);
-    this.isLoading = true;
-    if (this.selectedFiles) {
-      //Gọi API
-      this.forumService
-        .createSocialPost(this.postEditForm.value, this.selectedFiles[0])
-        .pipe(takeUntil(this.$destroy))
-        .subscribe(
-          (res) => {
-            if (res.data) {
-              this.notifierService.notify('success', 'Tạo bài viết thành công');
-              this.isLoading = false;
-            }
-          },
-          (err) => {
-            this.notifierService.notify(
-              'error',
-              'Đã có lỗi xảy ra, vui lòng thử lại sau!'
-            );
-          }
-        );
-    }
+    // this.isLoading = true;
+    // if (this.selectedFiles) {
+    //   //Gọi API
+    //   this.forumService
+    //     .createSocialPost(this.postEditForm.value, this.selectedFiles[0])
+    //     .pipe(takeUntil(this.$destroy))
+    //     .subscribe(
+    //       (res) => {
+    //         if (res.data) {
+    //           this.notifierService.notify('success', 'Tạo bài viết thành công');
+    //           this.isLoading = false;
+    //         }
+    //       },
+    //       (err) => {
+    //         this.notifierService.notify(
+    //           'error',
+    //           'Đã có lỗi xảy ra, vui lòng thử lại sau!'
+    //         );
+    //       }
+    //     );
+    // }
   }
 
   selectFiles(event: any): void {
