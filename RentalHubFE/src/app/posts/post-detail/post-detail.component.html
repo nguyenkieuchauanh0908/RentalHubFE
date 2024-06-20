@@ -174,12 +174,25 @@
       <app-slider [sliderItems]="post._images"></app-slider>
 
       <!-- Main content -->
-      <div class="mt-4">
-        <p class="text-base font-medium">Mô tả chi tiết</p>
-        <p>
-          {{ post._content }}
-        </p>
-      </div>
+      <div
+        #contentToDisplay
+        class="mt-4"
+        [ngClass]="seeMore ? 'line-clamp-none' : 'line-clamp-4'"
+      ></div>
+      <span
+        *ngIf="!seeMore"
+        class="font-medium text-blue-500 cursor-pointer"
+        (click)="seeMoreContentClick()"
+      >
+        Xem thêm
+      </span>
+      <span
+        *ngIf="seeMore"
+        class="font-medium text-blue-500 cursor-pointer"
+        (click)="seeMoreContentClick()"
+      >
+        Ẩn bớt
+      </span>
 
       <!-- Map -->
       <!-- <div class="relative">

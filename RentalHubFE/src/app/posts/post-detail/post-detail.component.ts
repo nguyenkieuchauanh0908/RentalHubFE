@@ -1,9 +1,11 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   OnChanges,
   OnDestroy,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { PostItem } from '../posts-list/post-item/post-item.model';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -25,9 +27,11 @@ import { GoogleMapsModule, MapGeocoder } from '@angular/google-maps';
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss'],
 })
-export class PostDetailComponent implements OnInit, OnDestroy {
+export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('contentToDisplay') contentToDisplay: ElementRef | undefined;
   isLoading = false;
   error: string = '';
+  seeMore: boolean = false;
   stateData: any;
   post!: PostItem;
   host: any;
@@ -47,81 +51,107 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private geocoder: MapGeocoder
-  ) {
-    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
-      this.favoredPosts = favourites;
-    });
-    this.postService.getCurrentFavoritesId.subscribe((favorites) => {
-      this.favoredPosts = favorites;
-    });
+  ) {}
+  ngAfterViewInit(): void {
+    setTimeout(() => this.attachingInnerHtmlContent(), 100);
+  }
+
+  ngOnInit() {
+    this.postService.getCurrentFavoritesId
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((favourites) => {
+        this.favoredPosts = favourites;
+      });
+    this.postService.getCurrentFavoritesId
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((favorites) => {
+        this.favoredPosts = favorites;
+      });
     if (this.post && this.favoredPosts) {
       this.isFavoured = this.favoredPosts.some((pid) => pid === this.post._id);
     }
     this.id = '';
     this.relatedPosts = [];
     this.isLoading = true;
-  }
+    this.route.params
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((params: Params) => {
+        this.id = params['id'];
+        this.postService
+          .getPostItem(this.id)
+          .pipe(takeUntil(this.$destroy))
+          .subscribe(
+            (res) => {
+              this.post = res.data;
+              // this.geocoder
+              //   .geocode({
+              //     address: this.post.roomAddress,
+              //   })
+              //   .subscribe(({ results }) => {
+              //     console.log(results);
+              //     if (results.length > 0) {
+              //       const location: any = results[0].geometry.location;
+              //       // Render map with obtained coordinates
+              //       this.center = {
+              //         lat: location.lat(),
+              //         lng: location.lng(),
+              //       };
+              //     } else {
+              //       console.error('No results found');
+              //     }
+              //   });
+              this.route.data
+                .pipe(takeUntil(this.$destroy))
+                .subscribe((data) => {
+                  this.favoredPosts = data['favoritesPosts'];
+                  if (this.post && this.favoredPosts) {
+                    this.isFavoured = this.favoredPosts.some(
+                      (pid) => pid === this.post._id
+                    );
+                  }
+                });
 
-  ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      this.id = params['id'];
-      this.postService.getPostItem(this.id).subscribe(
-        (res) => {
-          this.post = res.data;
-          this.geocoder
-            .geocode({
-              address: this.post.roomAddress,
-            })
-            .subscribe(({ results }) => {
-              console.log(results);
-              if (results.length > 0) {
-                const location: any = results[0].geometry.location;
-                // Render map with obtained coordinates
-                this.center = {
-                  lat: location.lat(),
-                  lng: location.lng(),
-                };
-              } else {
-                console.error('No results found');
-              }
-            });
-          this.route.data.subscribe((data) => {
-            this.favoredPosts = data['favoritesPosts'];
-            if (this.post && this.favoredPosts) {
-              this.isFavoured = this.favoredPosts.some(
-                (pid) => pid === this.post._id
-              );
+              //Gọi API get related posts
+              this.postService
+                .getRelatedPosts(this.post._id, 1, 5)
+                .pipe(takeUntil(this.$destroy))
+                .subscribe((res) => {
+                  this.relatedPosts = res.data;
+                });
+              this.host = {
+                hostId: this.post?.authorId,
+                fname: this.post?.authorFName,
+                lname: this.post?.authorLName,
+                address: this.post?.addressAuthor,
+                phone: this.post?.phoneNumber,
+                avatar: this.post?.avatarAuthor,
+              };
+              this.isLoading = false;
+            },
+
+            (errorMsg) => {
+              this.isLoading = false;
+              this.error = errorMsg;
+              console.log(this.error);
+              this.notifierService.notify('error', errorMsg);
             }
-          });
-
-          //Gọi API get related posts
-          this.postService
-            .getRelatedPosts(this.post._id, 1, 5)
-            .subscribe((res) => {
-              this.relatedPosts = res.data;
-            });
-          this.host = {
-            hostId: this.post?.authorId,
-            fname: this.post?.authorFName,
-            lname: this.post?.authorLName,
-            address: this.post?.addressAuthor,
-            phone: this.post?.phoneNumber,
-            avatar: this.post?.avatarAuthor,
-          };
-          this.isLoading = false;
-        },
-
-        (errorMsg) => {
-          this.isLoading = false;
-          this.error = errorMsg;
-          console.log(this.error);
-          this.notifierService.notify('error', errorMsg);
-        }
-      );
-    });
+          );
+      });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.$destroy.next(false);
+    this.$destroy.unsubscribe();
+  }
+
+  attachingInnerHtmlContent() {
+    if (this.contentToDisplay) {
+      this.contentToDisplay.nativeElement.innerHTML = this.post._content;
+    } else {
+      console.log('contentToDisplay is not ready yet');
+      setTimeout(() => this.attachingInnerHtmlContent(), 100);
+    }
+  }
 
   addPostToFavorites(postId: String) {
     this.isFavoured = !this.isFavoured;
@@ -190,5 +220,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           this.notifierService.notify('error', errorMsg);
         }
       );
+  }
+
+  seeMoreContentClick() {
+    this.seeMore = !this.seeMore;
   }
 }
