@@ -1,4 +1,4 @@
-<div *ngIf="this.post" class="p-6 pb-12">
+<div *ngIf="this.post && currentUser" class="p-6 pb-12">
   <!-- Post header (Creater - Time - Contact - Report) -->
   <div class="flex justify-between">
     <!-- Creater & time -->
@@ -20,7 +20,7 @@
       </div>
     </div>
     <!-- Contact & Report -->
-    <div>
+    <div *ngIf="this.post._authorId !== this.currentUser?._id">
       <mat-icon
         matRipple
         [matRippleCentered]="true"
@@ -33,7 +33,7 @@
       >
 
       <mat-menu #menu="matMenu" style="width: fit-content">
-        <button mat-menu-item>
+        <button mat-menu-item (click)="addToContactAndGoToChatBot()">
           <mat-icon>send</mat-icon>
           <span class="text-primary-text-color mb-0 text-sm">Liên hệ</span>
         </button>
