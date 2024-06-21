@@ -1,9 +1,11 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   Inject,
   OnDestroy,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { NotifierService } from 'angular-notifier';
@@ -23,6 +25,7 @@ import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor'
 export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
   @ViewChild('postContent')
   textEditorForPostContent!: RichTextEditorComponent;
+  @Output() updateSucess: EventEmitter<any> = new EventEmitter();
   postHtmlContent!: string;
   btnElement!: HTMLElement | null;
 
@@ -30,9 +33,9 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
   isLoading: boolean = false;
   $destroy: Subject<boolean> = new Subject();
   error: string = '';
-  currentPost!: any;
+  currentPost: any | null = null;
 
-  selectedFiles?: FileList;
+  selectedFiles?: FileList | null = null;
   selectedFileNames: string[] = [];
   message: string[] = [];
   previews: string[] = [];
@@ -82,6 +85,7 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
         titleInputControl: this.currentPost._title,
         contentInputControl: this.currentPost._content,
       });
+      this.previews.push(this.currentPost._images);
     } else {
       this.title = 'Tạo bài viết';
     }
@@ -91,33 +95,71 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
   }
 
   saveSocialPost() {
-    console.log(this.postEditForm.value);
-    // this.postHtmlContent = this.textEditorForPostContent.getHtml();
-    // this.postEditForm.patchValue({
-    //   contentInputControl: this.postHtmlContent,
-    // });
+    console.log(this.postEditForm, this.currentPost);
     console.log('On saving social post...', this.postEditForm.value);
-    // this.isLoading = true;
-    // if (this.selectedFiles) {
-    //   //Gọi API
-    //   this.forumService
-    //     .createSocialPost(this.postEditForm.value, this.selectedFiles[0])
-    //     .pipe(takeUntil(this.$destroy))
-    //     .subscribe(
-    //       (res) => {
-    //         if (res.data) {
-    //           this.notifierService.notify('success', 'Tạo bài viết thành công');
-    //           this.isLoading = false;
-    //         }
-    //       },
-    //       (err) => {
-    //         this.notifierService.notify(
-    //           'error',
-    //           'Đã có lỗi xảy ra, vui lòng thử lại sau!'
-    //         );
-    //       }
-    //     );
-    // }
+    this.isLoading = true;
+    if (this.selectedFiles) {
+      this.savePostWithImageFile(this.selectedFiles[0]);
+    } else {
+      this.savePostWithImageFile(null);
+    }
+  }
+
+  savePostWithImageFile(image: File | null) {
+    //Create
+    if (!this.currentPost) {
+      this.forumService
+        .createSocialPost(this.postEditForm.value, image!)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.notifierService.notify('success', 'Tạo bài viết thành công');
+              this.isLoading = false;
+            }
+          },
+          (err) => {
+            this.notifierService.notify(
+              'error',
+              'Đã có lỗi xảy ra, vui lòng thử lại sau!'
+            );
+          }
+        );
+    }
+    //Update
+    else {
+      console.log('Update post...', this.postEditForm.value.idInputControl);
+      this.forumService
+        .updateSocialPost(this.currentPost._id, this.postEditForm.value, image)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.notifierService.notify(
+                'success',
+                'Cập nhật bài viết thành công'
+              );
+
+              let updatedPost: any = {
+                _title: this.postEditForm.value.titleInputControl,
+                _content: this.postEditForm.value.contentInputControl,
+                _images: null,
+              };
+              if (this.previews) {
+                updatedPost._images = this.previews[0];
+              }
+              this.updateSucess.emit(updatedPost);
+              this.isLoading = false;
+            }
+          },
+          (err) => {
+            this.notifierService.notify(
+              'error',
+              'Đã có lỗi xảy ra, vui lòng thử lại sau!'
+            );
+          }
+        );
+    }
   }
 
   selectFiles(event: any): void {
@@ -148,14 +190,4 @@ export class SocialPostEditDialogComponent implements OnDestroy, OnInit {
     this.message = [];
     this.isLoading = true;
   }
-
-  // getFormattedContent() {
-  //   this.btnElement = document.getElementById('button');
-  //   this.postHtmlContent = this.textEditorForPostContent.getHtml();
-  //   console.log(
-  //     '🚀 ~ PostsComponent ~ getFormattedContent ~ this.postHtmlContent:',
-  //     this.postHtmlContent
-  //   );
-  //   this.div!.nativeElement.innerHTML = this.postHtmlContent;
-  // }
 }

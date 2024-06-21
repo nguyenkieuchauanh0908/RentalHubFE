@@ -68,4 +68,36 @@ export class ForumService {
         })
       );
   }
+
+  updateSocialPost(pId: string, form: any, image: File | null) {
+    console.log(form);
+    const headers = new HttpHeaders().set(
+      'content-type',
+      'multipart/form-data'
+    );
+    let body = new FormData();
+    body.append('_id', pId!);
+    body.append('_title', form.titleInputControl!);
+    body.append('_content', form.contentInputControl!);
+    if (image !== null) {
+      body.append('_image', image);
+    }
+
+    return this.http
+      .patch<resDataDTO>(
+        environment.baseUrl + 'social/update-social-post',
+        body,
+        {
+          headers: headers,
+        }
+      )
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            console.log('Update social post successfully...!');
+          }
+        })
+      );
+  }
 }

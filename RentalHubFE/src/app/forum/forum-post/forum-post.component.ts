@@ -20,6 +20,7 @@ import {
 } from 'src/app/shared/chat-bot/chat-bot.service';
 import { User } from 'src/app/auth/user.model';
 import { NotifierService } from 'angular-notifier';
+import { SocialPostEditDialogComponent } from '../social-post-edit-dialog/social-post-edit-dialog.component';
 
 @Component({
   selector: 'app-forum-post',
@@ -131,6 +132,26 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   editPost() {
     console.log('On editing post...');
+    const dialogRef = this.dialog.open(SocialPostEditDialogComponent, {
+      width: '800px',
+      data: this.post,
+    });
+    const sub = dialogRef.componentInstance.updateSucess.subscribe(
+      (updatedPost) => {
+        console.log(
+          '🚀 ~ ForumPostComponent ~ editPost ~ updatedPost:',
+          updatedPost
+        );
+        this.post._title = updatedPost._title;
+        this.post._content = updatedPost._content;
+        if (updatedPost._images) {
+          this.post._images = updatedPost._images;
+        }
+      }
+    );
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
   }
 
   updateStatusTo(status: number) {
