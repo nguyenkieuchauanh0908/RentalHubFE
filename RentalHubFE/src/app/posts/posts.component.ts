@@ -15,7 +15,13 @@ export class PostsComponent implements OnInit, OnDestroy {
   isAuthenticated: boolean = false;
   constructor(private accountService: AccountService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        this.isAuthenticated = !!user;
+      });
+  }
   ngOnDestroy(): void {
     this.$destroy.next(false);
     this.$destroy.unsubscribe();
