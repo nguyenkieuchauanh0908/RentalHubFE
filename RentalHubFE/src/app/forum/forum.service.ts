@@ -12,12 +12,20 @@ export class ForumService {
   //0: Đang đăng, 1: Khóa (do chủ bài đăng), 2: Bị report (đã được duyệt)
   constructor(private http: HttpClient) {}
 
-  getSocialPosts(page: number, limit: number, status: number | null) {
+  getSocialPosts(
+    page: number,
+    limit: number,
+    status: number | null,
+    uId: string | null
+  ) {
     let queryParams = new HttpParams()
       .append('limit', limit)
       .append('page', page);
     if (status !== null) {
       queryParams = queryParams.append('status', status);
+    }
+    if (uId !== null) {
+      queryParams = queryParams.append('userId', uId);
     }
     return this.http
       .get<resDataDTO>(environment.baseUrl + 'social', {

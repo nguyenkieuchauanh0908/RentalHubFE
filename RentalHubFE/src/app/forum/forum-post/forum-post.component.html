@@ -2,7 +2,7 @@
   <!-- Post header (Creater - Time - Contact - Report) -->
   <div class="flex justify-between">
     <!-- Creater & time -->
-    <div class="flex gap-2">
+    <div class="flex gap-2 cursor-pointer" (click)="seeProfile()">
       <img
         *ngIf="this.post._authorAvatar"
         src="{{ this.post._authorAvatar }}"
@@ -19,7 +19,7 @@
         }}</span>
       </div>
     </div>
-    <!-- Contact & Report -->
+    <!-- Contact & Report for viewers -->
     <div *ngIf="this.post._authorId !== this.currentUser?._id">
       <mat-icon
         matRipple
@@ -40,6 +40,45 @@
         <button mat-menu-item>
           <mat-icon>report</mat-icon>
           <span class="text-primary-text-color mb-0 text-sm">Báo cáo</span>
+        </button>
+      </mat-menu>
+    </div>
+    <!-- Edit - Public - Private for owners-->
+    <div *ngIf="this.post._authorId === this.currentUser?._id">
+      <mat-icon
+        matRipple
+        [matRippleCentered]="true"
+        [matRippleUnbounded]="true"
+        class="cursor-pointer"
+        [ngStyle]="{ color: 'black' }"
+        [matMenuTriggerFor]="menu"
+        aria-label="menu to choose"
+        >more_vert</mat-icon
+      >
+      <mat-menu #menu="matMenu" style="width: fit-content">
+        <button mat-menu-item (click)="editPost()">
+          <mat-icon>edit</mat-icon>
+          <span class="text-primary-text-color mb-0 text-sm">Chỉnh sửa</span>
+        </button>
+        <button
+          *ngIf="this.post._status === 1"
+          mat-menu-item
+          (click)="updateStatusTo(0)"
+        >
+          <mat-icon>public</mat-icon>
+          <span class="text-primary-text-color mb-0 text-sm"
+            >Chuyển về công khai</span
+          >
+        </button>
+        <button
+          *ngIf="this.post._status === 0"
+          mat-menu-item
+          (click)="updateStatusTo(1)"
+        >
+          <mat-icon>lock</mat-icon>
+          <span class="text-primary-text-color mb-0 text-sm"
+            >Chuyển về riêng tư</span
+          >
         </button>
       </mat-menu>
     </div>

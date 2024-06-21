@@ -85,7 +85,12 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
   loadSocialPosts() {
     this.isLoading = true;
     this.forumService
-      .getSocialPosts(this.currentPage, this.pageLimit, this.currentPostStatus)
+      .getSocialPosts(
+        this.currentPage,
+        this.pageLimit,
+        this.currentPostStatus,
+        null
+      )
       .pipe(takeUntil(this.$destroy))
       .subscribe((res) => {
         if (res.data) {

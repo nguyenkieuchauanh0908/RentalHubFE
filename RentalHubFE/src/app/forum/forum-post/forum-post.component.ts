@@ -128,4 +128,16 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
   }
+
+  editPost() {
+    console.log('On editing post...');
+  }
+
+  updateStatusTo(status: number) {
+    console.log('On update status to', status);
+  }
+
+  seeProfile() {
+    this.router.navigate(['/forum/profile', this.post._authorId]);
+  }
 }

@@ -19,6 +19,7 @@ import {
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { ForumService } from '../forum.service';
 import { User } from 'src/app/auth/user.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -41,12 +42,14 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   pageLimit: number = 5;
   totalPages: number = 0;
   currentPostStatus: number | null = 0;
+  urlProfileId: string | null = null;
 
   constructor(
     private forumService: ForumService,
     private accountService: AccountService,
     public dialog: MatDialog,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private route: ActivatedRoute
   ) {}
   ngAfterViewInit(): void {
     console.log('forum-profile component ngAfterViewInit');
@@ -64,6 +67,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     this.moment = moment;
     this.moment.locale('vn');
     this.currentPostStatus = null;
+    this.urlProfileId = this.route.snapshot.paramMap.get('uId');
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
@@ -72,8 +76,14 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         this.currentUser = user;
         if (this.isAuthenticated) {
           console.log('User is authenticated');
-          this.loadSocialPosts();
-          this.initialized = true;
+          this.route.params.subscribe((params) => {
+            this.urlProfileId = params['uId'];
+            this.socialPostsToDisplay = null;
+            if (this.urlProfileId) {
+              this.loadSocialPosts();
+              this.initialized = true;
+            }
+          });
         }
       });
   }
@@ -89,40 +99,92 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('loading social posts');
     this.currentPostStatus = 0;
     this.isLoading = true;
-    this.forumService
-      .getSocialPosts(this.currentPage, this.pageLimit, this.currentPostStatus)
-      .pipe(takeUntil(this.$destroy))
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.isLoading = false;
-            this.currentPage = res.pagination.page;
-            this.totalPages = res.pagination.total;
-            if (!this.socialPostsToDisplay) {
-              this.socialPostsToDisplay = res.data;
-            } else {
-              this.socialPostsToDisplay = this.socialPostsToDisplay.concat(
-                res.data
-              );
-            }
-            setTimeout(() => {
-              if (this.currentPage < this.totalPages) {
-                console.log('Maintain scroll position');
-                this.renderer.setProperty(
-                  this.socialPostContainer.nativeElement,
-                  'scrollTop',
-                  this.currentScrollTopPosition
+    //Profile owner
+    if (this.urlProfileId === this.currentUser!._id) {
+      //Lấy post có status = 1 và status = 0 của currentUser
+      this.forumService
+        .getSocialPosts(
+          this.currentPage,
+          this.pageLimit,
+          this.currentPostStatus,
+          null
+        )
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.isLoading = false;
+              this.currentPage = res.pagination.page;
+              this.totalPages = res.pagination.total;
+              if (!this.socialPostsToDisplay) {
+                this.socialPostsToDisplay = res.data;
+              } else {
+                this.socialPostsToDisplay = this.socialPostsToDisplay.concat(
+                  res.data
                 );
-                this.currentScrollTopPosition =
-                  this.socialPostContainer.nativeElement.scrollTop + 3000;
               }
-            }, 100);
+              setTimeout(() => {
+                if (this.currentPage < this.totalPages) {
+                  console.log('Maintain scroll position');
+                  this.renderer.setProperty(
+                    this.socialPostContainer.nativeElement,
+                    'scrollTop',
+                    this.currentScrollTopPosition
+                  );
+                  this.currentScrollTopPosition =
+                    this.socialPostContainer.nativeElement.scrollTop + 3000;
+                }
+              }, 100);
+            }
+          },
+          (err) => {
+            this.isLoading = false;
           }
-        },
-        (err) => {
-          this.isLoading = false;
-        }
-      );
+        );
+    }
+    //Viewers
+    else {
+      //Lấy các post có status = 0 của account có uId là urlProfielId
+      this.forumService
+        .getSocialPosts(
+          this.currentPage,
+          this.pageLimit,
+          null,
+          this.urlProfileId
+        )
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.isLoading = false;
+              this.currentPage = res.pagination.page;
+              this.totalPages = res.pagination.total;
+              if (!this.socialPostsToDisplay) {
+                this.socialPostsToDisplay = res.data;
+              } else {
+                this.socialPostsToDisplay = this.socialPostsToDisplay.concat(
+                  res.data
+                );
+              }
+              setTimeout(() => {
+                if (this.currentPage < this.totalPages) {
+                  console.log('Maintain scroll position');
+                  this.renderer.setProperty(
+                    this.socialPostContainer.nativeElement,
+                    'scrollTop',
+                    this.currentScrollTopPosition
+                  );
+                  this.currentScrollTopPosition =
+                    this.socialPostContainer.nativeElement.scrollTop + 3000;
+                }
+              }, 100);
+            }
+          },
+          (err) => {
+            this.isLoading = false;
+          }
+        );
+    }
   }
 
   initializeScrollEvent() {
