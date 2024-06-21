@@ -107,7 +107,10 @@
       Ẩn bớt
     </span>
     <div *ngIf="this.post._images">
-      <img src="{{ this.post._images }}" class="w-full h-full rounded-md" />
+      <img
+        src="{{ this.post._images }}"
+        class="max-w-full max-h-96 rounded-md block ml-auto mr-auto w-1/2"
+      />
     </div>
   </div>
   <!-- Post Footer (Like - Comment) -->
