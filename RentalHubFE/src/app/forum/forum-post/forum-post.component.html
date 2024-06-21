@@ -2,21 +2,40 @@
   <!-- Post header (Creater - Time - Contact - Report) -->
   <div class="flex justify-between">
     <!-- Creater & time -->
-    <div class="flex gap-2 cursor-pointer" (click)="seeProfile()">
+    <div class="flex gap-2 cursor-pointer">
       <img
+        (click)="seeProfile()"
         *ngIf="this.post._authorAvatar"
         src="{{ this.post._authorAvatar }}"
         class="w-8 h-8 rounded-full"
       />
       <div class="flex flex-col text-left">
         <span
+          (click)="seeProfile()"
           *ngIf="this.post._authorName"
           class="font-medium text-black-color"
           >{{ this.post._authorName }}</span
         >
-        <span class="font-normal text-gray-600">{{
-          this.post._postingDateLocal
-        }}</span>
+        <span class="font-normal text-gray-600"
+          >{{ this.post._postingDateLocal
+          }}<mat-icon
+            *ngIf="
+              this.post._status === 0 &&
+              this.post._authorId === this.currentUser._id
+            "
+            [ngStyle]="{ color: 'gray' }"
+            class="relative top-2 ml-2"
+            >public</mat-icon
+          ><mat-icon
+            *ngIf="
+              this.post._status === 1 &&
+              this.post._authorId === this.currentUser._id
+            "
+            [ngStyle]="{ color: 'gray' }"
+            class="relative top-2 ml-2"
+            >lock</mat-icon
+          ></span
+        >
       </div>
     </div>
     <!-- Contact & Report for viewers -->

@@ -16,7 +16,10 @@
     class="grid col-span-12 lg:col-span-7 mt-6 mb-12 bg-white-background shadow-md rounded-md text-center scroll-container scroll-smooth scrollbar-hide"
   >
     <div *ngFor="let post of this.socialPostsToDisplay">
-      <app-forum-post [post]="post"></app-forum-post>
+      <app-forum-post
+        [post]="post"
+        (changePostStatus)="changePostStatus($event)"
+      ></app-forum-post>
     </div>
     <span class="mb-6">Bạn đã xem hết các bài viết!</span>
   </div>
@@ -27,3 +30,4 @@
     <p>Bảng tin</p>
   </div>
 </div>
+<notifier-container></notifier-container>

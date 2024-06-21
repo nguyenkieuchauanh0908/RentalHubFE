@@ -20,6 +20,7 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 import { ForumService } from '../forum.service';
 import { User } from 'src/app/auth/user.model';
 import { ActivatedRoute } from '@angular/router';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-profile',
@@ -49,7 +50,8 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     private accountService: AccountService,
     public dialog: MatDialog,
     private renderer: Renderer2,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notifier: NotifierService
   ) {}
   ngAfterViewInit(): void {
     console.log('forum-profile component ngAfterViewInit');
@@ -107,7 +109,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
           this.currentPage,
           this.pageLimit,
           this.currentPostStatus,
-          null
+          this.urlProfileId
         )
         .pipe(takeUntil(this.$destroy))
         .subscribe(
@@ -228,6 +230,21 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.initialized) {
         this.loadSocialPosts();
       }
+    }
+  }
+
+  changePostStatus($event: { status: number; pId: string }) {
+    console.log('🚀 ~ ForumHomeComponent ~ changePostStatus ~ $event:', $event);
+    if (this.socialPostsToDisplay) {
+      this.socialPostsToDisplay = this.socialPostsToDisplay!.map(
+        (post: any) => {
+          if (post._id === $event.pId) {
+            post._status = $event.status;
+            return post;
+          }
+        }
+      );
+      this.notifier.notify('success', 'Cập nhật trạng thái thành công');
     }
   }
 }

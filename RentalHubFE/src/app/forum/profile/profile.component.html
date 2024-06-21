@@ -57,14 +57,17 @@
       class="scroll-container scroll-smooth scrollbar-hide min-h-screen"
     >
       <div *ngFor="let post of this.socialPostsToDisplay">
-        <app-forum-post [post]="post"></app-forum-post>
+        <app-forum-post
+          [post]="post"
+          (changePostStatus)="changePostStatus($event)"
+        ></app-forum-post>
       </div>
       <span class="mb-6" *ngIf="this.socialPostsToDisplay"
         >Bạn đã xem hết các bài viết nào</span
       >
-      <span class="mt-6" *ngIf="!this.socialPostsToDisplay"
-        >Bạn không có bài viết nào</span
-      >
+      <div class="mt-6 p-2" *ngIf="!this.socialPostsToDisplay">
+        <span>Bạn không có bài viết nào</span>
+      </div>
     </div>
   </div>
   <!-- Billboard -->
@@ -74,3 +77,4 @@
     <p>Bảng tin</p>
   </div>
 </div>
+<notifier-container></notifier-container>

@@ -2,9 +2,11 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -32,6 +34,8 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
     | ElementRef
     | undefined;
   @Input() post: any;
+  @Output() changePostStatus: EventEmitter<{ status: number; pId: string }> =
+    new EventEmitter();
   $destroy: Subject<Boolean> = new Subject();
   isAuthenticated: boolean = false;
   seeMore: boolean = false;
@@ -154,8 +158,9 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  updateStatusTo(status: number) {
-    console.log('On update status to', status);
+  updateStatusTo(updatedStatus: number) {
+    console.log('On update status to', updatedStatus);
+    this.changePostStatus.emit({ status: updatedStatus, pId: this.post._id });
   }
 
   seeProfile() {

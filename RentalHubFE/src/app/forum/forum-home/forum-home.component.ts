@@ -19,6 +19,7 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 import { ForumService } from '../forum.service';
 import 'moment/locale/vi';
 import * as moment from 'moment';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-forum-home',
@@ -45,7 +46,8 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private forumService: ForumService,
     private accountService: AccountService,
     public dialog: MatDialog,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private notifier: NotifierService
   ) {}
   ngAfterViewInit(): void {
     console.log('forum-home component ngAfterViewInit');
@@ -160,6 +162,18 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.currentPage++;
       if (this.initialized) {
         this.loadSocialPosts();
+      }
+    }
+  }
+
+  changePostStatus($event: any) {
+    console.log('🚀 ~ ForumHomeComponent ~ changePostStatus ~ $event:', $event);
+    if ($event.status === 1) {
+      if (this.socialPostContainer) {
+        this.socialPostsToDisplay = this.socialPostsToDisplay!.filter(
+          (post) => post._id !== $event.pId
+        );
+        this.notifier.notify('success', 'Cập nhật trạng thái thành công');
       }
     }
   }
