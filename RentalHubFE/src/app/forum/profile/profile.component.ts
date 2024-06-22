@@ -21,6 +21,7 @@ import { ForumService } from '../forum.service';
 import { User } from 'src/app/auth/user.model';
 import { ActivatedRoute } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
+import { ForumPostModel } from '../forum-post/forum-post.model';
 
 @Component({
   selector: 'app-profile',
@@ -38,7 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   $destroy: Subject<Boolean> = new Subject();
   currentUser: User | null = null;
   isAuthenticated: boolean = false;
-  socialPostsToDisplay: any[] | null = null;
+  socialPostsToDisplay: ForumPostModel[] | null = null;
   currentPage: number = 1;
   pageLimit: number = 5;
   totalPages: number = 0;
@@ -98,12 +99,12 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadSocialPosts() {
-    console.log('loading social posts');
     this.currentPostStatus = 0;
     this.isLoading = true;
     //Profile owner
     if (this.urlProfileId === this.currentUser!._id) {
       //Lấy post có status = 1 và status = 0 của currentUser
+      console.log('loading social posts of owners...');
       this.forumService
         .getSocialPosts(
           this.currentPage,
@@ -147,6 +148,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     //Viewers
     else {
       //Lấy các post có status = 0 của account có uId là urlProfielId
+      console.log('loading social posts for viewers...');
       this.forumService
         .getSocialPosts(
           this.currentPage,
@@ -235,16 +237,22 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   changePostStatus($event: { status: number; pId: string }) {
     console.log('🚀 ~ ForumHomeComponent ~ changePostStatus ~ $event:', $event);
-    if (this.socialPostsToDisplay) {
-      this.socialPostsToDisplay = this.socialPostsToDisplay!.map(
-        (post: any) => {
-          if (post._id === $event.pId) {
-            post._status = $event.status;
+    this.isLoading = true;
+    //Call API to update the status
+    this.forumService.changeSocialPostStatus($event.pId).subscribe((res) => {
+      if (res.data) {
+        this.isLoading = false;
+        this.notifier.notify('success', 'Cập nhật trạng thái thành công');
+        if (this.socialPostsToDisplay) {
+          this.socialPostsToDisplay = this.socialPostsToDisplay!.map((post) => {
+            if (post!._id === $event.pId) {
+              post!._status = $event.status;
+              return post;
+            }
             return post;
-          }
+          });
         }
-      );
-      this.notifier.notify('success', 'Cập nhật trạng thái thành công');
-    }
+      }
+    });
   }
 }

@@ -20,6 +20,7 @@ import { ForumService } from '../forum.service';
 import 'moment/locale/vi';
 import * as moment from 'moment';
 import { NotifierService } from 'angular-notifier';
+import { ForumPostModel } from '../forum-post/forum-post.model';
 
 @Component({
   selector: 'app-forum-home',
@@ -36,7 +37,7 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
   initialized: boolean = false;
   $destroy: Subject<Boolean> = new Subject();
   isAuthenticated: boolean = false;
-  socialPostsToDisplay: any[] | null = null;
+  socialPostsToDisplay: ForumPostModel[] | null = null;
   currentPage: number = 1;
   pageLimit: number = 5;
   totalPages: number = 0;
@@ -168,13 +169,18 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   changePostStatus($event: any) {
     console.log('🚀 ~ ForumHomeComponent ~ changePostStatus ~ $event:', $event);
-    if ($event.status === 1) {
-      if (this.socialPostContainer) {
-        this.socialPostsToDisplay = this.socialPostsToDisplay!.filter(
-          (post) => post._id !== $event.pId
-        );
+    this.forumService.changeSocialPostStatus($event.pId).subscribe((res) => {
+      if (res.data) {
+        this.isLoading = false;
         this.notifier.notify('success', 'Cập nhật trạng thái thành công');
+        if ($event.status === 1) {
+          if (this.socialPostContainer) {
+            this.socialPostsToDisplay = this.socialPostsToDisplay!.filter(
+              (post) => post._id !== $event.pId
+            );
+          }
+        }
       }
-    }
+    });
   }
 }

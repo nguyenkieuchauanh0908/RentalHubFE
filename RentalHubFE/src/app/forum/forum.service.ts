@@ -100,4 +100,20 @@ export class ForumService {
         })
       );
   }
+
+  changeSocialPostStatus(postId: string) {
+    let queryParams = new HttpParams().append('postId', postId);
+    return this.http
+      .delete<resDataDTO>(environment.baseUrl + 'social/cancle-social-post', {
+        params: queryParams,
+      })
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            console.log('Updata social post status successfully...', res.data);
+          }
+        })
+      );
+  }
 }
