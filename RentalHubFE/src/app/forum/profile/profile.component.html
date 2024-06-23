@@ -23,7 +23,7 @@
       <div class="absolute bottom-2 left-6 gap-2">
         <div class="flex relative">
           <img
-            src="{{ this.currentUser?._avatar }}"
+            src="{{ this.profileImage }}"
             class="w-12 h-12 rounded-full cursor-pointer"
           />
           <mat-icon
@@ -34,10 +34,9 @@
             >edit</mat-icon
           >
           <div class="flex flex-col relative ml-2 top-2 align-middle text-left">
-            <span class="text-lg font-bold text-white"
-              >{{ this.currentUser?._fname }}
-              {{ this.currentUser?._lname }}</span
-            >
+            <span class="text-lg font-bold text-white">{{
+              this.profileName
+            }}</span>
           </div>
         </div>
       </div>

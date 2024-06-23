@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -24,6 +24,7 @@ import { User } from 'src/app/auth/user.model';
 import { NotifierService } from 'angular-notifier';
 import { SocialPostEditDialogComponent } from '../social-post-edit-dialog/social-post-edit-dialog.component';
 import { ForumPostModel } from './forum-post.model';
+import { state } from '@angular/animations';
 
 @Component({
   selector: 'app-forum-post',
@@ -172,7 +173,17 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   seeProfile() {
-    this.router.navigate(['/forum/profile', this.post._authorId]);
+    let navigationExtras: NavigationExtras = {
+      state: {
+        profileName: this.post._authorName,
+        profileImage: this.post._images,
+      },
+    };
+
+    this.router.navigate(
+      ['/forum/profile', this.post._authorId],
+      navigationExtras
+    );
   }
 
   likePost(liked: boolean) {

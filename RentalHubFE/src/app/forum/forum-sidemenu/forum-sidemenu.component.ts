@@ -3,7 +3,7 @@ import { ForumService } from '../forum.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SocialPostEditDialogComponent } from '../social-post-edit-dialog/social-post-edit-dialog.component';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { User } from 'src/app/auth/user.model';
 
@@ -41,7 +41,16 @@ export class ForumSidemenuComponent implements OnInit, OnDestroy {
 
   goToSocialProfile() {
     if (this.currentUser) {
-      this.router.navigate(['/forum/profile', this.currentUser?._id]);
+      let navigationExtras: NavigationExtras = {
+        state: {
+          profileName: this.currentUser._fname + this.currentUser._lname,
+          profileImage: this.currentUser._avatar,
+        },
+      };
+      this.router.navigate(
+        ['/forum/profile', this.currentUser?._id],
+        navigationExtras
+      );
     }
   }
 

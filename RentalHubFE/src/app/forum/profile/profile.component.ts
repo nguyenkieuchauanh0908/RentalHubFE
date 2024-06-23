@@ -19,7 +19,7 @@ import {
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { ForumService } from '../forum.service';
 import { User } from 'src/app/auth/user.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { ForumPostModel } from '../forum-post/forum-post.model';
 
@@ -45,6 +45,8 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   totalPages: number = 0;
   currentPostStatus: number | null = 0;
   urlProfileId: string | null = null;
+  profileName: string | null = null;
+  profileImage: string | null = null;
 
   constructor(
     private forumService: ForumService,
@@ -52,6 +54,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private renderer: Renderer2,
     private route: ActivatedRoute,
+    private router: Router,
     private notifier: NotifierService
   ) {}
   ngAfterViewInit(): void {
@@ -71,6 +74,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     this.moment.locale('vn');
     this.currentPostStatus = null;
     this.urlProfileId = this.route.snapshot.paramMap.get('uId');
+
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
@@ -84,6 +88,15 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
             this.socialPostsToDisplay = null;
             if (this.urlProfileId) {
               this.loadSocialPosts();
+              const stateData = history.state;
+              console.log(
+                '🚀 ~ ProfileComponent ~ .subscribe ~ stateData:',
+                stateData
+              );
+              if (stateData) {
+                this.profileName = stateData['profileName'];
+                this.profileImage = stateData['profileImage'];
+              }
               this.initialized = true;
             }
           });
