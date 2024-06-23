@@ -23,6 +23,7 @@ import {
 import { User } from 'src/app/auth/user.model';
 import { NotifierService } from 'angular-notifier';
 import { SocialPostEditDialogComponent } from '../social-post-edit-dialog/social-post-edit-dialog.component';
+import { ForumPostModel } from './forum-post.model';
 
 @Component({
   selector: 'app-forum-post',
@@ -33,10 +34,11 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('socialContentToDisplay') socialContentToDisplay:
     | ElementRef
     | undefined;
-  @Input() post: any;
+  @Input() post!: ForumPostModel;
   @Output() changePostStatus: EventEmitter<{ status: number; pId: string }> =
     new EventEmitter();
   $destroy: Subject<Boolean> = new Subject();
+  isLoading: boolean = false;
   isAuthenticated: boolean = false;
   seeMore: boolean = false;
   currentUser: User | null = null;
@@ -47,17 +49,22 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private accountService: AccountService,
     private chatBotService: ChatBotService,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    private forumService: ForumService
   ) {}
   ngAfterViewInit(): void {
     this.socialContentToDisplay!.nativeElement.innerHTML = this.post._content;
   }
   ngOnInit(): void {
+    this.isLoading = true;
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         if (user) {
           this.currentUser = user;
+          if (this.post) {
+            this.isLoading = false;
+          }
         } else {
           this.router.navigate(['/auth/login']);
         }
@@ -165,5 +172,18 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   seeProfile() {
     this.router.navigate(['/forum/profile', this.post._authorId]);
+  }
+
+  likePost(liked: boolean) {
+    console.log('Like or unlike post:', liked);
+    this.forumService
+      .likeOrUnlikePost(this.post._id)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((res) => {
+        if (res.data) {
+          this.post._isLiked = liked;
+          this.post._totalLike = res.data._totalLike;
+        }
+      });
   }
 }

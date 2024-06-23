@@ -116,4 +116,13 @@ export class ForumService {
         })
       );
   }
+
+  likeOrUnlikePost(postId: string) {
+    return this.http.patch<resDataDTO>(
+      environment.baseUrl + 'social/react-social-post',
+      {
+        postId: postId,
+      }
+    );
+  }
 }
