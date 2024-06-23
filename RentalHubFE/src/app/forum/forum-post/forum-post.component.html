@@ -155,7 +155,7 @@
           class="cursor-pointer ml-2"
           >favorite_border</mat-icon
         >
-        <span *ngIf="this.post._totalLike > 0 && this.post._isLiked"
+        <span *ngIf="this.post._totalLike - 1 > 0 && this.post._isLiked"
           >Bạn và {{ this.post._totalLike - 1 }} người khác thích nội dung
           này</span
         >

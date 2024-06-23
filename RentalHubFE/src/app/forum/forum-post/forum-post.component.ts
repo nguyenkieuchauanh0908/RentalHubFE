@@ -61,6 +61,7 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         if (user) {
+          this.isAuthenticated = !!user;
           this.currentUser = user;
           if (this.post) {
             this.isLoading = false;
