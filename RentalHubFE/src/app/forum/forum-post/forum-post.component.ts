@@ -72,22 +72,24 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
           this.currentUser = user;
           if (this.post) {
             this.isLoading = false;
-            this.forumService
-              .getParentCommentsOfPost(
-                this.post._id,
-                this.currentCommentPage,
-                this.commentLimt
-              )
-              .pipe(takeUntil(this.$destroy))
-              .subscribe(
-                (res) => {
-                  if (res.data) {
-                    this.postCommentsToDisplay = res.data;
-                    this.totalCommentPage = res.pagination.total;
-                  }
-                },
-                (err) => {}
-              );
+            if (this.post._totalComment > 0) {
+              this.forumService
+                .getParentCommentsOfPost(
+                  this.post._id,
+                  this.currentCommentPage,
+                  this.commentLimt
+                )
+                .pipe(takeUntil(this.$destroy))
+                .subscribe(
+                  (res) => {
+                    if (res.data) {
+                      this.postCommentsToDisplay = res.data;
+                      this.totalCommentPage = res.pagination.total;
+                    }
+                  },
+                  (err) => {}
+                );
+            }
           }
         } else {
           this.router.navigate(['/auth/login']);
