@@ -31,6 +31,7 @@ import { ChatWithComponent } from './chat-bot/chat-with/chat-with.component';
 import { ForumIconLinkComponent } from './forum-icon-link/forum-icon-link.component';
 import { PostCommentComponent } from './post-comment/post-comment.component';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
+import { PostCommentDialogComponent } from './post-comment-dialog/post-comment-dialog.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
     ChatWithComponent,
     ForumIconLinkComponent,
     PostCommentComponent,
+    PostCommentDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,26 @@
+<div class="relative">
+  <div *ngIf="isLoading" class="spinner__loading text-center">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <h2 mat-dialog-title>{{ this.title }}</h2>
+  <mat-dialog-content
+    #socialCommentsContainer
+    class="p-4 md:p-5 scroll-container scroll-smooth"
+  >
+    <!-- Comments-->
+
+    <div *ngFor="let comment of this.postCommentsToDisplay">
+      <app-post-comment [comment]="comment"></app-post-comment>
+    </div>
+
+    <notifier-container></notifier-container>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <!-- Test -->
+
+    <!--Cancle -->
+    <button mat-button mat-dialog-close>Hủy</button>
+    <!-- Lưu -->
+    <button mat-button>Lưu</button>
+  </mat-dialog-actions>
+</div>

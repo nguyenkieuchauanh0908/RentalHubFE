@@ -25,6 +25,7 @@ import { NotifierService } from 'angular-notifier';
 import { SocialPostEditDialogComponent } from '../social-post-edit-dialog/social-post-edit-dialog.component';
 import { ForumPostModel } from './forum-post.model';
 import { state } from '@angular/animations';
+import { PostCommentDialogComponent } from 'src/app/shared/post-comment-dialog/post-comment-dialog.component';
 
 @Component({
   selector: 'app-forum-post',
@@ -82,6 +83,7 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
                 (res) => {
                   if (res.data) {
                     this.postCommentsToDisplay = res.data;
+                    this.totalCommentPage = res.pagination.total;
                   }
                 },
                 (err) => {}
@@ -105,11 +107,18 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   seeComments() {
     if (this.isAuthenticated) {
-      //Load comments
+      const dialogRef = this.dialog.open(PostCommentDialogComponent, {
+        width: '800px',
+        data: {
+          pId: this.post._id,
+          firstPageComments: this.postCommentsToDisplay,
+          totalCommentPage: this.totalCommentPage,
+        },
+      });
     } else {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '400px',
-        data: 'Bạn cần phải đăng nhập để bình luận',
+        data: 'Bạn cần phải đăng nhập để xem toàn bộ bình luận',
       });
       const sub = dialogRef.componentInstance.confirmYes
         .pipe(takeUntil(this.$destroy))

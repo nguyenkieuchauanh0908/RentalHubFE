@@ -40,10 +40,14 @@
   </mat-menu>
   <!--Icon to open Child comments -->
   <div class="absolute ml-4 -bottom-6 cursor-pointer">
-    <span class="mr-2 text-gray-500">Trả lời</span>
-    <span *ngIf="this.comment.totalReplys > 0" class="text-gray-500"
-      >{{ this.comment.totalReplies }}
-      <mat-icon [ngStyle]="{ color: 'gray' }" class="relative top-1.5"
+    <span class="mr-2 text-gray-500 hover:text-blue-600">Trả lời</span>
+    <span
+      *ngIf="this.comment.totalReplies > 0"
+      class="text-gray-500 hover:text-blue-600"
+      >{{ this.comment.totalReplies }} phản hồi
+      <mat-icon
+        [ngStyle]="{ color: 'gray' }"
+        class="relative top-1.5 hover:text-blue-600"
         >reply</mat-icon
       ></span
     >
