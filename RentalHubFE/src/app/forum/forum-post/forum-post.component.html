@@ -165,12 +165,11 @@
       </div>
       <!-- Comment Icon -->
       <div
+        *ngIf="this.post._totalComment > 0"
         class="flex items-center ml-2 relative bottom-1"
         (click)="seeComments()"
       >
-        <span *ngIf="this.post._totalComment > 0">{{
-          this.post._totalComment
-        }}</span>
+        <span>{{ this.post._totalComment }}</span>
         <mat-icon
           matRipple
           [matRippleCentered]="true"
