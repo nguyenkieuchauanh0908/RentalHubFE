@@ -45,6 +45,11 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
   currentUser: User | null = null;
   currentChat: UserChatsType | null = null;
 
+  postCommentsToDisplay: any[] | null = null;
+  currentCommentPage: number = 1;
+  commentLimt: number = 5;
+  totalCommentPage: number = 0;
+
   constructor(
     public dialog: MatDialog,
     private router: Router,
@@ -66,6 +71,21 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
           this.currentUser = user;
           if (this.post) {
             this.isLoading = false;
+            this.forumService
+              .getParentCommentsOfPost(
+                this.post._id,
+                this.currentCommentPage,
+                this.commentLimt
+              )
+              .pipe(takeUntil(this.$destroy))
+              .subscribe(
+                (res) => {
+                  if (res.data) {
+                    this.postCommentsToDisplay = res.data;
+                  }
+                },
+                (err) => {}
+              );
           }
         } else {
           this.router.navigate(['/auth/login']);

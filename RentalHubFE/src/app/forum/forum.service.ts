@@ -125,4 +125,16 @@ export class ForumService {
       }
     );
   }
+
+  getParentCommentsOfPost(postId: string, page: number, limit: number) {
+    let queryParams = new HttpParams()
+      .append('postId', postId)
+      .append('page', page)
+      .append('limit', limit);
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'comment/get-parent-comments', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
 }

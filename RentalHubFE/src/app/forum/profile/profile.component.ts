@@ -123,7 +123,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
           this.currentPage,
           this.pageLimit,
           this.currentPostStatus,
-          this.urlProfileId
+          null
         )
         .pipe(takeUntil(this.$destroy))
         .subscribe(
@@ -148,7 +148,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.currentScrollTopPosition
                   );
                   this.currentScrollTopPosition =
-                    this.socialPostContainer.nativeElement.scrollTop + 3000;
+                    this.socialPostContainer.nativeElement.scrollTop + 2000;
                 }
               }, 100);
             }
@@ -192,7 +192,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.currentScrollTopPosition
                   );
                   this.currentScrollTopPosition =
-                    this.socialPostContainer.nativeElement.scrollTop + 3000;
+                    this.socialPostContainer.nativeElement.scrollTop + 2000;
                 }
               }, 100);
             }

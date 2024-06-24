@@ -1,25 +1,48 @@
 <!-- Comment -->
-<div class="flex flex-col relative gap-1 ml-10 mb-6 p-2 shadow-lg rounded-md">
+<div
+  *ngIf="this.currentUser"
+  class="flex flex-col relative gap-1 ml-10 mb-6 p-2 shadow-lg rounded-md"
+>
   <!-- Avatar - name - time - comment-->
-  <div class="flex gap-2">
+  <div class="flex gap-2 cursor-pointer" [matMenuTriggerFor]="menu">
     <img
-      src="../../../../assets/images/user.png"
+      src="{{ this.comment._avatar }}"
       alt="User avatar"
       class="w-8 h-8 rounded-full"
     />
     <div class="flex flex-col text-left">
-      <span class="font-medium text-black-color">Lâm Hoàng Duyên</span>
-      <span class="font-normal text-gray-600">Hôm qua, lúc 15:00</span>
+      <span class="font-medium text-black-color">{{ this.comment._name }}</span>
+      <span
+        class="text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
+        >{{ moment(this.comment.createdAt).calendar() }}</span
+      >
       <!--Nội dung Comment -->
       <div class="mt-2">
-        <span> Cho hỏi ghép đủ người chưa ạ? </span>
+        <span> {{ this.comment._content }} </span>
       </div>
     </div>
   </div>
+  <mat-menu #menu="matMenu" style="width: fit-content">
+    <button
+      *ngIf="this.currentUser?._id !== this.comment._uId"
+      mat-menu-item
+      (click)="addToContactAndGoToChatBot()"
+    >
+      <mat-icon>send</mat-icon>
+      <span class="text-primary-text-color mb-0 text-sm">Liên hệ</span>
+    </button>
+    <button mat-menu-item (click)="seeProfile()">
+      <mat-icon>account_box</mat-icon>
+      <span class="text-primary-text-color mb-0 text-sm"
+        >Xem trang cá nhân</span
+      >
+    </button>
+  </mat-menu>
   <!--Icon to open Child comments -->
   <div class="absolute ml-4 -bottom-6 cursor-pointer">
-    <span class="text-gray-500"
-      >2 phản hồi
+    <span class="mr-2 text-gray-500">Trả lời</span>
+    <span *ngIf="this.comment.totalReplys > 0" class="text-gray-500"
+      >{{ this.comment.totalReplies }}
       <mat-icon [ngStyle]="{ color: 'gray' }" class="relative top-1.5"
         >reply</mat-icon
       ></span

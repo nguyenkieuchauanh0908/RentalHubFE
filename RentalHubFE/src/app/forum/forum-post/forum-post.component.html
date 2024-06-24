@@ -183,10 +183,16 @@
     </div>
 
     <!-- Comments -->
-    <div class="flex flex-col gap-6 text-left">
-      <app-post-comment></app-post-comment>
-      <app-post-comment></app-post-comment>
-      <app-post-comment></app-post-comment>
+    <div
+      *ngIf="this.postCommentsToDisplay; else noComments"
+      class="flex flex-col gap-6 text-left"
+    >
+      <div *ngFor="let comment of this.postCommentsToDisplay">
+        <app-post-comment [comment]="comment"></app-post-comment>
+      </div>
     </div>
+    <ng-template #noComments class="text-center">
+      <span>Chưa có bình luận nào!</span>
+    </ng-template>
   </div>
 </div>

@@ -116,7 +116,7 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.currentScrollTopPosition
               );
               this.currentScrollTopPosition =
-                this.socialPostContainer.nativeElement.scrollTop + 3000;
+                this.socialPostContainer.nativeElement.scrollTop + 2000;
             }
           }, 100);
         }
