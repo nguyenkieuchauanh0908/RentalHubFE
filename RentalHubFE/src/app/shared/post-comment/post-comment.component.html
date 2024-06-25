@@ -56,7 +56,9 @@
   </div>
 </div>
 <div class="pl-5" *ngIf="this.shouldOpenReplies">
-  <app-post-comment [comment]="this.comment"></app-post-comment>
+  <div *ngFor="let comment of this.replies">
+    <app-post-comment [comment]="comment"></app-post-comment>
+  </div>
   <span
     *ngIf="this.currentReplyPage === this.totalReplyPage"
     (click)="openReplies(false)"
@@ -65,7 +67,7 @@
   >
   <span
     *ngIf="this.currentReplyPage < this.totalReplyPage"
-    (click)="openReplies(true)"
+    (click)="loadReplies()"
     class="hover:text-blue-600 cursor-pointer ml-16"
     >Hiện thêm</span
   >

@@ -22,7 +22,7 @@ export class PostCommentComponent implements OnInit, OnDestroy {
   replies: any[] | null = null;
 
   currentReplyPage: number = 0;
-  totalReplyPage: number = 0;
+  totalReplyPage: number = 1;
   replyLimit: number = 5;
 
   constructor(
@@ -104,12 +104,32 @@ export class PostCommentComponent implements OnInit, OnDestroy {
 
   openReplies(opened: boolean) {
     this.shouldOpenReplies = opened;
+    this.loadReplies();
+  }
+
+  loadReplies() {
+    this.currentReplyPage += 1;
     if (
-      !this.replies &&
       this.shouldOpenReplies &&
-      this.currentReplyPage < this.totalReplyPage
+      this.currentReplyPage <= this.totalReplyPage
     ) {
-      //Gọi API lấy comments repies
+      this.forumService
+        .getRepliesOfAParentComment(
+          this.comment._id,
+          this.currentReplyPage,
+          this.replyLimit
+        )
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((res) => {
+          if (res.data) {
+            if (this.replies === null) {
+              this.replies = res.data;
+            } else {
+              this.replies = this.replies.concat(res.data);
+            }
+            this.totalReplyPage = res.pagination.total;
+          }
+        });
     }
   }
 }

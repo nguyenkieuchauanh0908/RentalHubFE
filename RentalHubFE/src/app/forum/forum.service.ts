@@ -137,4 +137,17 @@ export class ForumService {
       })
       .pipe(catchError(handleError));
   }
+
+  getRepliesOfAParentComment(parentId: string, page: number, limit: number) {
+    let queryParams = new HttpParams()
+      .append('parentId', parentId)
+      .append('page', page)
+      .append('limit', limit);
+    return this.http.get<resDataDTO>(
+      environment.baseUrl + 'comment/get-reply-comments',
+      {
+        params: queryParams,
+      }
+    );
+  }
 }
