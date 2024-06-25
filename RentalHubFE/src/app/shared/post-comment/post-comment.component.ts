@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
 import { Subject, takeUntil } from 'rxjs';
 import { ForumService } from 'src/app/forum/forum.service';
@@ -12,7 +12,7 @@ import { NavigationExtras, Router } from '@angular/router';
   templateUrl: './post-comment.component.html',
   styleUrls: ['./post-comment.component.scss'],
 })
-export class PostCommentComponent implements OnInit {
+export class PostCommentComponent implements OnInit, OnDestroy {
   @Input() comment: any;
   moment!: any;
   $destroy: Subject<Boolean> = new Subject();
@@ -31,6 +31,10 @@ export class PostCommentComponent implements OnInit {
     private chatBotService: ChatBotService,
     private router: Router
   ) {}
+  ngOnDestroy(): void {
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.moment = moment;

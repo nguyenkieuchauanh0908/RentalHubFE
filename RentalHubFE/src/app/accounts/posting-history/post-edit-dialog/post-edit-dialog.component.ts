@@ -131,7 +131,7 @@ export class PostEditDialogComponent
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   ngOnDestroy(): void {
-    this.$destroy.next(false);
+    this.$destroy.next(true);
     this.$destroy.unsubscribe();
   }
   ngAfterViewInit(): void {}

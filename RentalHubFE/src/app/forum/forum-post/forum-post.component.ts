@@ -99,7 +99,7 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     console.log('ngOnDestroy called');
-    this.$destroy.next(false);
+    this.$destroy.next(true);
     this.$destroy.unsubscribe();
   }
 

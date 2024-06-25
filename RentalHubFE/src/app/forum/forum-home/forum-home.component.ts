@@ -80,7 +80,7 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     console.log('ngOnDestroy called');
-    this.$destroy.next(false);
+    this.$destroy.next(true);
     this.$destroy.unsubscribe();
     this.scrollSubscription?.unsubscribe();
   }

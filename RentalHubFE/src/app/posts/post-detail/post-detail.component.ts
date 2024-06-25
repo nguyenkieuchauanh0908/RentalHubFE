@@ -140,7 +140,7 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.$destroy.next(false);
+    this.$destroy.next(true);
     this.$destroy.unsubscribe();
   }
 

@@ -23,7 +23,7 @@ export class PostsComponent implements OnInit, OnDestroy {
       });
   }
   ngOnDestroy(): void {
-    this.$destroy.next(false);
+    this.$destroy.next(true);
     this.$destroy.unsubscribe();
   }
 }
