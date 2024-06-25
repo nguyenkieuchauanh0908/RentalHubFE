@@ -18,6 +18,12 @@ export class PostCommentComponent implements OnInit {
   $destroy: Subject<Boolean> = new Subject();
   currentUser: User | null = null;
   currentChat: UserChatsType | null = null;
+  shouldOpenReplies: boolean = false;
+  replies: any[] | null = null;
+
+  currentReplyPage: number = 0;
+  totalReplyPage: number = 0;
+  replyLimit: number = 5;
 
   constructor(
     private forumService: ForumService,
@@ -90,5 +96,16 @@ export class PostCommentComponent implements OnInit {
       ['/forum/profile', this.comment._uId],
       navigationExtras
     );
+  }
+
+  openReplies(opened: boolean) {
+    this.shouldOpenReplies = opened;
+    if (
+      !this.replies &&
+      this.shouldOpenReplies &&
+      this.currentReplyPage < this.totalReplyPage
+    ) {
+      //Gọi API lấy comments repies
+    }
   }
 }
