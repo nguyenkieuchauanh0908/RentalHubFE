@@ -104,15 +104,14 @@ export class PostCommentComponent implements OnInit, OnDestroy {
 
   openReplies(opened: boolean) {
     this.shouldOpenReplies = opened;
-    this.loadReplies();
+    if (this.shouldOpenReplies && this.currentReplyPage === 0) {
+      this.loadReplies();
+    }
   }
 
   loadReplies() {
     this.currentReplyPage += 1;
-    if (
-      this.shouldOpenReplies &&
-      this.currentReplyPage <= this.totalReplyPage
-    ) {
+    if (this.currentReplyPage <= this.totalReplyPage) {
       this.forumService
         .getRepliesOfAParentComment(
           this.comment._id,
@@ -128,6 +127,12 @@ export class PostCommentComponent implements OnInit, OnDestroy {
               this.replies = this.replies.concat(res.data);
             }
             this.totalReplyPage = res.pagination.total;
+            console.log(
+              '🚀 ~ PostCommentComponent ~ .subscribe ~ totalReplyPage:',
+              this.totalReplyPage,
+
+              this.currentReplyPage
+            );
           }
         });
     }
