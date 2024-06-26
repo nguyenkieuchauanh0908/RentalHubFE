@@ -181,7 +181,13 @@
       </div>
     </div>
 
-    <!-- Comments -->
+    <!--Write comment -  Comments -->
+    <div>
+      <app-write-post-comment-form
+        [commentForPostId]="this.post._id"
+        (createCommentSuccess)="createCommentSuccess($event)"
+      ></app-write-post-comment-form>
+    </div>
     <div
       *ngIf="this.postCommentsToDisplay; else noComments"
       class="flex flex-col gap-6 text-left"
