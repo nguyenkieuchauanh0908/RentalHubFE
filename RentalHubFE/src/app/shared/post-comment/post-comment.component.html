@@ -22,6 +22,7 @@
       </div>
     </div>
   </div>
+  <!-- Contact - See profile -->
   <mat-menu #menu="matMenu" style="width: fit-content">
     <button
       *ngIf="this.currentUser?._id !== this.comment._uId"
@@ -40,7 +41,11 @@
   </mat-menu>
   <!--Icon to open Child comments -->
   <div class="absolute ml-4 -bottom-6 cursor-pointer">
-    <span class="mr-2 text-gray-500 hover:text-blue-600">Trả lời</span>
+    <span
+      (click)="openReplies(true)"
+      class="mr-2 text-gray-500 hover:text-blue-600"
+      >Trả lời</span
+    >
     <span
       (click)="openReplies(true)"
       *ngIf="this.comment.totalReplies > 0"
@@ -52,10 +57,17 @@
         >reply</mat-icon
       ></span
     >
-    <!-- Child comments -->
   </div>
 </div>
+<!-- Replies -->
 <div class="pl-5" *ngIf="this.shouldOpenReplies">
+  <div>
+    <app-write-post-comment-form
+      [commentForPostId]="this.comment._postId"
+      [commentForParent]="this.commentForParent"
+      (createCommentSuccess)="createCommentSuccess($event)"
+    ></app-write-post-comment-form>
+  </div>
   <div *ngFor="let comment of this.replies">
     <app-post-comment [comment]="comment"></app-post-comment>
   </div>

@@ -32,6 +32,8 @@ import { ForumIconLinkComponent } from './forum-icon-link/forum-icon-link.compon
 import { PostCommentComponent } from './post-comment/post-comment.component';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { PostCommentDialogComponent } from './post-comment-dialog/post-comment-dialog.component';
+import { WritePostCommentFormComponent } from './post-comment/write-post-comment-form/write-post-comment-form.component';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,7 @@ import { PostCommentDialogComponent } from './post-comment-dialog/post-comment-d
     ForumIconLinkComponent,
     PostCommentComponent,
     PostCommentDialogComponent,
+    WritePostCommentFormComponent,
   ],
   imports: [
     CommonModule,
@@ -68,6 +71,7 @@ import { PostCommentDialogComponent } from './post-comment-dialog/post-comment-d
     ScrollingModule,
     NotifierModule,
     PostCardComponent,
+    PickerComponent,
   ],
   exports: [
     CommonModule,
@@ -87,6 +91,8 @@ import { PostCommentDialogComponent } from './post-comment-dialog/post-comment-d
     ChatBotComponent,
     ForumIconLinkComponent,
     PostCommentComponent,
+    WritePostCommentFormComponent,
+    PickerComponent,
   ],
 })
 export class SharedModule {}

@@ -26,6 +26,7 @@ import { SocialPostEditDialogComponent } from '../social-post-edit-dialog/social
 import { ForumPostModel } from './forum-post.model';
 import { state } from '@angular/animations';
 import { PostCommentDialogComponent } from 'src/app/shared/post-comment-dialog/post-comment-dialog.component';
+import { PostCommentModel } from 'src/app/shared/post-comment/write-post-comment-form/post-comment.model';
 
 @Component({
   selector: 'app-forum-post',
@@ -46,7 +47,7 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
   currentUser: User | null = null;
   currentChat: UserChatsType | null = null;
 
-  postCommentsToDisplay: any[] | null = null;
+  postCommentsToDisplay: PostCommentModel[] | null = null;
   currentCommentPage: number = 1;
   commentLimt: number = 5;
   totalCommentPage: number = 0;
@@ -228,5 +229,17 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
           this.post._totalLike = res.data._totalLike;
         }
       });
+  }
+
+  createCommentSuccess(event: any) {
+    console.log(event);
+    if (event !== null) {
+      console.log('updated UI comment...');
+      if (this.postCommentsToDisplay) {
+        this.postCommentsToDisplay!.unshift(event);
+      } else {
+        this.postCommentsToDisplay = event;
+      }
+    }
   }
 }

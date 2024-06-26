@@ -150,4 +150,29 @@ export class ForumService {
       }
     );
   }
+
+  createComment(
+    _postId: string,
+    _parentId: string | null,
+    _content: string,
+    _images: FileList | null
+  ) {
+    const headers = new HttpHeaders().set(
+      'content-type',
+      'multipart/form-data'
+    );
+    let body = new FormData();
+
+    body.append('_postId', _postId);
+    body.append('_content', _content);
+    if (_parentId) {
+      body.append('_parentId', _parentId);
+    }
+
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'comment/create-comment', body, {
+        headers: headers,
+      })
+      .pipe(catchError(handleError));
+  }
 }

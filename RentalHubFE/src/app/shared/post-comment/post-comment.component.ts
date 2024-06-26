@@ -6,6 +6,7 @@ import { ChatBotService, UserChatsType } from '../chat-bot/chat-bot.service';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { User } from 'src/app/auth/user.model';
 import { NavigationExtras, Router } from '@angular/router';
+import { PostCommentModel } from './write-post-comment-form/post-comment.model';
 
 @Component({
   selector: 'app-post-comment',
@@ -13,13 +14,17 @@ import { NavigationExtras, Router } from '@angular/router';
   styleUrls: ['./post-comment.component.scss'],
 })
 export class PostCommentComponent implements OnInit, OnDestroy {
-  @Input() comment: any;
+  @Input() comment!: PostCommentModel;
   moment!: any;
   $destroy: Subject<Boolean> = new Subject();
   currentUser: User | null = null;
   currentChat: UserChatsType | null = null;
   shouldOpenReplies: boolean = false;
-  replies: any[] | null = null;
+  replies: PostCommentModel[] = [];
+  commentForParent: {
+    creatorName: string | null;
+    creatorId: string | null;
+  } = { creatorId: null, creatorName: null };
 
   currentReplyPage: number = 0;
   totalReplyPage: number = 1;
@@ -44,6 +49,10 @@ export class PostCommentComponent implements OnInit, OnDestroy {
       .subscribe((user) => {
         if (user) {
           this.currentUser = user;
+          this.commentForParent = {
+            creatorId: this.comment._id,
+            creatorName: this.comment._name,
+          };
         } else {
           this.router.navigate(['/auth/login']);
         }
@@ -104,7 +113,11 @@ export class PostCommentComponent implements OnInit, OnDestroy {
 
   openReplies(opened: boolean) {
     this.shouldOpenReplies = opened;
-    if (this.shouldOpenReplies && this.currentReplyPage === 0) {
+    if (
+      this.shouldOpenReplies &&
+      this.currentReplyPage === 0 &&
+      this.comment.totalReplies > 0
+    ) {
       this.loadReplies();
     }
   }
@@ -127,14 +140,23 @@ export class PostCommentComponent implements OnInit, OnDestroy {
               this.replies = this.replies.concat(res.data);
             }
             this.totalReplyPage = res.pagination.total;
-            console.log(
-              '🚀 ~ PostCommentComponent ~ .subscribe ~ totalReplyPage:',
-              this.totalReplyPage,
+            // console.log(
+            //   '🚀 ~ PostCommentComponent ~ .subscribe ~ totalReplyPage:',
+            //   this.totalReplyPage,
 
-              this.currentReplyPage
-            );
+            //   this.currentReplyPage
+            // );
           }
         });
+    }
+  }
+
+  createCommentSuccess(event: any) {
+    console.log(event);
+    if (event !== null) {
+      console.log('updated UI comment...');
+
+      this.replies!.unshift(event);
     }
   }
 }
