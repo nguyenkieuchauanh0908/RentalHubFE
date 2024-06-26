@@ -20,6 +20,8 @@ import { ThemePalette } from '@angular/material/core';
 import { ViewEncapsulation } from '@angular/compiler';
 import { DisplayNotiDialogComponent } from '../display-noti-dialog/display-noti-dialog.component';
 import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-edit-dialog/post-edit-dialog.component';
+import { Pagination } from '../pagination/pagination.service';
+import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
 
 @Component({
   selector: 'app-header',
@@ -163,14 +165,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onSearchByKeyword(searchForm: any) {
     console.log('Your keyword: ', searchForm.search);
+    let stateData!: {
+      searchResult: PostItem[] | null;
+      pagination: Pagination;
+      keyword: string;
+    };
     if (searchForm.search) {
       this.postService
         .searchPostsByKeyword(searchForm.search, 1, 5)
         .pipe(takeUntil(this.$destroy))
         .subscribe(
           (res) => {
-            this.postService.searchResultsChanged.next([...res.data]);
+            this.postService.searchResultsChanged.next(res.data);
             console.log('On navigating to search result page...');
+            stateData = {
+              searchResult: res.data,
+              pagination: res.pagination,
+              keyword: searchForm.search,
+            };
             this.router.navigate(
               [
                 '/posts/search',
@@ -179,11 +191,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 },
               ],
               {
-                state: {
-                  searchResult: res.data,
-                  pagination: res.pagination,
-                  keyword: searchForm.search,
-                },
+                state: stateData,
               }
             );
           },

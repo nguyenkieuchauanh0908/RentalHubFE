@@ -1,7 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PostItem } from '../posts-list/post-item/post-item.model';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
-import { Observable, Subscription, filter, map } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  Subscription,
+  filter,
+  map,
+  takeUntil,
+} from 'rxjs';
 import {
   Pagination,
   PaginationService,
@@ -21,9 +28,9 @@ import {
 export class PostsSearchResultComponent implements OnInit, OnDestroy {
   isLoading = false;
   error: string = '';
-  currentState$: Observable<any> = new Observable<any>();
+  $destroy: Subject<boolean> = new Subject();
   stateData: any;
-  searchResult!: PostItem[];
+  searchResult!: PostItem[] | null;
   searchResultChangedSub: Subscription = new Subscription();
   currentPage: number = this.paginationService.currentPage;
   pageItemLimit: number = 5;
@@ -33,43 +40,62 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
   priceRanges!: PriceRanges;
 
   currentFavourites: String[] | null = [];
-  ngOnInit() {}
-
-  ngOnDestroy(): void {
-    this.searchResultChangedSub.unsubscribe();
-  }
-
   constructor(
     public route: ActivatedRoute,
     private router: Router,
     private paginationService: PaginationService,
     private postService: PostService,
     private notifierService: NotifierService
-  ) {
+  ) {}
+  ngOnInit() {
+    console.log('ngOnInit...');
     this.resetFilter();
     this.currentPage = 1;
-    this.stateData = this.router.getCurrentNavigation()?.extras.state;
-    this.searchResult = this.stateData.searchResult;
-    if (this.stateData.searchResult && this.stateData.pagination) {
-      console.log('Chau Anh NK');
-      this.searchResult = this.stateData.searchResult;
-      this.postService.searchKeywordChanged.subscribe((keyword: string) => {
+    let stateData: {
+      searchResult: PostItem[] | null;
+      pagination: Pagination;
+      keyword: string;
+    } = history.state;
+    if (stateData) {
+      console.log(
+        '🚀 ~ PostsSearchResultComponent ~ ngOnInit ~ stateData:',
+        stateData
+      );
+      this.searchResult = stateData.searchResult;
+    }
+    this.postService.searchResultsChanged
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((results) => {
+        console.log(
+          '🚀 ~ PostsSearchResultComponent ~ .subscribe ~ results:',
+          results
+        );
+        this.searchResult = results;
+      });
+    this.postService.searchKeywordChanged
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((keyword: string) => {
         this.currentKeyword = keyword;
         console.log(
           '🚀 ~ PostsSearchResultComponent ~ this.postService.searchKeywordChanged.subscribe ~ this.currentKeyword:',
           this.currentKeyword
         );
-        this.paginationService.pagination = this.stateData.pagination;
-        this.paginationService.paginationChanged.next(
-          this.stateData.pagination
-        );
+        this.paginationService.pagination = stateData.pagination;
+        this.paginationService.paginationChanged.next(stateData.pagination);
         this.totalPages = this.paginationService.pagination.total;
       });
 
-      this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+    this.postService.getCurrentFavoritesId
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((favourites) => {
         this.currentFavourites = favourites;
       });
-    }
+  }
+
+  ngOnDestroy(): void {
+    console.log('ngOnDestroy');
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
   }
 
   applyFilter() {
@@ -98,26 +124,26 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
           this.notifierService.notify('error', this.error);
         }
       );
-    this.searchResultChangedSub =
-      this.postService.searchResultsChanged.subscribe(
-        (searchResult: PostItem[]) => {
-          this.searchResult = searchResult;
-        }
-      );
-    this.router.navigate(
-      [
-        '/posts/search',
-        {
-          keyword: this.currentKeyword,
-        },
-      ],
-      {
-        state: {
-          searchResult: this.stateData.searchResult,
-          pagination: this.stateData.pagination,
-        },
-      }
-    );
+    // this.searchResultChangedSub =
+    //   this.postService.searchResultsChanged.pipe(takeUntil(this.$destroy)).subscribe(
+    //     (searchResult: PostItem[]) => {
+    //       this.searchResult = searchResult;
+    //     }
+    //   );
+    // this.router.navigate(
+    //   [
+    //     '/posts/search',
+    //     {
+    //       keyword: this.currentKeyword,
+    //     },
+    //   ],
+    //   {
+    //     state: {
+    //       searchResult: this.stateData.searchResult,
+    //       pagination: this.stateData.pagination,
+    //     },
+    //   }
+    // );
     this.isLoading = false;
   }
 
@@ -283,25 +309,25 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
           this.notifierService.notify('error', this.error);
         }
       );
-    this.searchResultChangedSub =
-      this.postService.searchResultsChanged.subscribe(
-        (searchResult: PostItem[]) => {
-          this.searchResult = searchResult;
-        }
-      );
-    this.router.navigate(
-      [
-        '/posts/search',
-        {
-          keyword: this.currentKeyword,
-        },
-      ],
-      {
-        state: {
-          searchResult: this.stateData.searchResult,
-          pagination: this.stateData.pagination,
-        },
-      }
-    );
+    // this.searchResultChangedSub =
+    //   this.postService.searchResultsChanged.pipe(takeUntil(this.$destroy)).subscribe(
+    //     (searchResult: PostItem[]) => {
+    //       this.searchResult = searchResult;
+    //     }
+    //   );
+    // this.router.navigate(
+    //   [
+    //     '/posts/search',
+    //     {
+    //       keyword: this.currentKeyword,
+    //     },
+    //   ],
+    //   {
+    //     state: {
+    //       searchResult: this.stateData.searchResult,
+    //       pagination: this.stateData.pagination,
+    //     },
+    //   }
+    // );
   }
 }
