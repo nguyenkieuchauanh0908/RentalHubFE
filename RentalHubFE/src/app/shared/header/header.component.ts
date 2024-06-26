@@ -176,7 +176,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.$destroy))
         .subscribe(
           (res) => {
-            this.postService.searchResultsChanged.next(res.data);
             console.log('On navigating to search result page...');
             stateData = {
               searchResult: res.data,

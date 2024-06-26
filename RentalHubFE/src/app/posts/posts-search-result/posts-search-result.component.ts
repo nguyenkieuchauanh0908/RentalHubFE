@@ -80,9 +80,12 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
           '🚀 ~ PostsSearchResultComponent ~ this.postService.searchKeywordChanged.subscribe ~ this.currentKeyword:',
           this.currentKeyword
         );
-        this.paginationService.pagination = stateData.pagination;
-        this.paginationService.paginationChanged.next(stateData.pagination);
-        this.totalPages = this.paginationService.pagination.total;
+        this.paginationService.paginationChanged
+          .pipe(takeUntil(this.$destroy))
+          .subscribe((pagination) => {
+            this.totalPages = pagination.total;
+            this.currentPage = pagination.page;
+          });
       });
 
     this.postService.getCurrentFavoritesId

@@ -296,8 +296,7 @@ export class PostService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          this.searchResult = res.data;
-          this.searchResultsChanged.next([...this.searchResult]);
+          this.searchResultsChanged.next(res.data);
           this.paginationService.pagination = res.pagination;
           this.paginationService.paginationChanged.next(res.pagination);
           if (res.data) {
