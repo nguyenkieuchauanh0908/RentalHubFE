@@ -111,8 +111,8 @@ export class PostCommentComponent implements OnInit, OnDestroy {
     );
   }
 
-  openReplies(opened: boolean) {
-    this.shouldOpenReplies = opened;
+  openReplies() {
+    this.shouldOpenReplies = !this.shouldOpenReplies;
     if (
       this.shouldOpenReplies &&
       this.currentReplyPage === 0 &&
