@@ -250,4 +250,13 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
       data: postId,
     });
   }
+
+  deleteComment(comment: PostCommentModel) {
+    this.postCommentsToDisplay = this.postCommentsToDisplay!.filter(
+      (cmt: PostCommentModel) => {
+        return cmt._id !== comment._id;
+      }
+    );
+    this.notifierService.notify('success', 'Xóa bình luận thành công');
+  }
 }

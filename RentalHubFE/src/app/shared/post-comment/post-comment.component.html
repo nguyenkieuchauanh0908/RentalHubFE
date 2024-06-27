@@ -12,27 +12,64 @@
       alt="User avatar"
       class="w-8 h-8 rounded-full cursor-pointer"
     />
-    <!-- Name - time - content - image -->
-    <div class="flex flex-col text-left">
-      <span
-        class="font-medium text-black-color cursor-pointer"
-        [matMenuTriggerFor]="menu"
-        >{{ this.comment._name }}</span
-      >
-      <span
-        class="text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
-        >{{ moment(this.comment.createdAt).calendar() }}</span
-      >
-      <!--Nội dung Comment -->
-      <div class="mt-2 flex flex-col">
+
+    <!-- Name - time - content - image - more -->
+    <div class="flex w-full justify-between">
+      <!-- Name - time - content - image -->
+      <div class="flex flex-col text-left">
         <span
-          *ngIf="this.comment._nameParent"
-          class="text-gray-500 text-xs text-left max-w-fit"
-          >Trả lời cho <mark>&#64;{{ this.comment._nameParent }}</mark>
-        </span>
-        <span> {{ this.comment._content }} </span>
+          class="font-medium text-black-color cursor-pointer"
+          [matMenuTriggerFor]="menu"
+          >{{ this.comment._name }}</span
+        >
+        <span
+          class="text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
+          >{{ moment(this.comment.createdAt).calendar() }}</span
+        >
+        <!--Nội dung Comment -->
+        <div class="mt-2 flex flex-col">
+          <span
+            *ngIf="this.comment._nameParent"
+            class="text-gray-500 text-xs text-left max-w-fit"
+            >Trả lời cho <mark>&#64;{{ this.comment._nameParent }}</mark>
+          </span>
+          <span> {{ this.comment._content }} </span>
+        </div>
+      </div>
+      <!-- Edit - Public - Private for post's creator/comment's creator-->
+      <div>
+        <mat-icon
+          matRipple
+          [matRippleCentered]="true"
+          [matRippleUnbounded]="true"
+          class="cursor-pointer"
+          [ngStyle]="{ color: 'black' }"
+          [matMenuTriggerFor]="menu"
+          aria-label="menu to choose"
+          >more_vert</mat-icon
+        >
+        <mat-menu #menu="matMenu" style="width: fit-content">
+          <button mat-menu-item>
+            <mat-icon>edit</mat-icon>
+            <span
+              class="text-primary-text-color mb-0 text-sm"
+              *ngIf="this.comment._uId === this.currentUser?._id"
+              >Chỉnh sửa bình luận</span
+            >
+          </button>
+          <button mat-menu-item (click)="deleteComment()">
+            <mat-icon>delete</mat-icon>
+            <!-- Chỉ có chủ bài đăng hoặc bài viết ms đc xóa bình luận -->
+            <span
+              class="text-primary-text-color mb-0 text-sm"
+              *ngIf="this.comment._uId === this.currentUser?._id"
+              >Xóa bình luận</span
+            >
+          </button>
+        </mat-menu>
       </div>
     </div>
+
     <!-- Contact - See profile -->
     <mat-menu #menu="matMenu" style="width: fit-content">
       <button

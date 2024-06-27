@@ -1,4 +1,11 @@
-import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import * as moment from 'moment';
 import { Subject, takeUntil } from 'rxjs';
 import { ForumService } from 'src/app/forum/forum.service';
@@ -7,6 +14,8 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 import { User } from 'src/app/auth/user.model';
 import { NavigationExtras, Router } from '@angular/router';
 import { PostCommentModel } from './write-post-comment-form/post-comment.model';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-post-comment',
@@ -15,6 +24,7 @@ import { PostCommentModel } from './write-post-comment-form/post-comment.model';
 })
 export class PostCommentComponent implements OnInit, OnDestroy {
   @Input() comment!: PostCommentModel;
+  @Output() deleteCommentSuccess = new EventEmitter();
   moment!: any;
   $destroy: Subject<Boolean> = new Subject();
   currentUser: User | null = null;
@@ -34,7 +44,8 @@ export class PostCommentComponent implements OnInit, OnDestroy {
     private forumService: ForumService,
     private accountService: AccountService,
     private chatBotService: ChatBotService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {}
   ngOnDestroy(): void {
     this.$destroy.next(true);
@@ -158,5 +169,19 @@ export class PostCommentComponent implements OnInit, OnDestroy {
 
       this.replies!.unshift(event);
     }
+  }
+
+  deleteComment() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn xóa bình luận này?',
+    });
+    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      //Gọi API xóa bình luận và update lại UI
+      this.deleteCommentSuccess.emit();
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
   }
 }

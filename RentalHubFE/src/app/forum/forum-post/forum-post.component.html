@@ -194,7 +194,10 @@
       class="flex flex-col gap-6 text-left"
     >
       <div *ngFor="let comment of this.postCommentsToDisplay">
-        <app-post-comment [comment]="comment"></app-post-comment>
+        <app-post-comment
+          [comment]="comment"
+          (deleteCommentSuccess)="deleteComment(comment)"
+        ></app-post-comment>
       </div>
     </div>
     <ng-template #noComments class="text-center">
