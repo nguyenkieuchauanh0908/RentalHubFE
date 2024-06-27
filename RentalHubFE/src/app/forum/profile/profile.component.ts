@@ -22,6 +22,7 @@ import { User } from 'src/app/auth/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { ForumPostModel } from '../forum-post/forum-post.model';
+import { UpdateAvatarDialogComponent } from 'src/app/accounts/update-avatar-dialog/update-avatar-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -267,5 +268,22 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
+  }
+
+  openEditAvatarDialog() {
+    console.log('openEditAvatarDialog...');
+    if (this.currentUser) {
+      const dialogRef = this.dialog.open(UpdateAvatarDialogComponent, {
+        width: '400px',
+        data: this.currentUser?._avatar,
+      });
+    } else {
+      this.router.navigate(['/']);
+      this.notifier.notify('warning', 'Phiên đăng nhập đã hết hạn!');
+    }
+  }
+
+  openEditBackground() {
+    console.log('openEditBackground...');
   }
 }

@@ -23,10 +23,20 @@
       <div class="absolute bottom-2 left-6 gap-2">
         <div class="flex relative">
           <img
-            src="{{ this.profileImage }}"
-            class="w-12 h-12 rounded-full cursor-pointer"
+            *ngIf="this.currentUser?._id === this.urlProfileId"
+            (click)="openEditAvatarDialog()"
+            src="{{ this.currentUser?._avatar }}"
+            class="w-12 h-12 rounded-full"
+          />
+          <img
+            *ngIf="this.currentUser?._id !== this.urlProfileId"
+            (click)="openEditAvatarDialog()"
+            src="{{ this.currentUser?._avatar }}"
+            class="w-12 h-12 rounded-full"
           />
           <mat-icon
+            *ngIf="this.currentUser?._id === this.urlProfileId"
+            (click)="openEditAvatarDialog()"
             matRipple
             [matRippleCentered]="true"
             [matRippleUnbounded]="true"
@@ -42,6 +52,8 @@
       </div>
       <!-- Edit background image -->
       <mat-icon
+        *ngIf="this.currentUser?._id === this.urlProfileId"
+        (click)="openEditBackground()"
         matRipple
         [matRippleCentered]="true"
         [matRippleUnbounded]="true"
