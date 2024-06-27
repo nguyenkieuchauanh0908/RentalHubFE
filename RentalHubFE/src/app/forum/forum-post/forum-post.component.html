@@ -185,6 +185,7 @@
     <div>
       <app-write-post-comment-form
         [commentForPostId]="this.post._id"
+        [commentForParent]="{ creatorName: null, creatorId: null }"
         (createCommentSuccess)="createCommentSuccess($event)"
       ></app-write-post-comment-form>
     </div>
