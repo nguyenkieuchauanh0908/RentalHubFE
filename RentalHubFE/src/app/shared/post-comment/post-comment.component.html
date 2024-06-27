@@ -17,7 +17,12 @@
         >{{ moment(this.comment.createdAt).calendar() }}</span
       >
       <!--Nội dung Comment -->
-      <div class="mt-2">
+      <div class="mt-2 flex flex-col">
+        <span
+          *ngIf="this.comment._nameParent"
+          class="text-gray-500 text-xs text-left max-w-fit"
+          >Trả lời cho <mark>&#64;{{ this.comment._nameParent }}</mark>
+        </span>
         <span> {{ this.comment._content }} </span>
       </div>
     </div>
@@ -60,7 +65,7 @@
   </div>
 </div>
 <!-- Replies -->
-<div class="pl-5" *ngIf="this.shouldOpenReplies">
+<div *ngIf="this.shouldOpenReplies">
   <div>
     <app-write-post-comment-form
       [commentForPostId]="this.comment._postId"
@@ -68,7 +73,10 @@
       (createCommentSuccess)="createCommentSuccess($event)"
     ></app-write-post-comment-form>
   </div>
-  <div *ngFor="let comment of this.replies">
+  <div
+    *ngFor="let comment of this.replies"
+    [ngClass]="this.comment._nameParent ? '' : 'pl-5'"
+  >
     <app-post-comment [comment]="comment"></app-post-comment>
   </div>
   <span
