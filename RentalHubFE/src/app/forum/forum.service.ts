@@ -162,11 +162,22 @@ export class ForumService {
       'multipart/form-data'
     );
     let body = new FormData();
-
     body.append('_postId', _postId);
     body.append('_content', _content);
     if (_parentId) {
       body.append('_parentId', _parentId);
+    }
+    if (_images) {
+      const numberOfImages = _images.length;
+      for (let i = 0; i < numberOfImages; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(_images[i]);
+        body.append('_images', _images[i]);
+        // console.log(
+        //   '🚀 ~ file: post.service.ts:85 ~ PostService ~ createPost ~ images[i]:',
+        //   images[i]
+        // );
+      }
     }
 
     return this.http
