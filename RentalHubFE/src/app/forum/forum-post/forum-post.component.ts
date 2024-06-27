@@ -27,6 +27,7 @@ import { ForumPostModel } from './forum-post.model';
 import { state } from '@angular/animations';
 import { PostCommentDialogComponent } from 'src/app/shared/post-comment-dialog/post-comment-dialog.component';
 import { PostCommentModel } from 'src/app/shared/post-comment/write-post-comment-form/post-comment.model';
+import { ReportDialogComponent } from 'src/app/posts/report-dialog/report-dialog.component';
 
 @Component({
   selector: 'app-forum-post',
@@ -241,5 +242,12 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
         this.postCommentsToDisplay = event;
       }
     }
+  }
+
+  openReportDialog(postId: String) {
+    const dialog = this.dialog.open(ReportDialogComponent, {
+      width: '600px',
+      data: postId,
+    });
   }
 }

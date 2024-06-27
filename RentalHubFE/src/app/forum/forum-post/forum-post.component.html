@@ -61,7 +61,7 @@
             <mat-icon>send</mat-icon>
             <span class="text-primary-text-color mb-0 text-sm">Liên hệ</span>
           </button>
-          <button mat-menu-item>
+          <button mat-menu-item (click)="openReportDialog(this.post._id)">
             <mat-icon>report</mat-icon>
             <span class="text-primary-text-color mb-0 text-sm">Báo cáo</span>
           </button>
