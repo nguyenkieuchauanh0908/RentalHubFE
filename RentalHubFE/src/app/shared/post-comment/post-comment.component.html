@@ -4,16 +4,21 @@
   class="flex flex-col relative gap-1 ml-10 mb-6 p-2 shadow-lg rounded-md"
 >
   <!-- Avatar - name - time - comment-->
-  <div class="flex gap-2 cursor-pointer" [matMenuTriggerFor]="menu">
+  <div class="flex gap-2">
     <!-- Avatar -->
     <img
+      [matMenuTriggerFor]="menu"
       src="{{ this.comment._avatar }}"
       alt="User avatar"
-      class="w-8 h-8 rounded-full"
+      class="w-8 h-8 rounded-full cursor-pointer"
     />
     <!-- Name - time - content - image -->
     <div class="flex flex-col text-left">
-      <span class="font-medium text-black-color">{{ this.comment._name }}</span>
+      <span
+        class="font-medium text-black-color cursor-pointer"
+        [matMenuTriggerFor]="menu"
+        >{{ this.comment._name }}</span
+      >
       <span
         class="text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
         >{{ moment(this.comment.createdAt).calendar() }}</span
@@ -67,6 +72,7 @@
   </div>
   <!-- Comment's images (if have) -->
   <app-slider
+    class="cursor-pointer"
     *ngIf="this.comment._images.length > 0"
     [sliderItems]="this.comment._images"
   ></app-slider>
