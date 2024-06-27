@@ -16,6 +16,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { PostCommentModel } from './write-post-comment-form/post-comment.model';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { PostCommentEditDialogComponent } from './post-comment-edit-dialog/post-comment-edit-dialog.component';
 
 @Component({
   selector: 'app-post-comment',
@@ -25,6 +26,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 export class PostCommentComponent implements OnInit, OnDestroy {
   @Input() comment!: PostCommentModel;
   @Output() deleteCommentSuccess = new EventEmitter();
+  @Output() updateCommentSuccess = new EventEmitter<PostCommentModel[]>();
   moment!: any;
   $destroy: Subject<Boolean> = new Subject();
   currentUser: User | null = null;
@@ -169,6 +171,22 @@ export class PostCommentComponent implements OnInit, OnDestroy {
 
       this.replies!.unshift(event);
     }
+  }
+
+  editComment() {
+    const dialogRef = this.dialog.open(PostCommentEditDialogComponent, {
+      width: '700px',
+      data: this.comment,
+    });
+    const sub = dialogRef.componentInstance.updateCommentSuccess
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
+        //Gọi API xóa bình luận và update lại UI
+        this.updateCommentSuccess.emit();
+      });
+    dialogRef.afterClosed().subscribe(() => {
+      // sub.unsubscribe();
+    });
   }
 
   deleteComment() {

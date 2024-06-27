@@ -34,6 +34,7 @@ import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { PostCommentDialogComponent } from './post-comment-dialog/post-comment-dialog.component';
 import { WritePostCommentFormComponent } from './post-comment/write-post-comment-form/write-post-comment-form.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { PostCommentEditDialogComponent } from './post-comment/post-comment-edit-dialog/post-comment-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
     PostCommentComponent,
     PostCommentDialogComponent,
     WritePostCommentFormComponent,
+    PostCommentEditDialogComponent,
   ],
   imports: [
     CommonModule,

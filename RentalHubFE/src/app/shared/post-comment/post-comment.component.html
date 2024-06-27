@@ -49,7 +49,7 @@
           >more_vert</mat-icon
         >
         <mat-menu #menu="matMenu" style="width: fit-content">
-          <button mat-menu-item>
+          <button mat-menu-item (click)="editComment()">
             <mat-icon>edit</mat-icon>
             <span
               class="text-primary-text-color mb-0 text-sm"

@@ -1,0 +1,155 @@
+<div class="relative">
+  <div *ngIf="isLoading" class="spinner__loading text-center">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+  <h2 mat-dialog-title>{{ this.title }}</h2>
+  <mat-dialog-content>
+    <!-- Edit modal -->
+
+    <!-- Reply for - Comment text area - emoji picker - Add images - Send btn -->
+    <div *ngIf="this.currentUser" class="flex flex-col w-full relative p-2">
+      <!-- Reply for -->
+      <span
+        *ngIf="this.commentForParent.creatorName"
+        class="text-gray-500 text-xs text-left max-w-fit"
+        >Trả lời cho
+        <mark class="bg-gray-300 rounded-sm"
+          >&#64;{{ this.commentForParent.creatorName }}</mark
+        >
+      </span>
+      <!-- Reply Form -->
+      <form [formGroup]="commentEditForm" class="w-full">
+        <textarea
+          id="message"
+          rows="4"
+          (focus)="commentInputOnFocus()"
+          [(ngModel)]="this.commentEditForm.value.commentInputControl"
+          formControlName="commentInputControl"
+          class="block p-2.5 min-w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          placeholder="Nhập bình luận..."
+        ></textarea>
+        <!-- Images -->
+        <div *ngIf="this.showUploadFileArea">
+          <span
+            class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white"
+            >Ảnh (tối đa 5 ảnh)</span
+          >
+          <div class="-auto">
+            <div class="flex flex-row flex-wrap w-100">
+              <!-- Image -->
+              <div
+                (click)="deleteImage(preview, index)"
+                *ngFor="let preview of previews; index as index"
+                class="xs:basis-[44%] sm:basis-[25%] md:basis-[15%] border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-30 w-full"
+              >
+                <img
+                  *ngIf="preview !== ''"
+                  [src]="preview"
+                  class="hover:cursor-pointer object-fill max-h-28 w-full rounded-lg"
+                />
+                <div
+                  class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
+                  *ngIf="preview === ''"
+                  (click)="updateFiles.click()"
+                >
+                  <svg
+                    class="w-6 h-10 text-primary-400 dark:text-primary-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                </div>
+
+                <input
+                  (change)="updateFile($event, index)"
+                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="image_file"
+                  type="file"
+                  #updateFiles
+                  formControlName="updateFilesInputControl"
+                />
+              </div>
+              <!-- Add image -->
+              <div
+                *ngIf="previews.length < 5"
+                (click)="addImage.click()"
+                class="xs:basis-[44%] sm:basis-[25%] md:basis-[15%] border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-30 w-full"
+              >
+                <input
+                  (change)="addNewImage($event)"
+                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="addImage"
+                  type="file"
+                  formControlName="addFilesInputControl"
+                  #addImage
+                />
+
+                <div
+                  class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
+                >
+                  <svg
+                    class="w-6 h-10 text-primary-400 dark:text-primary-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex place-content-end cursor-pointer text-left mt-1 gap-0.5"
+        >
+          <div (click)="toggleEmojiPicker()" class="relative top-2">😀</div>
+          <mat-icon
+            [ngStyle]="{ color: 'black' }"
+            class="relative top-1"
+            (click)="uploadFileIconClicked()"
+          >
+            attach_file</mat-icon
+          >
+          <button
+            (click)="cancelDialog()"
+            class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-1.5 text-center me-2 mb-1.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          >
+            Hủy
+          </button>
+          <button
+            (click)="submitComment()"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-1.5 text-center me-2 mb-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Gửi
+          </button>
+        </div>
+        <emoji-mart
+          class="emoji-mart"
+          set="facebook"
+          *ngIf="showEmojiPicker"
+          (emojiSelect)="addEmoji($event)"
+          title="Pick your emoji…"
+        ></emoji-mart>
+      </form>
+    </div>
+
+    <notifier-container></notifier-container>
+  </mat-dialog-content>
+</div>
