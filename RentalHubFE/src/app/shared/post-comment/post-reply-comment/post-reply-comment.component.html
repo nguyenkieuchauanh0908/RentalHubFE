@@ -128,10 +128,10 @@
     *ngFor="let comment of this.replies"
     [ngClass]="this.comment._nameParent ? '' : 'pl-5'"
   >
-    <app-post-reply-comment
+    <app-post-comment
       [comment]="comment"
-      (deleteChildCommentSuccess)="deleteChildCommentSuccess(comment)"
-    ></app-post-reply-comment>
+      (deleteChildCmtSuccess)="deleteChildCmtSuccess(comment)"
+    ></app-post-comment>
   </div>
   <span (click)="openReplies()" class="hover:text-blue-600 cursor-pointer ml-16"
     >Ẩn đi</span

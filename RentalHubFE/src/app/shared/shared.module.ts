@@ -35,6 +35,7 @@ import { PostCommentDialogComponent } from './post-comment-dialog/post-comment-d
 import { WritePostCommentFormComponent } from './post-comment/write-post-comment-form/write-post-comment-form.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { PostCommentEditDialogComponent } from './post-comment/post-comment-edit-dialog/post-comment-edit-dialog.component';
+import { PostReplyCommentComponent } from './post-comment/post-reply-comment/post-reply-comment.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { PostCommentEditDialogComponent } from './post-comment/post-comment-edit
     PostCommentDialogComponent,
     WritePostCommentFormComponent,
     PostCommentEditDialogComponent,
+    PostReplyCommentComponent,
   ],
   imports: [
     CommonModule,

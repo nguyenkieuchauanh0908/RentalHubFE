@@ -195,4 +195,13 @@ export class ForumService {
       })
       .pipe(catchError(handleError));
   }
+
+  hideComment(commentId: string) {
+    let queryParams = new HttpParams().append('commentId', commentId);
+    return this.http
+      .delete<resDataDTO>(environment.baseUrl + 'comment/hide-comment', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
 }

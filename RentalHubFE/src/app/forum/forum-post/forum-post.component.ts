@@ -251,12 +251,21 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  deleteComment(comment: PostCommentModel) {
+  //Xóa bình luận trực tiếp của bài viết
+  deleteCommentSuccess(commentId: string) {
+    console.log('Update UI after delete successfully', commentId);
     this.postCommentsToDisplay = this.postCommentsToDisplay!.filter(
       (cmt: PostCommentModel) => {
-        return cmt._id !== comment._id;
+        // if (cmt.totalReplies > 0) {
+        //   cmt.totalReplies = cmt.totalReplies - 1;
+        // }
+
+        return cmt._id !== commentId;
       }
     );
-    this.notifierService.notify('success', 'Xóa bình luận thành công');
+    console.log(
+      '🚀 ~ ForumPostComponent ~ deleteComment ~ this.postCommentsToDisplay:',
+      this.postCommentsToDisplay
+    );
   }
 }
