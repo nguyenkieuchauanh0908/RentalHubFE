@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../post.service';
 import { NotifierService } from 'angular-notifier';
@@ -57,6 +57,7 @@ export class ReportDialogComponent implements OnDestroy, OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { postId: string; postType: number },
+    public matDialog: MatDialog,
     private accountService: AccountService,
     private router: Router,
     private forumService: ForumService,
@@ -125,13 +126,16 @@ export class ReportDialogComponent implements OnDestroy, OnInit {
           .subscribe(
             (res) => {
               if (res.data) {
+                this.isLoading = false;
                 this.notifierService.notify(
                   'success',
                   'Báo cáo của bạn đã được ghi nhận!'
                 );
+                this.matDialog.closeAll();
               }
             },
             (err) => {
+              this.isLoading = false;
               this.notifierService.notify(
                 'error',
                 'Đã có lỗi xảy ra, vui lòng thử lại sau'

@@ -42,7 +42,6 @@
     <button mat-button mat-dialog-close>Hủy</button>
     <button
       mat-button
-      [mat-dialog-close]="false"
       [disabled]="!updatedReportedContent && !otherReportedContent.content"
       (click)="submitReport()"
       cdkFocusInitial
