@@ -109,11 +109,16 @@
     </div>
   </div>
   <!-- Comment's images (if have) -->
-  <app-slider
+  <!-- <app-slider
     class="cursor-pointer"
     *ngIf="this.comment._images.length > 0"
     [sliderItems]="this.comment._images"
-  ></app-slider>
+  ></app-slider> -->
+  <ng-image-slider
+    *ngIf="this.comment._images.length > 0"
+    [images]="sliderImages"
+    #nav
+  ></ng-image-slider>
 </div>
 <!-- Replies -->
 <div *ngIf="this.shouldOpenReplies" class="p-2">

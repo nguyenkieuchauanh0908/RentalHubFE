@@ -7,4 +7,14 @@ export class Utils {
     console.log('Your converted array is: ', convertedArray);
     return convertedArray;
   }
+
+  countTimesAppearedOfAnItemInAnArray(item: any, array: any) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+      if (array[i] === item) {
+        count++;
+      }
+    }
+    return count;
+  }
 }

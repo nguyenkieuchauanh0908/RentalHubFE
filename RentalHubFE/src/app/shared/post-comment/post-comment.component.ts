@@ -45,6 +45,8 @@ export class PostCommentComponent implements OnInit, OnDestroy {
   totalReplyPage: number = 1;
   replyLimit: number = 5;
 
+  sliderImages: Array<object> = [];
+
   constructor(
     private forumService: ForumService,
     private accountService: AccountService,
@@ -70,6 +72,12 @@ export class PostCommentComponent implements OnInit, OnDestroy {
             creatorId: this.comment._id,
             creatorName: this.comment._name,
           };
+          this.comment._images.forEach((img) => {
+            this.sliderImages.push({
+              image: img,
+              thumbImage: img,
+            });
+          });
         } else {
           this.router.navigate(['/auth/login']);
         }
@@ -184,9 +192,21 @@ export class PostCommentComponent implements OnInit, OnDestroy {
     });
     const sub = dialogRef.componentInstance.updateCommentSuccess
       .pipe(takeUntil(this.$destroy))
-      .subscribe(() => {
+      .subscribe((updatedCmt) => {
         //Gọi API xóa bình luận và update lại UI
-        this.updateCommentSuccess.emit();
+        // this.updateCommentSuccess.emit();
+        this.notifierService.notify(
+          'success',
+          'Cập nhật bình luận thành công!'
+        );
+        this.comment._content = updatedCmt._content;
+        this.comment._images = updatedCmt._images;
+        this.comment._images.forEach((img) => {
+          this.sliderImages.push({
+            image: img,
+            thumbImage: img,
+          });
+        });
       });
     dialogRef.afterClosed().subscribe(() => {
       // sub.unsubscribe();

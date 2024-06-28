@@ -204,4 +204,44 @@ export class ForumService {
       })
       .pipe(catchError(handleError));
   }
+
+  updateComment(
+    _commentId: string,
+    _content: string,
+    _images: FileList,
+    _deleteImageIndexes: number[]
+  ) {
+    const headers = new HttpHeaders().set(
+      'content-type',
+      'multipart/form-data'
+    );
+    let body = new FormData();
+    body.append('_content', _content);
+    if (_images) {
+      const numberOfImages = _images.length;
+      for (let i = 0; i < numberOfImages; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(_images[i]);
+        body.append('_images', _images[i]);
+        // console.log(
+        //   '🚀 ~ file: post.service.ts:85 ~ PostService ~ createPost ~ images[i]:',
+        //   images[i]
+        // );
+      }
+    }
+    if (_deleteImageIndexes.length > 0) {
+      body.append('_deleteImages', _deleteImageIndexes.toString());
+      console.log(
+        '🚀 ~ ForumService ~ updateComment ~  _deleteImageIndexes.toString():',
+        _deleteImageIndexes.toString()
+      );
+    }
+    let queryParams = new HttpParams().append('commentId', _commentId);
+    return this.http
+      .patch<resDataDTO>(environment.baseUrl + 'comment/update-comment', body, {
+        headers: headers,
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
 }

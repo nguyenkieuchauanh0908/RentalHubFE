@@ -38,11 +38,11 @@
             <div class="flex flex-row flex-wrap w-100">
               <!-- Image -->
               <div
-                (click)="deleteImage(preview, index)"
                 *ngFor="let preview of previews; index as index"
                 class="xs:basis-[44%] sm:basis-[25%] md:basis-[15%] border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-30 w-full"
               >
                 <img
+                  (click)="deleteImage(preview, index)"
                   *ngIf="preview !== ''"
                   [src]="preview"
                   class="hover:cursor-pointer object-fill max-h-28 w-full rounded-lg"
@@ -75,7 +75,6 @@
                   id="image_file"
                   type="file"
                   #updateFiles
-                  formControlName="updateFilesInputControl"
                 />
               </div>
               <!-- Add image -->
@@ -89,7 +88,6 @@
                   class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                   id="addImage"
                   type="file"
-                  formControlName="addFilesInputControl"
                   #addImage
                 />
 
