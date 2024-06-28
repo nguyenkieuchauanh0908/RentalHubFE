@@ -7,7 +7,7 @@
   <div class="flex gap-2">
     <!-- Avatar -->
     <img
-      [matMenuTriggerFor]="menu"
+      [matMenuTriggerFor]="seeProfileMenu"
       src="{{ this.comment._avatar }}"
       alt="User avatar"
       class="w-8 h-8 rounded-full cursor-pointer"
@@ -19,7 +19,7 @@
       <div class="flex flex-col text-left">
         <span
           class="font-medium text-black-color cursor-pointer"
-          [matMenuTriggerFor]="menu"
+          [matMenuTriggerFor]="seeProfileMenu"
           >{{ this.comment._name }}</span
         >
         <span
@@ -44,11 +44,11 @@
           [matRippleUnbounded]="true"
           class="cursor-pointer"
           [ngStyle]="{ color: 'black' }"
-          [matMenuTriggerFor]="menu"
+          [matMenuTriggerFor]="hideCmtMenu"
           aria-label="menu to choose"
           >more_vert</mat-icon
         >
-        <mat-menu #menu="matMenu" style="width: fit-content">
+        <mat-menu #hideCmtMenu="matMenu" style="width: fit-content">
           <button mat-menu-item (click)="editComment()">
             <mat-icon>edit</mat-icon>
             <span
@@ -71,7 +71,7 @@
     </div>
 
     <!-- Contact - See profile -->
-    <mat-menu #menu="matMenu" style="width: fit-content">
+    <mat-menu #seeProfileMenu="matMenu" style="width: fit-content">
       <button
         *ngIf="this.currentUser?._id !== this.comment._uId"
         mat-menu-item
