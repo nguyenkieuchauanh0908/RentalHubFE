@@ -186,4 +186,13 @@ export class ForumService {
       })
       .pipe(catchError(handleError));
   }
+
+  reportSocialPost(_postId: string, _reason: string) {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'social/report-social-post', {
+        _postId: _postId,
+        _reason: _reason,
+      })
+      .pipe(catchError(handleError));
+  }
 }

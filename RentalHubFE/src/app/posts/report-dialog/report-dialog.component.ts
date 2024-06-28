@@ -1,8 +1,12 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../post.service';
 import { NotifierService } from 'angular-notifier';
+import { Subject, takeUntil } from 'rxjs';
+import { AccountService } from 'src/app/accounts/accounts.service';
+import { Router } from '@angular/router';
+import { ForumService } from 'src/app/forum/forum.service';
 
 export interface ReportContent {
   id: Number;
@@ -15,9 +19,13 @@ export interface ReportContent {
   templateUrl: './report-dialog.component.html',
   styleUrls: ['./report-dialog.component.scss'],
 })
-export class ReportDialogComponent {
+export class ReportDialogComponent implements OnDestroy, OnInit {
+  postType: number = 0; //0: Bài viết cho thuê trọ, 1: Bài viết MXH
+  $destroy: Subject<boolean> = new Subject();
   isLoading = false;
   warningMessage: String = '';
+  isAuthenticated = false;
+  postIdToReport: string;
   reportContents: ReportContent[] = [
     {
       id: 0,
@@ -48,12 +56,28 @@ export class ReportDialogComponent {
   updatedReportedContent!: String;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: String,
+    @Inject(MAT_DIALOG_DATA) public data: { postId: string; postType: number },
+    private accountService: AccountService,
+    private router: Router,
+    private forumService: ForumService,
     private postService: PostService,
     private notifierService: NotifierService
   ) {
     this.updatedReportedContent = '';
-    this.isLoading = false;
+    console.log(data);
+    this.postIdToReport = data.postId;
+    this.postType = data.postType;
+  }
+  ngOnInit(): void {
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        this.isAuthenticated = !!user;
+      });
+  }
+  ngOnDestroy(): void {
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
   }
 
   setOnly(checked: Boolean, reportContent: ReportContent) {
@@ -75,20 +99,49 @@ export class ReportDialogComponent {
   submitReport() {
     this.isLoading = true;
     console.log('On reporting...', this.updatedReportedContent);
-    if (this.updatedReportedContent) {
-      this.postService
-        .reportPosts(this.data, this.updatedReportedContent)
-        .subscribe((res) => {
-          if (res.data) {
-            this.isLoading = true;
-            this.notifierService.notify(
-              'success',
-              'Đã báo cáo bài viết thành công!'
-            );
-          }
-        });
+    if (this.isAuthenticated) {
+      //Báo cáo bài viết cho thuê trọ
+      if (this.postType === 0) {
+        this.postService
+          .reportPosts(this.postIdToReport, this.updatedReportedContent)
+          .subscribe((res) => {
+            if (res.data) {
+              this.isLoading = true;
+              this.notifierService.notify(
+                'success',
+                'Đã báo cáo bài viết thành công!'
+              );
+            }
+          });
+      }
+      //Báo cáo bài viết MXH
+      else {
+        this.forumService
+          .reportSocialPost(
+            this.postIdToReport,
+            this.updatedReportedContent.toString()
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe(
+            (res) => {
+              if (res.data) {
+                this.notifierService.notify(
+                  'success',
+                  'Báo cáo của bạn đã được ghi nhận!'
+                );
+              }
+            },
+            (err) => {
+              this.notifierService.notify(
+                'error',
+                'Đã có lỗi xảy ra, vui lòng thử lại sau'
+              );
+            }
+          );
+      }
     } else {
-      this.warningMessage = 'Vui lòng chọn hoặc điền nội dung báo cáo!';
+      this.notifierService.notify('warning', 'Phiên đăng nhập đã hết hạn');
+      this.router.navigate(['/']);
     }
   }
 }

@@ -247,7 +247,7 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
   openReportDialog(postId: String) {
     const dialog = this.dialog.open(ReportDialogComponent, {
       width: '600px',
-      data: postId,
+      data: { postId: postId, postType: 1 },
     });
   }
 
