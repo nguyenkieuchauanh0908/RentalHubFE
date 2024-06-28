@@ -119,6 +119,7 @@ export class PostCommentEditDialogComponent implements OnInit, OnDestroy {
             this.showEmojiPicker = false;
             this.showUploadFileArea = false;
             this.updateCommentSuccess.emit(res.data);
+            this.dialog.closeAll();
           }
         });
     } else {

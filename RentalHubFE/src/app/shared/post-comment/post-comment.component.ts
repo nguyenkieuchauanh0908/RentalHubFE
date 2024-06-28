@@ -201,6 +201,7 @@ export class PostCommentComponent implements OnInit, OnDestroy {
         );
         this.comment._content = updatedCmt._content;
         this.comment._images = updatedCmt._images;
+        this.sliderImages = [];
         this.comment._images.forEach((img) => {
           this.sliderImages.push({
             image: img,
