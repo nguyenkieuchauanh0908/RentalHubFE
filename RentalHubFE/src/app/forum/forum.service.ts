@@ -162,16 +162,85 @@ export class ForumService {
       'multipart/form-data'
     );
     let body = new FormData();
-
     body.append('_postId', _postId);
     body.append('_content', _content);
     if (_parentId) {
       body.append('_parentId', _parentId);
     }
+    if (_images) {
+      const numberOfImages = _images.length;
+      for (let i = 0; i < numberOfImages; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(_images[i]);
+        body.append('_images', _images[i]);
+        // console.log(
+        //   '🚀 ~ file: post.service.ts:85 ~ PostService ~ createPost ~ images[i]:',
+        //   images[i]
+        // );
+      }
+    }
 
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'comment/create-comment', body, {
         headers: headers,
+      })
+      .pipe(catchError(handleError));
+  }
+
+  reportSocialPost(_postId: string, _reason: string) {
+    return this.http
+      .post<resDataDTO>(environment.baseUrl + 'social/report-social-post', {
+        _postId: _postId,
+        _reason: _reason,
+      })
+      .pipe(catchError(handleError));
+  }
+
+  hideComment(commentId: string) {
+    let queryParams = new HttpParams().append('commentId', commentId);
+    return this.http
+      .delete<resDataDTO>(environment.baseUrl + 'comment/hide-comment', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
+
+  updateComment(
+    _commentId: string,
+    _content: string,
+    _images: FileList,
+    _deleteImageIndexes: number[]
+  ) {
+    const headers = new HttpHeaders().set(
+      'content-type',
+      'multipart/form-data'
+    );
+    let body = new FormData();
+    body.append('_content', _content);
+    if (_images) {
+      const numberOfImages = _images.length;
+      for (let i = 0; i < numberOfImages; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(_images[i]);
+        body.append('_images', _images[i]);
+        // console.log(
+        //   '🚀 ~ file: post.service.ts:85 ~ PostService ~ createPost ~ images[i]:',
+        //   images[i]
+        // );
+      }
+    }
+    if (_deleteImageIndexes.length > 0) {
+      body.append('_deleteImages', _deleteImageIndexes.toString());
+      console.log(
+        '🚀 ~ ForumService ~ updateComment ~  _deleteImageIndexes.toString():',
+        _deleteImageIndexes.toString()
+      );
+    }
+    let queryParams = new HttpParams().append('commentId', _commentId);
+    return this.http
+      .patch<resDataDTO>(environment.baseUrl + 'comment/update-comment', body, {
+        headers: headers,
+        params: queryParams,
       })
       .pipe(catchError(handleError));
   }

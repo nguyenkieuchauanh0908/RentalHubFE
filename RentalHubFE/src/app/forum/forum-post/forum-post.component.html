@@ -167,7 +167,6 @@
       <div
         *ngIf="this.post._totalComment > 0"
         class="flex items-center ml-2 relative bottom-1"
-        (click)="seeComments()"
       >
         <span>{{ this.post._totalComment }}</span>
         <mat-icon
@@ -175,7 +174,6 @@
           [matRippleCentered]="true"
           [matRippleUnbounded]="true"
           [ngStyle]="{ color: 'black' }"
-          class="cursor-pointer"
           >chat_bubble_outline</mat-icon
         >
       </div>
@@ -194,11 +192,27 @@
       class="flex flex-col gap-6 text-left"
     >
       <div *ngFor="let comment of this.postCommentsToDisplay">
-        <app-post-comment [comment]="comment"></app-post-comment>
+        <app-post-comment
+          [comment]="comment"
+          (deleteCommentSuccess)="deleteCommentSuccess(comment._id)"
+        ></app-post-comment>
       </div>
+      <p
+        *ngIf="
+          this.currentCommentPage < this.totalCommentPage;
+          else endOfCommentPage
+        "
+        (click)="loadComments()"
+        class="text-sm font-normal cursor-pointer text-center text-blue-500 hover:text-blue-600 hover:font-medium"
+      >
+        Xem thêm bình luận
+      </p>
     </div>
-    <ng-template #noComments class="text-center">
-      <span>Chưa có bình luận nào!</span>
+    <ng-template #endOfCommentPage class="text-center">
+      <span class="text-center">Bạn đã xem hết các bình luận!</span>
+    </ng-template>
+    <ng-template #noComments class="w-full text-center">
+      <span class="text-center">Chưa có bình luận nào!</span>
     </ng-template>
   </div>
 </div>

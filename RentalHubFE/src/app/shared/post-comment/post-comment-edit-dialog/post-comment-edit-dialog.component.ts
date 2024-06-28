@@ -1,61 +1,90 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { PostCommentModel } from '../write-post-comment-form/post-comment.model';
+import { FormBuilder, Validators } from '@angular/forms';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotifierService } from 'angular-notifier';
-import { Subject, takeUntil } from 'rxjs';
-import { AccountService } from 'src/app/accounts/accounts.service';
-import { User } from 'src/app/auth/user.model';
 import { ForumService } from 'src/app/forum/forum.service';
-import { PostCommentModel } from './post-comment.model';
+import { Subject, takeUntil } from 'rxjs';
+import { User } from 'src/app/auth/user.model';
+import { AccountService } from 'src/app/accounts/accounts.service';
+import { Utils } from '../../utils';
 
 @Component({
-  selector: 'app-write-post-comment-form',
-  templateUrl: './write-post-comment-form.component.html',
-  styleUrls: ['./write-post-comment-form.component.scss'],
+  selector: 'app-post-comment-edit-dialog',
+  templateUrl: './post-comment-edit-dialog.component.html',
+  styleUrls: ['./post-comment-edit-dialog.component.scss'],
 })
-export class WritePostCommentFormComponent implements OnInit, OnDestroy {
+export class PostCommentEditDialogComponent implements OnInit, OnDestroy {
   @Input() commentForParent: {
     creatorName: string | null;
     creatorId: string | null;
   } = { creatorId: null, creatorName: null };
   @Input() commentForPostId!: string;
-  @Output() createCommentSuccess = new EventEmitter<PostCommentModel[]>();
+  @Output() updateCommentSuccess = new EventEmitter<PostCommentModel>();
   $destroy: Subject<boolean> = new Subject();
+  isLoading: boolean = false;
   currentUser: User | null = null;
   isNotSubmitted: boolean = true;
   showEmojiPicker: boolean = false;
   showUploadFileArea: boolean = false;
+  initialImagesLength: number = 0;
   commentEditForm = this.formBuilder.group({
     commentInputControl: [{ value: '', disabled: false }, Validators.required],
     addFilesInputControl: [],
     updateFilesInputControl: [],
   });
 
+  preDeletedIndex: number = 0;
+  totalDeletedImagesUntilCleared = 0;
   previews: string[] = [];
   selectedImage!: File;
   selectedFiles!: FileList;
   selectedFileNames: string[] = [];
   updatedFiles!: FileList;
   deletedImageIndexes: number[] = [];
+  title: string = 'Chi tiết bình luận';
+  currentComment: PostCommentModel | null = null;
+  utils = new Utils();
 
   constructor(
     private accountService: AccountService,
     private formBuilder: FormBuilder,
+    private notifierService: NotifierService,
     private forumService: ForumService,
-    private notifierService: NotifierService
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: PostCommentModel
   ) {}
   ngOnInit(): void {
-    this.isNotSubmitted = true;
+    this.showUploadFileArea = false;
+    this.showEmojiPicker = false;
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         this.currentUser = user;
+        this.currentComment = this.data;
+        console.log(
+          '🚀 ~ PostCommentEditDialogComponent ~ this.currentComment:',
+          this.currentComment
+        );
+        this.initialImagesLength = this.currentComment._images.length;
+        if (this.currentUser && this.currentComment) {
+          this.commentEditForm.patchValue({
+            commentInputControl: this.currentComment._content,
+          });
+          if (this.currentComment._images.length > 0) {
+            this.previews = this.currentComment._images;
+            this.showUploadFileArea = true;
+          }
+        }
+        this.isLoading = false;
       });
   }
   ngOnDestroy(): void {
@@ -65,26 +94,32 @@ export class WritePostCommentFormComponent implements OnInit, OnDestroy {
 
   submitComment() {
     this.isNotSubmitted = false;
-    console.log(this.commentEditForm.value.commentInputControl);
+    console.log(
+      'Param values',
+      this.commentEditForm.value.commentInputControl,
+      this.updatedFiles,
+      this.deletedImageIndexes
+    );
+
     //Call API to submit comment
     if (this.commentEditForm.value.commentInputControl || this.updatedFiles) {
       this.forumService
-        .createComment(
-          this.commentForPostId,
-          this.commentForParent.creatorId,
+        .updateComment(
+          this.currentComment!._id,
           this.commentEditForm.value.commentInputControl!,
-          this.updatedFiles
+          this.updatedFiles,
+          this.deletedImageIndexes
         )
         .pipe(takeUntil(this.$destroy))
         .subscribe((res) => {
           if (res.data) {
-            this.notifierService.notify('success', 'Gửi bình luận thành công!');
             this.commentEditForm.patchValue({
               commentInputControl: '',
             });
             this.showEmojiPicker = false;
             this.showUploadFileArea = false;
-            this.createCommentSuccess.emit(res.data);
+            this.updateCommentSuccess.emit(res.data);
+            this.dialog.closeAll();
           }
         });
     } else {
@@ -144,6 +179,7 @@ export class WritePostCommentFormComponent implements OnInit, OnDestroy {
         this.selectedFileNames.push(this.selectedFiles[i].name);
       }
     }
+    this.preDeletedIndex = this.previews.length - 1;
   }
 
   addNewImage(event: any) {
@@ -174,39 +210,75 @@ export class WritePostCommentFormComponent implements OnInit, OnDestroy {
         this.selectedFileNames.push(this.selectedFiles[i].name);
       }
     }
+    this.preDeletedIndex = this.previews.length - 1;
   }
 
   deleteImage(preview: any, index: number) {
-    this.previews.splice(index, 1);
+    this.previews.splice(index, 1, '');
     console.log(
-      '🚀 ~ PostsEditComponent ~ deleteImage ~ this.previews:',
-      this.previews.length
+      "🚀 ~ PostCommentEditDialogComponent ~ deleteImage ~ this.utils.countTimesAppearedOfAnItemInAnArray('', this.previews):",
+      this.utils.countTimesAppearedOfAnItemInAnArray('', this.previews)
     );
-    if (!this.deletedImageIndexes.includes(index)) {
+    console.log(
+      '🚀 ~ PostCommentEditDialogComponent ~ deleteImage ~ this.currentComment!._images.length:',
+      this.initialImagesLength
+    );
+    console.log(
+      '🚀 ~ PostCommentEditDialogComponent ~ deleteImage ~ this.totalDeletedImagesUntilCleared:',
+      this.totalDeletedImagesUntilCleared
+    );
+    if (
+      !this.deletedImageIndexes.includes(index) &&
+      this.utils.countTimesAppearedOfAnItemInAnArray('', this.previews) <=
+        this.initialImagesLength
+    ) {
       this.deletedImageIndexes.push(index);
-      console.log(
-        '🚀 ~ file: post-edit-dialog.component.ts:101 ~ PostEditDialogComponent ~ updateFile ~ this.deletedImageIndexes:',
-        this.deletedImageIndexes
-      );
     }
-
-    this.removeFileFromFileList(index);
+    if (
+      this.utils.countTimesAppearedOfAnItemInAnArray('', this.previews) >
+      this.initialImagesLength
+    ) {
+      console.log(
+        'Deleted at index ',
+        index - this.initialImagesLength - this.totalDeletedImagesUntilCleared,
+        'of updatedFiles'
+      );
+      this.removeFileFromFileList(
+        index - this.initialImagesLength - this.totalDeletedImagesUntilCleared
+      );
+      this.totalDeletedImagesUntilCleared += 1;
+      if (this.updatedFiles.length == 0) {
+        console.log('AAAAAAAAAAAAAAA');
+        this.totalDeletedImagesUntilCleared = 0;
+      }
+    }
   }
 
   removeFileFromFileList(index: number) {
     const updatedFileList = new DataTransfer();
+    // let updatedIndiex = index;
+    // if (this.preDeletedIndex < index) {
+    //   updatedIndiex -= 1;
+    // }
+    // console.log(updatedIndiex);
     if (this.updatedFiles) {
       for (let i = 0; i < this.updatedFiles.length; i++) {
         updatedFileList.items.add(this.updatedFiles[i]);
-        if (index === i) {
+        if (i === index) {
           updatedFileList.items.remove(index);
         }
       }
     }
     this.updatedFiles = updatedFileList.files;
+    // this.preDeletedIndex = index;
+
     console.log(
       '🚀 ~ WritePostCommentFormComponent ~ removeFileFromFileList ~ this.updatedFiles:',
-      this.updatedFiles
+      this.updatedFiles.length
     );
+  }
+
+  cancelDialog() {
+    this.dialog.closeAll();
   }
 }

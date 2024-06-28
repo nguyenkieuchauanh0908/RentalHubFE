@@ -6,30 +6,28 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router, NavigationExtras } from '@angular/router';
+import { NotifierService } from 'angular-notifier';
 import * as moment from 'moment';
 import { Subject, takeUntil } from 'rxjs';
-import { ForumService } from 'src/app/forum/forum.service';
-import { ChatBotService, UserChatsType } from '../chat-bot/chat-bot.service';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { User } from 'src/app/auth/user.model';
-import { NavigationExtras, Router } from '@angular/router';
-import { PostCommentModel } from './write-post-comment-form/post-comment.model';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { PostCommentEditDialogComponent } from './post-comment-edit-dialog/post-comment-edit-dialog.component';
-import { NotifierService } from 'angular-notifier';
+import { ForumService } from 'src/app/forum/forum.service';
+import { UserChatsType, ChatBotService } from '../../chat-bot/chat-bot.service';
+import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { PostCommentEditDialogComponent } from '../post-comment-edit-dialog/post-comment-edit-dialog.component';
+import { PostCommentModel } from '../write-post-comment-form/post-comment.model';
 
 @Component({
-  selector: 'app-post-comment',
-  templateUrl: './post-comment.component.html',
-  styleUrls: ['./post-comment.component.scss'],
+  selector: 'app-post-reply-comment',
+  templateUrl: './post-reply-comment.component.html',
+  styleUrls: ['./post-reply-comment.component.scss'],
 })
-export class PostCommentComponent implements OnInit, OnDestroy {
+export class PostReplyCommentComponent implements OnInit, OnDestroy {
   @Input() comment!: PostCommentModel;
-  @Output() deleteCommentSuccess = new EventEmitter();
-  @Output() updateCommentSuccess = new EventEmitter<PostCommentModel[]>();
-
-  @Output() deleteChildCmtSuccess = new EventEmitter();
+  @Output() deleteChildCommentSuccess = new EventEmitter();
+  @Output() updateChildCommentSuccess = new EventEmitter<PostCommentModel[]>();
   moment!: any;
   $destroy: Subject<Boolean> = new Subject();
   currentUser: User | null = null;
@@ -44,8 +42,6 @@ export class PostCommentComponent implements OnInit, OnDestroy {
   currentReplyPage: number = 0;
   totalReplyPage: number = 1;
   replyLimit: number = 5;
-
-  sliderImages: Array<object> = [];
 
   constructor(
     private forumService: ForumService,
@@ -72,12 +68,6 @@ export class PostCommentComponent implements OnInit, OnDestroy {
             creatorId: this.comment._id,
             creatorName: this.comment._name,
           };
-          this.comment._images.forEach((img) => {
-            this.sliderImages.push({
-              image: img,
-              thumbImage: img,
-            });
-          });
         } else {
           this.router.navigate(['/auth/login']);
         }
@@ -193,28 +183,14 @@ export class PostCommentComponent implements OnInit, OnDestroy {
     const sub = dialogRef.componentInstance.updateCommentSuccess
       .pipe(takeUntil(this.$destroy))
       .subscribe((updatedCmt) => {
-        //Gọi API xóa bình luận và update lại UI
-        // this.updateCommentSuccess.emit();
-        this.notifierService.notify(
-          'success',
-          'Cập nhật bình luận thành công!'
-        );
-        this.comment._content = updatedCmt._content;
-        this.comment._images = updatedCmt._images;
-        this.sliderImages = [];
-        this.comment._images.forEach((img) => {
-          this.sliderImages.push({
-            image: img,
-            thumbImage: img,
-          });
-        });
+        //Update lại UI với bình luận đã chỉnh sủa
       });
     dialogRef.afterClosed().subscribe(() => {
-      // sub.unsubscribe();
+      sub.unsubscribe();
     });
   }
 
-  //Xóa bình luận: level 0: Bình luận root, 1: bình luận child
+  //Xóa bình luận con
   deleteComment() {
     if (this.currentUser) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -230,11 +206,7 @@ export class PostCommentComponent implements OnInit, OnDestroy {
                 'success',
                 'Xóa bình luận thành công!'
               );
-              if (!this.comment._parentId) {
-                this.deleteCommentSuccess.emit();
-              } else {
-                this.deleteChildCmtSuccess.emit();
-              }
+              this.deleteChildCommentSuccess.emit();
             }
           },
           (err) => {
@@ -254,9 +226,9 @@ export class PostCommentComponent implements OnInit, OnDestroy {
     }
   }
 
-  //Update UI Xóa bình luận con của bình luận root
-  deleteChildCommentSuccess(comment: PostCommentModel) {
-    console.log('Update UI after delete successfully', comment);
+  //Update UI xóa bình luận con
+  deleteChildCmtSuccess(comment: PostCommentModel) {
+    console.log('Update UI child after delete successfully', comment);
     this.replies = this.replies!.filter((cmt: PostCommentModel) => {
       return cmt._id !== comment._id;
     });
@@ -265,40 +237,4 @@ export class PostCommentComponent implements OnInit, OnDestroy {
       this.replies
     );
   }
-
-  //Xóa bình luận con
-  // deleteChildComment() {
-  //   if (this.currentUser) {
-  //     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-  //       width: '400px',
-  //       data: 'Bạn có chắc muốn xóa bình luận này?',
-  //     });
-  //     const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
-  //       //Gọi API xóa bình luận và update lại UI
-  //       this.forumService.hideComment(this.comment._id).subscribe(
-  //         (res) => {
-  //           if (res.data) {
-  //             this.notifierService.notify(
-  //               'success',
-  //               'Xóa bình luận thành công!'
-  //             );
-  //             this.deleteChildCmtSuccess.emit();
-  //           }
-  //         },
-  //         (err) => {
-  //           this.notifierService.notify(
-  //             'error',
-  //             'Đã có lỗi xảy ra, vui lòng thử lại sau'
-  //           );
-  //         }
-  //       );
-  //     });
-  //     dialogRef.afterClosed().subscribe(() => {
-  //       sub.unsubscribe();
-  //     });
-  //   } else {
-  //     this.notifierService.notify('warning', 'Phiên đăng nhập đã hết hạn');
-  //     this.router.navigate(['/']);
-  //   }
-  // }
 }

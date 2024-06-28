@@ -109,16 +109,11 @@
     </div>
   </div>
   <!-- Comment's images (if have) -->
-  <!-- <app-slider
+  <app-slider
     class="cursor-pointer"
     *ngIf="this.comment._images.length > 0"
     [sliderItems]="this.comment._images"
-  ></app-slider> -->
-  <ng-image-slider
-    *ngIf="this.comment._images.length > 0"
-    [images]="sliderImages"
-    #nav
-  ></ng-image-slider>
+  ></app-slider>
 </div>
 <!-- Replies -->
 <div *ngIf="this.shouldOpenReplies" class="p-2">
@@ -133,10 +128,10 @@
     *ngFor="let comment of this.replies"
     [ngClass]="this.comment._nameParent ? '' : 'pl-5'"
   >
-    <app-post-reply-comment
+    <app-post-comment
       [comment]="comment"
-      (deleteChildCommentSuccess)="deleteChildCommentSuccess(comment)"
-    ></app-post-reply-comment>
+      (deleteChildCmtSuccess)="deleteChildCmtSuccess(comment)"
+    ></app-post-comment>
   </div>
   <span (click)="openReplies()" class="hover:text-blue-600 cursor-pointer ml-16"
     >Ẩn đi</span
