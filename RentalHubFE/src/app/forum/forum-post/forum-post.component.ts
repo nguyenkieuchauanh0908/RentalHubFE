@@ -49,9 +49,9 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
   currentChat: UserChatsType | null = null;
 
   postCommentsToDisplay: PostCommentModel[] | null = null;
-  currentCommentPage: number = 1;
+  currentCommentPage: number = 0;
   commentLimt: number = 5;
-  totalCommentPage: number = 0;
+  totalCommentPage: number = 1;
 
   constructor(
     public dialog: MatDialog,
@@ -75,22 +75,23 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
           if (this.post) {
             this.isLoading = false;
             if (this.post._totalComment > 0) {
-              this.forumService
-                .getParentCommentsOfPost(
-                  this.post._id,
-                  this.currentCommentPage,
-                  this.commentLimt
-                )
-                .pipe(takeUntil(this.$destroy))
-                .subscribe(
-                  (res) => {
-                    if (res.data) {
-                      this.postCommentsToDisplay = res.data;
-                      this.totalCommentPage = res.pagination.total;
-                    }
-                  },
-                  (err) => {}
-                );
+              this.loadComments();
+              // this.forumService
+              //   .getParentCommentsOfPost(
+              //     this.post._id,
+              //     this.currentCommentPage,
+              //     this.commentLimt
+              //   )
+              //   .pipe(takeUntil(this.$destroy))
+              //   .subscribe(
+              //     (res) => {
+              //       if (res.data) {
+              //         this.postCommentsToDisplay = res.data;
+              //         this.totalCommentPage = res.pagination.total;
+              //       }
+              //     },
+              //     (err) => {}
+              //   );
             }
           }
         } else {
@@ -135,6 +136,36 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
         .subscribe(() => {
           sub.unsubscribe();
         });
+    }
+  }
+
+  loadComments() {
+    if (this.currentCommentPage < this.totalCommentPage) {
+      this.isLoading = false;
+      this.currentCommentPage += 1;
+      this.forumService
+        .getParentCommentsOfPost(
+          this.post._id,
+          this.currentCommentPage,
+          this.commentLimt
+        )
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.isLoading = false;
+              this.totalCommentPage = res.pagination.total;
+              if (!this.postCommentsToDisplay) {
+                this.postCommentsToDisplay = res.data;
+              } else {
+                this.postCommentsToDisplay = this.postCommentsToDisplay.concat(
+                  res.data
+                );
+              }
+            }
+          },
+          (err) => {}
+        );
     }
   }
 
