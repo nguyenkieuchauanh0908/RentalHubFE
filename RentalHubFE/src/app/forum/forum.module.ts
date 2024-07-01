@@ -15,6 +15,8 @@ import {
   RichTextEditorModule,
   ToolbarService,
 } from '@syncfusion/ej2-angular-richtexteditor';
+import { ForumSearchResultComponent } from './forum-search-result/forum-search-result.component';
+import { SearchResultAccountComponent } from './forum-search-result/search-result-account/search-result-account.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import {
     ForumPostComponent,
     SocialPostEditDialogComponent,
     ForumSidemenuComponent,
+    ForumSearchResultComponent,
+    SearchResultAccountComponent,
   ],
   imports: [
     CommonModule,

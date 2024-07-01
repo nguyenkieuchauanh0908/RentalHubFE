@@ -3,6 +3,7 @@ import { ForumHomeComponent } from './forum-home/forum-home.component';
 import { AuthGuard } from '../auth/auth.guard';
 import { RouterModule, Routes } from '@angular/router';
 import { ProfileComponent } from './profile/profile.component';
+import { ForumSearchResultComponent } from './forum-search-result/forum-search-result.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,11 @@ const routes: Routes = [
       {
         path: 'profile/:uId',
         component: ProfileComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'search',
+        component: ForumSearchResultComponent,
         canActivate: [AuthGuard],
       },
       {

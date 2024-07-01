@@ -36,7 +36,7 @@ import { WritePostCommentFormComponent } from './post-comment/write-post-comment
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { PostCommentEditDialogComponent } from './post-comment/post-comment-edit-dialog/post-comment-edit-dialog.component';
 import { PostReplyCommentComponent } from './post-comment/post-reply-comment/post-reply-comment.component';
-
+import { MatChipsModule } from '@angular/material/chips';
 @NgModule({
   declarations: [
     TagsComponent,
@@ -76,6 +76,7 @@ import { PostReplyCommentComponent } from './post-comment/post-reply-comment/pos
     NotifierModule,
     PostCardComponent,
     PickerComponent,
+    MatChipsModule,
   ],
   exports: [
     CommonModule,
@@ -97,6 +98,7 @@ import { PostReplyCommentComponent } from './post-comment/post-reply-comment/pos
     PostCommentComponent,
     WritePostCommentFormComponent,
     PickerComponent,
+    MatChipsModule,
   ],
 })
 export class SharedModule {}

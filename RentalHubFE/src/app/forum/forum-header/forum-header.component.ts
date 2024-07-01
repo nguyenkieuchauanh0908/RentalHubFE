@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { keyDown } from '@syncfusion/ej2-angular-richtexteditor';
 import { NotifierService } from 'angular-notifier';
 import { Subscription, Subject, takeUntil, Observable } from 'rxjs';
 import { AccountService } from 'src/app/accounts/accounts.service';
@@ -146,11 +147,15 @@ export class ForumHeaderComponent implements OnInit, OnDestroy {
   onSearchByKeyword(searchForm: any) {
     console.log('Your keyword: ', searchForm.search);
     if (searchForm.search) {
-      //Gọi API tìm kiếm
+      //Gọi API tìm kiếm và chuyển đến trang search của forum
+      this.router.navigate([
+        '/forum/search',
+        {
+          keyword: searchForm.search,
+        },
+      ]);
     } else {
-      this.router.navigate(['']).then(() => {
-        window.location.reload();
-      });
+      this.router.navigate(['/forum/home']);
     }
   }
 
