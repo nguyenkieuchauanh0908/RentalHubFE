@@ -244,4 +244,17 @@ export class ForumService {
       })
       .pipe(catchError(handleError));
   }
+
+  searchByKeyword(keyword: string, type: number, page: number, limit: number) {
+    let queryParams = new HttpParams()
+      .append('keyword', keyword)
+      .append('type', type)
+      .append('page', page)
+      .append('limit', limit);
+    this.http
+      .get(environment.baseUrl + 'social/search-social-medias', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
+  }
 }
