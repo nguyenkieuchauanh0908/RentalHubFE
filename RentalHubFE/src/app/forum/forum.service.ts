@@ -3,14 +3,65 @@ import { Injectable } from '@angular/core';
 import { resDataDTO } from '../shared/resDataDTO';
 import { environment } from 'src/environments/environment';
 import { handleError } from '../shared/handle-errors';
-import { catchError, tap } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, catchError, tap } from 'rxjs';
+import { ForumPostModel } from './forum-post/forum-post.model';
+import { Pagination } from '../shared/pagination/pagination.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ForumService {
-  //0: Đang đăng, 1: Khóa (do chủ bài đăng), 2: Bị report (đã được duyệt)
+  $destroy: Subject<boolean> = new Subject<boolean>();
+  private subscriptions: Subscription[] = [];
+  //Status of social posts: 0: Đang đăng, 1: Khóa (do chủ bài đăng), 2: Bị report (đã được duyệt)
+  currentKeyword = new BehaviorSubject<string | null>(null);
+  getCurrentKeyword = this.currentKeyword.asObservable();
+  setCurrentKeyword(updatedKeyword: string | null) {
+    this.currentKeyword.next(updatedKeyword);
+  }
+
+  currentSearchResultPosts = new BehaviorSubject<ForumPostModel[] | null>(null);
+  getCurrentSearchResultPosts = this.currentSearchResultPosts.asObservable();
+  setCurrentSearchResultPosts(searchResult: ForumPostModel[] | null) {
+    this.currentSearchResultPosts.next(searchResult);
+  }
+
+  currentSearchResultAccounts = new BehaviorSubject<any[] | null>(null);
+  getCurrentSearchResultAccounts =
+    this.currentSearchResultAccounts.asObservable();
+  setCurrentSearchResultAccounts(accounts: any[] | null) {
+    this.currentSearchResultAccounts.next(accounts);
+  }
+
+  currentSearchResultPostPagination = new BehaviorSubject<Pagination | null>(
+    null
+  );
+  getCurrentSearchResultPostPagination =
+    this.currentSearchResultPostPagination.asObservable();
+  setCurrentSearchResultPostPagination(pagination: Pagination) {
+    this.currentSearchResultPostPagination.next(pagination);
+  }
+
+  currentSearchResultAccountPagination = new BehaviorSubject<Pagination | null>(
+    null
+  );
+  getCurrentSearchResultAccountPagination =
+    this.currentSearchResultAccountPagination.asObservable();
+  setCurrentSearchResultAccountPagination(pagination: Pagination) {
+    this.currentSearchResultAccountPagination.next(pagination);
+  }
+
   constructor(private http: HttpClient) {}
+
+  destroy() {
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
+    });
+    console.log(
+      'destroying subscription of chat service!',
+      this.subscriptions.length
+    );
+  }
 
   getSocialPosts(
     page: number,
@@ -246,15 +297,75 @@ export class ForumService {
   }
 
   searchByKeyword(keyword: string, type: number, page: number, limit: number) {
+    console.log(
+      '🚀 ~ ForumService ~ searchByKeyword ~ keyword ~ type:',
+      keyword,
+      type
+    );
+    // status 0: search posts, 1: search accounts
     let queryParams = new HttpParams()
       .append('keyword', keyword)
       .append('type', type)
       .append('page', page)
       .append('limit', limit);
-    this.http
-      .get(environment.baseUrl + 'social/search-social-medias', {
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'social/search-social-medias', {
         params: queryParams,
       })
-      .pipe(catchError(handleError));
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            console.log('🚀 ~ ForumService ~ tap ~ res.data:', res.data);
+            // if (type === 0) {
+            //   console.log('🚀 ~ ForumService ~ tap ~ type:', type);
+
+            //   let updatedPostSearchResult: any[] | null = [];
+            //   this.setCurrentSearchResultPostPagination(res.pagination);
+            //   let postSearchSub = this.getCurrentSearchResultPosts.subscribe(
+            //     (posts) => {
+            //       console.log('🚀 ~ ForumService ~ tap ~ posts:', posts);
+            //       if (posts) {
+            //         updatedPostSearchResult = posts.concat(res.data);
+            //       } else {
+            //         updatedPostSearchResult = res.data;
+            //         console.log(
+            //           '🚀 ~ ForumService ~ tap ~ res.data:',
+            //           res.data
+            //         );
+            //       }
+            //     }
+            //   );
+            //   if (updatedPostSearchResult) {
+            //     this.setCurrentSearchResultPosts(updatedPostSearchResult);
+            //   }
+            //   console.log(
+            //     '🚀 ~ ForumService ~ tap ~ updatedPostSearchResult:',
+            //     updatedPostSearchResult
+            //   );
+
+            //   this.subscriptions.push(postSearchSub);
+            // } else {
+            //   console.log('🚀 ~ ForumService ~ tap ~ type:', type);
+            //   let updatedAccountsSearchResult: any[] | null = [];
+            //   this.setCurrentSearchResultAccountPagination(res.pagination);
+            //   let accountResultSub =
+            //     this.getCurrentSearchResultAccounts.subscribe((accounts) => {
+            //       if (accounts) {
+            //         updatedAccountsSearchResult = accounts.concat(res.data);
+            //       } else {
+            //         updatedAccountsSearchResult = res.data;
+            //       }
+            //     });
+            //   if (updatedAccountsSearchResult) {
+            //     this.setCurrentSearchResultAccounts(
+            //       updatedAccountsSearchResult
+            //     );
+            //   }
+            //   this.subscriptions.push(accountResultSub);
+            // }
+          }
+        })
+      );
   }
 }

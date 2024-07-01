@@ -13,12 +13,9 @@
   <div
     class="grid col-span-12 lg:col-span-7 mt-6 mb-12 bg-white-background shadow-md rounded-md text-center scroll-container scroll-smooth scrollbar-hide"
   >
-    <div
-      #forumSearchResultContainer
-      *ngIf="this.socialPostsToDisplay"
-      class="flex flex-col justify-start"
-    >
-      <div class="sticky top-0 p-2 bg-white z-20">
+    <div #forumSearchResultContainer class="flex flex-col justify-start">
+      <!-- Tabs -->
+      <div class="sticky top-0 p-2 bg-white z-20 flex justify-between">
         <mat-chip-listbox aria-label="status selection">
           <mat-chip-option
             selected
@@ -32,24 +29,73 @@
             >Tài khoản</mat-chip-option
           >
         </mat-chip-listbox>
+        <span class="flex justify-center items-center"
+          >Từ khóa tìm kiếm:
+          <span class="text-black-color font-medium">{{
+            this.currentKeyword
+          }}</span></span
+        >
       </div>
+      <!-- Search result -->
       <div *ngIf="this.currentSearchType === 0; else accountSearchResult">
-        <div *ngFor="let post of this.socialPostsToDisplay">
-          <app-forum-post [post]="post"></app-forum-post>
+        <div *ngIf="this.currentSearchPostsResult; else noSearchResult">
+          <div *ngFor="let post of this.currentSearchPostsResult">
+            <app-forum-post [post]="post"></app-forum-post>
+          </div>
         </div>
       </div>
       <ng-template #accountSearchResult class="flex flex-col justify-start p-5">
-        <app-search-result-account></app-search-result-account>
-        <app-search-result-account></app-search-result-account>
-        <app-search-result-account></app-search-result-account>
-        <app-search-result-account></app-search-result-account>
+        <div *ngIf="this.currentSearchAccountsResult; else noSearchResult">
+          <div *ngFor="let account of this.currentSearchAccountsResult">
+            <app-search-result-account
+              [account]="account"
+            ></app-search-result-account>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #noSearchResult>
+        <span class="mb-6 text-black-color"
+          >Không có kết quả tìm kiếm trùng khớp!</span
+        >
       </ng-template>
     </div>
 
-    <!-- <span class="mb-6" *ngIf="this.currentSearchType === 0; else endOfAccountSearchResult">Bạn đã xem hết các bài viết!</span>
-    <ng-template #endOfAccountSearchResult>
-        <span class="mb-6">!</span>
-    </ng-template> -->
+    <div
+      class="mb-6"
+      *ngIf="this.currentSearchType === 0; else seeMoreAccountResults"
+    >
+      <span
+        *ngIf="
+          this.postsPagination.page < this.postsPagination.total &&
+          this.currentSearchPostsResult
+        "
+        class="font-medium text-blue-500 cursor-pointer"
+        (click)="
+          this.loadSearchResults(
+            this.postsPagination.page + 1,
+            this.postsPagination.total
+          )
+        "
+        >Hiển thị thêm các kết quả trùng khớp cho bài viết</span
+      >
+    </div>
+    <ng-template #seeMoreAccountResults>
+      <p
+        *ngIf="
+          this.accountPagination.page < this.accountPagination.total &&
+          this.currentSearchAccountsResult
+        "
+        class="mb-6 font-medium text-blue-500 cursor-pointer"
+        (click)="
+          this.loadSearchResults(
+            this.accountPagination.page + 1,
+            this.accountPagination.total
+          )
+        "
+      >
+        Hiển thị thêm các kết quả tìm kiếm trùng khớp cho người dùng
+      </p>
+    </ng-template>
   </div>
   <!-- Billboard -->
   <div

@@ -3,18 +3,23 @@
   <div class="flex gap-2 cursor-pointer">
     <img
       (click)="seeProfile()"
-      src="../../../../assets/images/user.png"
+      src="{{ this.account._avatar }}"
       class="w-8 h-8 rounded-full"
     />
     <div class="flex flex-col text-left">
-      <span (click)="seeProfile()" class="font-medium text-black-color"
-        >Nguyễn Kiều Châu Anh</span
-      >
-      <span class="font-normal text-gray-600">Tổng số bài viết: 0 </span>
+      <span (click)="seeProfile()" class="font-medium text-black-color">{{
+        this.account._name
+      }}</span>
+      <span class="font-normal text-gray-600"
+        >Tổng số bài viết: {{ this.account._totalSocialPost }}
+      </span>
     </div>
   </div>
   <!-- Contact & Report for viewers -->
-  <div>
+  <div
+    (click)="addToContactAndGoToChatBot()"
+    *ngIf="this.currentUser?._id !== this.account._id"
+  >
     <img
       #tooltip="matTooltip"
       matTooltip="Gửi tin nhắn"
