@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { keyDown } from '@syncfusion/ej2-angular-richtexteditor';
 import { NotifierService } from 'angular-notifier';
 import { Subscription, Subject, takeUntil, Observable } from 'rxjs';
 import { AccountService } from 'src/app/accounts/accounts.service';
@@ -8,10 +9,14 @@ import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-e
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
+import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { DisplayNotiDialogComponent } from 'src/app/shared/display-noti-dialog/display-noti-dialog.component';
 import { NotificationService } from 'src/app/shared/notifications/notification.service';
+import { Pagination } from 'src/app/shared/pagination/pagination.service';
 import { resDataDTO } from 'src/app/shared/resDataDTO';
+import { ForumService } from '../forum.service';
+import { ForumPostModel } from '../forum-post/forum-post.model';
 @Component({
   selector: 'app-forum-header',
   templateUrl: './forum-header.component.html',
@@ -37,6 +42,7 @@ export class ForumHeaderComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private postService: PostService,
+    private forumService: ForumService,
     private accountService: AccountService,
     private notifierService: NotifierService,
     private notificationService: NotificationService,
@@ -145,12 +151,46 @@ export class ForumHeaderComponent implements OnInit, OnDestroy {
 
   onSearchByKeyword(searchForm: any) {
     console.log('Your keyword: ', searchForm.search);
+    let stateData!: {
+      searchResult: ForumPostModel[] | null;
+      pagination: Pagination;
+      keyword: string;
+    };
+
+    this.forumService.setCurrentKeyword(searchForm.search);
     if (searchForm.search) {
-      //Gọi API tìm kiếm
+      this.forumService
+        .searchByKeyword(searchForm.search, 0, 1, 5)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            console.log('On navigating to search result page...');
+            stateData = {
+              searchResult: res.data,
+              pagination: res.pagination,
+              keyword: searchForm.search,
+            };
+            this.router.navigate(
+              [
+                '/forum/search',
+                {
+                  keyword: searchForm.search,
+                },
+              ],
+              {
+                state: stateData,
+              }
+            );
+          },
+          (errorMsg) => {
+            this.isLoading = false;
+            this.error = errorMsg;
+            console.log(this.error);
+            this.notifierService.notify('error', errorMsg);
+          }
+        );
     } else {
-      this.router.navigate(['']).then(() => {
-        window.location.reload();
-      });
+      this.router.navigate(['/forum/home']);
     }
   }
 

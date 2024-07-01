@@ -1,0 +1,33 @@
+<div class="flex justify-between p-2 mb-6 mx-4 rounded-md shadow-md">
+  <!-- Creater & time -->
+  <div class="flex gap-2 cursor-pointer">
+    <img
+      (click)="seeProfile()"
+      src="{{ this.account._avatar }}"
+      class="w-8 h-8 rounded-full"
+    />
+    <div class="flex flex-col text-left">
+      <span (click)="seeProfile()" class="font-medium text-black-color">{{
+        this.account._name
+      }}</span>
+      <span class="font-normal text-gray-600"
+        >Tổng số bài viết: {{ this.account._totalSocialPost }}
+      </span>
+    </div>
+  </div>
+  <!-- Contact & Report for viewers -->
+  <div
+    (click)="addToContactAndGoToChatBot()"
+    *ngIf="this.currentUser?._id !== this.account._id"
+  >
+    <img
+      #tooltip="matTooltip"
+      matTooltip="Gửi tin nhắn"
+      matTooltipHideDelay="1000"
+      aria-hidden="false"
+      class="z-40 w-14 h-14 p-2 cursor-pointer"
+      src="../../../../assets/images/icons8-paper-plane-94.png"
+      alt="send message"
+    />
+  </div>
+</div>
