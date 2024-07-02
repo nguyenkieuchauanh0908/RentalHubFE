@@ -83,23 +83,23 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe(
             (res) => {
               this.post = res.data;
-              // this.geocoder
-              //   .geocode({
-              //     address: this.post.roomAddress,
-              //   })
-              //   .subscribe(({ results }) => {
-              //     console.log(results);
-              //     if (results.length > 0) {
-              //       const location: any = results[0].geometry.location;
-              //       // Render map with obtained coordinates
-              //       this.center = {
-              //         lat: location.lat(),
-              //         lng: location.lng(),
-              //       };
-              //     } else {
-              //       console.error('No results found');
-              //     }
-              //   });
+              this.geocoder
+                .geocode({
+                  address: this.post.roomAddress,
+                })
+                .subscribe(({ results }) => {
+                  console.log(results);
+                  if (results.length > 0) {
+                    const location: any = results[0].geometry.location;
+                    // Render map with obtained coordinates
+                    this.center = {
+                      lat: location.lat(),
+                      lng: location.lng(),
+                    };
+                  } else {
+                    console.error('No results found');
+                  }
+                });
               this.route.data
                 .pipe(takeUntil(this.$destroy))
                 .subscribe((data) => {

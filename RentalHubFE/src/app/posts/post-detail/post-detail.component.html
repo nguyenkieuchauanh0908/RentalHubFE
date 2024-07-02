@@ -195,9 +195,10 @@
       </span>
 
       <!-- Map -->
-      <!-- <div class="relative">
+      <div class="relative">
         <p class="text-base font-medium">Bản đồ</p>
         <google-map
+          *ngIf="this.center; else noMap"
           class="absolute left-1/2 -translate-x-1/2 max-w-full"
           height="450"
           [center]="center"
@@ -207,7 +208,10 @@
             [position]="{ lat: this.center.lat, lng: this.center.lng }"
           ></map-marker>
         </google-map>
-      </div> -->
+        <ng-template #noMap>
+          <span>Không có bản đồ có sẵn cho địa chỉ này!</span>
+        </ng-template>
+      </div>
     </div>
   </div>
 
