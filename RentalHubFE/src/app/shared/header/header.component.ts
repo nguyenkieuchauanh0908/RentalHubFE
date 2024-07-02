@@ -140,6 +140,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   readNotiDetail(noti: any) {
     if (noti._type !== 'REPORTED_POST') {
+      window.scrollTo(0, 0); // Scrolls the page to the top
       const dialog = this.dialog.open(DisplayNotiDialogComponent, {
         width: '600px',
         data: noti,
@@ -152,7 +153,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .subscribe((res) => {
           if (res.data) {
             window.scrollTo(0, 0); // Scrolls the page to the top
-
             const dialogRef = this.dialog.open(PostEditDialogComponent, {
               width: '1000px',
               data: res.data,
