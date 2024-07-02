@@ -59,6 +59,7 @@ export class ManageIdentityComponent {
   ) {}
 
   ngOnInit() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.accountService.getCurrentIDCard.subscribe((currentIDCard) => {
       this.identity = currentIDCard;
     });

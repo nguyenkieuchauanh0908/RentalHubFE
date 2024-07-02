@@ -67,6 +67,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     console.log('ngOnInit called');
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.isLoading = true;
     this.currentScrollTopPosition = 0;
     this.currentPostStatus = 0;

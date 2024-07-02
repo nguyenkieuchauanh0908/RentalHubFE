@@ -48,7 +48,7 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService
   ) {}
   ngOnInit() {
-    console.log('ngOnInit...');
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.resetFilter();
     this.currentPage = 1;
     let stateData: {
@@ -57,19 +57,11 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
       keyword: string;
     } = history.state;
     if (stateData) {
-      console.log(
-        '🚀 ~ PostsSearchResultComponent ~ ngOnInit ~ stateData:',
-        stateData
-      );
       this.searchResult = stateData.searchResult;
     }
     this.postService.searchResultsChanged
       .pipe(takeUntil(this.$destroy))
       .subscribe((results) => {
-        console.log(
-          '🚀 ~ PostsSearchResultComponent ~ .subscribe ~ results:',
-          results
-        );
         this.searchResult = results;
       });
     this.postService.searchKeywordChanged
@@ -300,6 +292,7 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         (res) => {
+          window.scrollTo(0, 0); // Scrolls the page to the top
           this.searchResult = res.data;
           this.paginationService.pagination = res.pagination;
           this.totalPages = res.pagination.total;

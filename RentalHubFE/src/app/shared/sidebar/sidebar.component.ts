@@ -37,7 +37,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   showAccount() {
     // this.router.navigate(['/profile/user', this.myProfile?._id]);
     window.scrollTo(0, 0); // Scrolls the page to the top
-
     const dialogRef = this.dialog.open(AccountEditDialogComponent, {
       width: '400px',
       data: this.myProfile,
@@ -51,7 +50,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toLoginDetail() {
     console.log('On opening up edit login detail component...');
     window.scrollTo(0, 0); // Scrolls the page to the top
-
     const dialogRef = this.dialog.open(LoginDetailUpdateDialogComponent, {
       width: '400px',
       data: this.myProfile?._email,
@@ -108,7 +106,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   editAvatar() {
     // this.router.navigate(['/profile/user/edit-avatar', this.myProfile?._id]);
     window.scrollTo(0, 0); // Scrolls the page to the top
-
     const dialogRef = this.dialog.open(UpdateAvatarDialogComponent, {
       width: '400px',
       data: this.myProfile?._avatar,

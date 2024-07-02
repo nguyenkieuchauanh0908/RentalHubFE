@@ -53,6 +53,7 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     private geocoder: MapGeocoder
   ) {}
   ngAfterViewInit(): void {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     setTimeout(() => this.attachingInnerHtmlContent(), 100);
   }
 

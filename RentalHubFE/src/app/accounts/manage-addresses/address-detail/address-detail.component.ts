@@ -44,8 +44,8 @@ export class AddressDetailComponent {
     if (this.data) {
       this.addressDetailForm.patchValue({
         addressInputControl: this.data._address.toString(),
-        inspectorIdInputControl: this.data._inspectorId.toString(),
-        reasonInputControl: this.data._reason.toString(),
+        inspectorIdInputControl: this.data._inspectorId?.toString(),
+        reasonInputControl: this.data._reason?.toString(),
       });
     }
   }

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject, takeUntil } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
 import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
@@ -17,8 +17,9 @@ import { PostEditDialogComponent } from '../posting-history/post-edit-dialog/pos
   templateUrl: './favorite-posts.component.html',
   styleUrls: ['./favorite-posts.component.scss'],
 })
-export class FavoritePostsComponent {
+export class FavoritePostsComponent implements OnInit, OnDestroy {
   private getPostHistorySub!: Subscription;
+  $destroy: Subject<boolean> = new Subject();
   profile!: User | null;
   currentUid!: string | null;
   myProfile!: User | null;
@@ -56,39 +57,48 @@ export class FavoritePostsComponent {
     public dialog: MatDialog,
     private router: Router,
     private notifier: NotifierService
-  ) {
+  ) {}
+
+  ngOnInit() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
-    this.currentUid = this.accountService.getCurrentUserId();
-    if (this.currentUid) {
-      this.myProfile = this.accountService.getProfile(this.currentUid);
-    }
-    this.getPostHistorySub = this.postService
-      .getFavorites(1, this.pageItemLimit)
-      .subscribe(
-        (res) => {
-          this.postService.getCurrentFavorites.subscribe((postingHistory) => {
-            this.historyPosts = postingHistory!;
-          });
-          this.paginationService.pagination = res.pagination;
-          this.totalPages = res.pagination.total;
-          this.isLoading = false;
-        },
-        (errorMsg) => {
-          this.isLoading = false;
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        if (user) {
+          this.currentUid = user._id;
+          this.myProfile = user;
+          this.postService
+            .getFavorites(1, this.pageItemLimit)
+            .pipe(takeUntil(this.$destroy))
+            .subscribe(
+              (res) => {
+                this.postService.getCurrentFavorites.subscribe(
+                  (postingHistory) => {
+                    this.historyPosts = postingHistory!;
+                  }
+                );
+                this.paginationService.pagination = res.pagination;
+                this.totalPages = res.pagination.total;
+                this.isLoading = false;
+              },
+              (errorMsg) => {
+                this.isLoading = false;
+              }
+            );
+          this.postService.getCurrentFavoritesId
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((favourites) => {
+              this.currentFavourites = favourites;
+            });
         }
-      );
-  }
-
-  ngOnInit() {
-    this.currentUid = this.accountService.getCurrentUserId();
-    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
-      this.currentFavourites = favourites;
-    });
+      });
   }
   ngOnDestroy(): void {
-    this.getPostHistorySub.unsubscribe();
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
   }
 
   toPostDetail(postId: String) {
@@ -96,34 +106,41 @@ export class FavoritePostsComponent {
   }
 
   toUnfavorPost(postId: String) {
-    this.postService.getCurrentFavorites.subscribe((favorites) => {
-      if (favorites) {
-        favorites = favorites.filter((post) => {
-          console.log(post._postId, postId);
-          return String(post._postId) !== postId;
-        });
-        this.historyPosts = favorites;
-      }
-    });
-    this.postService.createFavorite(postId).subscribe();
+    this.postService.getCurrentFavorites
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((favorites) => {
+        if (favorites) {
+          favorites = favorites.filter((post) => {
+            console.log(post._postId, postId);
+            return String(post._postId) !== postId;
+          });
+          this.historyPosts = favorites;
+        }
+      });
+    this.postService
+      .createFavorite(postId)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe();
     this.getPostHistorySub = this.postService
       .getFavorites(this.currentPage, this.pageItemLimit)
       .subscribe(
         (res) => {
           if (res.data) {
-            this.postService.getCurrentFavorites.subscribe((favorites) => {
-              if (favorites) {
-                favorites = favorites.filter((post) => {
-                  console.log(post._postId, postId);
-                  return String(post._postId) !== postId;
-                });
-                this.historyPosts = favorites;
-                this.notifier.notify(
-                  'success',
-                  'Bỏ thích bài viết thành công!'
-                );
-              }
-            });
+            this.postService.getCurrentFavorites
+              .pipe(takeUntil(this.$destroy))
+              .subscribe((favorites) => {
+                if (favorites) {
+                  favorites = favorites.filter((post) => {
+                    console.log(post._postId, postId);
+                    return String(post._postId) !== postId;
+                  });
+                  this.historyPosts = favorites;
+                  this.notifier.notify(
+                    'success',
+                    'Bỏ thích bài viết thành công!'
+                  );
+                }
+              });
           }
 
           this.paginationService.pagination = res.pagination;
@@ -157,13 +174,16 @@ export class FavoritePostsComponent {
 
     this.getPostHistorySub = this.postService
       .getFavorites(this.currentPage, this.pageItemLimit)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
-          console.log(res.data);
+          window.scrollTo(0, 0); // Scrolls the page to the top
           this.historyPosts = res.data;
-          this.postService.getCurrentFavorites.subscribe((postingHistory) => {
-            this.historyPosts = postingHistory!;
-          });
+          this.postService.getCurrentFavorites
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((postingHistory) => {
+              this.historyPosts = postingHistory!;
+            });
           this.paginationService.pagination = res.pagination;
           this.totalPages = res.pagination.total;
           this.isLoading = false;

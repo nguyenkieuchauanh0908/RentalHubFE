@@ -120,6 +120,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
         this.isHost = user._isHost;
       }
     });
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.postService.setCurrentChosenTags([]);
     this.getTagSub = this.postService.getAllTags().subscribe();
 

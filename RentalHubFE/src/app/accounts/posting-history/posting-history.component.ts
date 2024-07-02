@@ -73,53 +73,62 @@ export class PostingHistoryComponent {
   ) {}
 
   ngOnInit() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
-    this.currentUid = this.accountService.getCurrentUserId();
-    if (this.currentUid) {
-      this.myProfile = this.accountService.getProfile(this.currentUid);
-    }
-    this.getPostHistorySub = this.postService
-      .getPostsHistory(0, this.currentPage, this.pageItemLimit)
-      .subscribe(
-        (res) => {
-          // console.log(res.data);
-          this.historyPosts = res.data;
-          this.postService.getCurrentPostingHistory.subscribe(
-            (postingHistory) => {
-              this.historyPosts = postingHistory!;
-            }
-          );
-          this.paginationService.pagination = res.pagination;
-          this.totalPages = res.pagination.total;
-          this.isLoading = false;
-        },
-        (errorMsg) => {
-          this.isLoading = false;
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        if (user) {
+          this.currentUid = user._id;
+          this.myProfile = user;
+          this.getPostHistorySub = this.postService
+            .getPostsHistory(0, this.currentPage, this.pageItemLimit)
+            .pipe(takeUntil(this.$destroy))
+            .subscribe(
+              (res) => {
+                this.historyPosts = res.data;
+                this.postService.getCurrentPostingHistory
+                  .pipe(takeUntil(this.$destroy))
+                  .subscribe((postingHistory) => {
+                    this.historyPosts = postingHistory!;
+                  });
+                this.paginationService.pagination = res.pagination;
+                this.totalPages = res.pagination.total;
+                this.isLoading = false;
+              },
+              (errorMsg) => {
+                this.isLoading = false;
+              }
+            );
+          this.getTagSub = this.postService
+            .getAllTags()
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((res) => {
+              if (res.data) {
+                console.log('Get tags successfully...');
+                res.data.forEach((tag: Tags) => {
+                  this.sourceTags.add(tag);
+                });
+              }
+            });
         }
-      );
-    this.getTagSub = this.postService.getAllTags().subscribe((res) => {
-      if (res.data) {
-        console.log('Get tags successfully...');
-        res.data.forEach((tag: Tags) => {
-          this.sourceTags.add(tag);
-        });
-      }
-    });
-
-    this.currentUid = this.accountService.getCurrentUserId();
+      });
   }
   ngOnDestroy(): void {
-    this.getPostHistorySub.unsubscribe();
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
   }
 
   toAllPostHistory() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(4, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -131,7 +140,6 @@ export class PostingHistoryComponent {
             this.historyPosts = [];
             this.isLoading = false;
           }
-          //console.log(this.historyPosts);
         },
         (errorMsg) => {
           this.isLoading = false;
@@ -142,11 +150,13 @@ export class PostingHistoryComponent {
   }
 
   toStackPostsHistory() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(0, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -158,7 +168,6 @@ export class PostingHistoryComponent {
             this.historyPosts = [];
             this.isLoading = false;
           }
-          //console.log(this.historyPosts);
         },
         (errorMsg) => {
           this.isLoading = false;
@@ -169,11 +178,13 @@ export class PostingHistoryComponent {
   }
 
   toOnWallPostsHistory() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(1, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -185,7 +196,6 @@ export class PostingHistoryComponent {
             this.historyPosts = [];
             this.isLoading = false;
           }
-          //console.log(this.historyPosts);
         },
         (errorMsg) => {
           this.isLoading = false;
@@ -196,11 +206,13 @@ export class PostingHistoryComponent {
   }
 
   toUnSensoredPostsHistory() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(3, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -212,7 +224,6 @@ export class PostingHistoryComponent {
             this.historyPosts = [];
             this.isLoading = false;
           }
-          //console.log(this.historyPosts);
         },
         (errorMsg) => {
           this.isLoading = false;
@@ -223,10 +234,12 @@ export class PostingHistoryComponent {
   }
 
   toHiddenPostsHistory() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.isLoading = true;
     this.historyPosts = [];
     this.getPostHistorySub = this.postService
       .getPostsHistory(2, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -268,9 +281,11 @@ export class PostingHistoryComponent {
     }
     this.getPostHistorySub = this.postService
       .getPostsHistory(this.currentActiveStatus.status, this.currentPage, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
+            window.scrollTo(0, 0); // Scrolls the page to the top
             this.historyPosts = res.data;
             this.totalPages = res.pagination.total;
             this.isLoading = false;
@@ -278,8 +293,8 @@ export class PostingHistoryComponent {
             this.historyPosts = [];
             this.isLoading = false;
           }
-          console.log(this.historyPosts);
-          console.log(this.currentActiveStatus.status);
+          // console.log(this.historyPosts);
+          // console.log(this.currentActiveStatus.status);
         },
         (errorMsg) => {
           this.isLoading = false;
@@ -361,6 +376,7 @@ export class PostingHistoryComponent {
         this.currentPage,
         this.pageItemLimit
       )
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {

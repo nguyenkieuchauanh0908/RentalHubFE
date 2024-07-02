@@ -1,5 +1,5 @@
 <div [ngClass]="isLoading ? 'opacity-70' : ''">
-  <h2 mat-dialog-title>Chi tiết bài viết</h2>
+  <h2 mat-dialog-title>Chi tiết</h2>
   '
   <div *ngIf="isLoading" class="spinner__loading">
     <mat-spinner diameter="30"></mat-spinner>
@@ -9,11 +9,11 @@
     <div>
       <form [formGroup]="addressDetailForm">
         <!-- Reported Reasons Tags -->
-        <div class="mb-6" *ngIf="data._status === 4">
+        <div class="mb-6" *ngIf="data._status === 2">
           <label
             for="base-input"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Lý do bị báo cáo</label
+            >Lý do không được duyệt</label
           >
           <div *ngIf="data._reason">
             <div class="flex flex-row flex-wrap">
@@ -45,7 +45,7 @@
             Thông tin <strong>bắt buộc</strong>
           </mat-error>
         </mat-form-field>
-        <!-- Address -->
+        <!-- ID Inspector -->
         <mat-form-field class="w-full">
           <mat-label>ID kiểm duyệt viên</mat-label>
           <input

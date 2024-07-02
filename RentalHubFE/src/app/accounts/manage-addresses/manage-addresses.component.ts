@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject, takeUntil } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
 import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
@@ -19,7 +19,8 @@ import { AddressDetailComponent } from './address-detail/address-detail.componen
   templateUrl: './manage-addresses.component.html',
   styleUrls: ['./manage-addresses.component.scss'],
 })
-export class ManageAddressesComponent {
+export class ManageAddressesComponent implements OnInit, OnDestroy {
+  $destroy: Subject<boolean> = new Subject();
   title!: string;
   profile!: User | null;
   currentUid!: string | null;
@@ -56,55 +57,71 @@ export class ManageAddressesComponent {
     public dialog: MatDialog,
     private notifierService: NotifierService,
     private addressesService: AddressesService
-  ) {
+  ) {}
+  ngOnInit(): void {
     this.title = 'Quản lý địa chỉ';
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
     this.addresses = [];
-    this.currentUid = this.accountService.getCurrentUserId();
-    this.currentActiveStatus.status = 0;
-    if (this.currentUid) {
-      this.myProfile = this.accountService.getProfile(this.currentUid);
-    }
-    this.addressesService
-      .getAddresses(this.currentActiveStatus.status, 1, 5)
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.addresses = res.data;
-            this.paginationService.pagination = res.pagination;
-            this.totalPages = res.pagination.total;
-          } else {
-            this.addresses = [];
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        if (user) {
+          this.currentUid = user._id;
+          // this.currentUid = this.accountService.getCurrentUserId();
+          this.currentActiveStatus.status = 0;
+          if (this.currentUid) {
+            this.myProfile = this.accountService.getProfile(this.currentUid);
           }
-          this.isLoading = false;
-        },
-        (errorMsg) => {
-          this.isLoading = false;
+          this.addressesService
+            .getAddresses(this.currentActiveStatus.status, 1, 5)
+            .subscribe(
+              (res) => {
+                if (res.data) {
+                  this.addresses = res.data;
+                  this.paginationService.pagination = res.pagination;
+                  this.totalPages = res.pagination.total;
+                } else {
+                  this.addresses = [];
+                }
+                this.isLoading = false;
+              },
+              (errorMsg) => {
+                this.isLoading = false;
+              }
+            );
         }
-      );
+      });
+  }
+  ngOnDestroy(): void {
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
   }
 
   seeDetail(addressId: String) {
     this.isLoading = true;
-    this.addressesService.getAddressById(addressId).subscribe((res) => {
-      this.isLoading = false;
-      if (res.data) {
-        let dialogRef = this.dialog.open(AddressDetailComponent, {
-          width: '1000px',
-          data: res.data,
-        });
-        let sub = dialogRef.componentInstance.closeAddress.subscribe(() => {
-          this.toSensoredAddresses();
-        });
-        sub = dialogRef.componentInstance.reopenAddress.subscribe(() => {
-          this.toUnsuedAddresses();
-        });
-        dialogRef.afterClosed().subscribe(() => {
-          sub.unsubscribe();
-        });
-      }
-    });
+    this.addressesService
+      .getAddressById(addressId)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((res) => {
+        this.isLoading = false;
+        if (res.data) {
+          let dialogRef = this.dialog.open(AddressDetailComponent, {
+            width: '1000px',
+            data: res.data,
+          });
+          let sub = dialogRef.componentInstance.closeAddress.subscribe(() => {
+            this.toSensoredAddresses();
+          });
+          sub = dialogRef.componentInstance.reopenAddress.subscribe(() => {
+            this.toUnsuedAddresses();
+          });
+          dialogRef.afterClosed().subscribe(() => {
+            sub.unsubscribe();
+          });
+        }
+      });
   }
 
   updateAddressStatus(addressId: String, status: number) {
@@ -173,6 +190,7 @@ export class ManageAddressesComponent {
     this.currentActiveStatus.status = 2;
     this.addressesService
       .getAddresses(this.currentActiveStatus.status, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -202,6 +220,7 @@ export class ManageAddressesComponent {
     this.isLoading = true;
     this.addressesService
       .getAddresses(this.currentActiveStatus.status, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -231,6 +250,7 @@ export class ManageAddressesComponent {
     this.addresses = [];
     this.addressesService
       .getAddresses(this.currentActiveStatus.status, 1, 5)
+      .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -271,22 +291,25 @@ export class ManageAddressesComponent {
     } else if (toLastPage) {
       this.currentPage = this.totalPages;
     }
-    this.addressesService.getAddresses(0, 1, 5).subscribe(
-      (res) => {
-        if (res.data) {
-          console.log('🚀 ~ ManageAddressesComponent ~ res.data:', res.data);
-
-          this.addresses = res.data;
-          this.paginationService.pagination = res.pagination;
-          this.totalPages = res.pagination.total;
-        } else {
-          this.addresses = [];
+    this.addressesService
+      .getAddresses(0, 1, 5)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            console.log('🚀 ~ ManageAddressesComponent ~ res.data:', res.data);
+            window.scrollTo(0, 0); // Scrolls the page to the top
+            this.addresses = res.data;
+            this.paginationService.pagination = res.pagination;
+            this.totalPages = res.pagination.total;
+          } else {
+            this.addresses = [];
+          }
+          this.isLoading = false;
+        },
+        (errorMsg) => {
+          this.isLoading = false;
         }
-        this.isLoading = false;
-      },
-      (errorMsg) => {
-        this.isLoading = false;
-      }
-    );
+      );
   }
 }

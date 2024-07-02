@@ -73,6 +73,7 @@ export class RegisterAddressComponent {
 
   ngOnInit() {
     this.title = 'Đăng ký địa chỉ';
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.myProfileSub = this.accountService.getCurrentUser.subscribe((user) => {
       if (user) {
         this.myProfile = user;
