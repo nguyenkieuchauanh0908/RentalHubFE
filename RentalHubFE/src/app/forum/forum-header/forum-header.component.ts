@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { keyDown } from '@syncfusion/ej2-angular-richtexteditor';
 import { NotifierService } from 'angular-notifier';
 import { Subscription, Subject, takeUntil, Observable } from 'rxjs';
@@ -98,8 +98,17 @@ export class ForumHeaderComponent implements OnInit, OnDestroy {
   }
 
   toMyWall() {
-    let uId = this.user?._id;
     //Chuyển tới trang cá nhân
+    if (this.user) {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          profileName: this.user._fname + this.user._lname,
+          profileImage: this.user._avatar,
+        },
+      };
+
+      this.router.navigate(['/forum/profile', this.user._id], navigationExtras);
+    }
   }
 
   markAsReadAll() {
