@@ -123,6 +123,8 @@ export class ProfileHeaderComponent {
       //Hiện lên chi tiết bài post kèm message thông báo
       this.postService.getReportPostDetails(noti._id).subscribe((res) => {
         if (res.data) {
+          window.scrollTo(0, 0); // Scrolls the page to the top
+
           const dialogRef = this.dialog.open(PostEditDialogComponent, {
             width: '1000px',
             data: res.data,
@@ -226,6 +228,8 @@ export class ProfileHeaderComponent {
   }
 
   logout() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
+
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn đăng xuất?',

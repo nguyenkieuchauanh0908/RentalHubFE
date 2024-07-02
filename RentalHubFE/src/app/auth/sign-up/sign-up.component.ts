@@ -68,6 +68,8 @@ export class SignUpComponent implements OnInit {
               'success',
               'OTP đã được gửi đến email đăng ký!'
             );
+            window.scrollTo(0, 0); // Scrolls the page to the top
+
             const dialogRef = this.dialog.open(OtpDialogComponent, {
               width: '400px',
               data: this.temptEmail,

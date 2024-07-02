@@ -45,6 +45,7 @@ export class LoginDetailUpdateComponent {
 
   saveChanges(form: any) {
     console.log('On saving updates on account details...', form);
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Xác nhận cập nhật thông tin?',

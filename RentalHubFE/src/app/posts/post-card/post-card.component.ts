@@ -42,6 +42,7 @@ export class PostCardComponent {
           window.location.reload();
         });
       } else {
+        window.scrollTo(0, 0); // Scrolls the page to the top
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
           width: '400px',
           data: 'Bạn cần phải đăng nhập để tiếp tục!',

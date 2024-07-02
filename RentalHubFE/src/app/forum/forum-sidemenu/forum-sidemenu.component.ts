@@ -34,6 +34,8 @@ export class ForumSidemenuComponent implements OnInit, OnDestroy {
   }
 
   openCreateSocialPostDialog() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
+
     const dialogRef = this.dialog.open(SocialPostEditDialogComponent, {
       width: '800px',
     });

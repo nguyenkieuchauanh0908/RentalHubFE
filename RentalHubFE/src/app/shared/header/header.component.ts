@@ -151,6 +151,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.$destroy))
         .subscribe((res) => {
           if (res.data) {
+            window.scrollTo(0, 0); // Scrolls the page to the top
+
             const dialogRef = this.dialog.open(PostEditDialogComponent, {
               width: '1000px',
               data: res.data,
@@ -213,6 +215,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn đăng xuất?',

@@ -50,6 +50,10 @@ body {
     scrollbar-width: none; /* Firefox */
   }
 
+  .bdrop {
+    background-color: #bbbbbbf2;
+    backdrop-filter: blur(4px);
+  }
   .user-online {
     display: inline-block;
     height: 8px;
