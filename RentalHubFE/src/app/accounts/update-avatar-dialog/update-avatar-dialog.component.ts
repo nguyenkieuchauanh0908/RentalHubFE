@@ -67,6 +67,7 @@ export class UpdateAvatarDialogComponent {
     this.isLoading = true;
     this.message = [];
     if (this.selectedFiles) {
+      window.scrollTo(0, 0); // Scrolls the page to the to
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '400px',
         data: 'Xác nhận cập nhật ảnh đại diện?',

@@ -341,6 +341,7 @@ export class PostEditDialogComponent
   }
 
   toHidePostDialog() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn gỡ bài viết này không?',
@@ -361,6 +362,8 @@ export class PostEditDialogComponent
   }
 
   toOpenPostDialog() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
+
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn mở lại bài viết? Bài viết sẽ nằm trong mục Chờ duyệt!',

@@ -112,6 +112,8 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   seeComments() {
     if (this.isAuthenticated) {
+      window.scrollTo(0, 0); // Scrolls the page to the top
+
       const dialogRef = this.dialog.open(PostCommentDialogComponent, {
         width: '800px',
         data: {
@@ -121,6 +123,8 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       });
     } else {
+      window.scrollTo(0, 0); // Scrolls the page to the top
+
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '400px',
         data: 'Bạn cần phải đăng nhập để xem toàn bộ bình luận',
@@ -209,6 +213,8 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
 
   editPost() {
     console.log('On editing post...');
+    window.scrollTo(0, 0); // Scrolls the page to the top
+
     const dialogRef = this.dialog.open(SocialPostEditDialogComponent, {
       width: '800px',
       data: this.post,

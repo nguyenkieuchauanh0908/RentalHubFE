@@ -102,6 +102,7 @@ export class ManageIdentityComponent {
   }
 
   updateIdentity() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(IdentityUpdateDialogComponent, {
       width: '800px',
       data: 'Cập nhật CCCD',

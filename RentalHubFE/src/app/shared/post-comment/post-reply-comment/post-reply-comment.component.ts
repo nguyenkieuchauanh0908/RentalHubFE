@@ -176,6 +176,8 @@ export class PostReplyCommentComponent implements OnInit, OnDestroy {
   }
 
   editComment() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
+
     const dialogRef = this.dialog.open(PostCommentEditDialogComponent, {
       width: '700px',
       data: this.comment,
@@ -193,6 +195,8 @@ export class PostReplyCommentComponent implements OnInit, OnDestroy {
   //Xóa bình luận con
   deleteComment() {
     if (this.currentUser) {
+      window.scrollTo(0, 0); // Scrolls the page to the top
+
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '400px',
         data: 'Bạn có chắc muốn xóa bình luận này?',

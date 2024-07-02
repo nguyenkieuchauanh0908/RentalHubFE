@@ -273,6 +273,8 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   openEditAvatarDialog() {
     console.log('openEditAvatarDialog...');
     if (this.currentUser) {
+      window.scrollTo(0, 0); // Scrolls the page to the top
+
       const dialogRef = this.dialog.open(UpdateAvatarDialogComponent, {
         width: '400px',
         data: this.currentUser?._avatar,

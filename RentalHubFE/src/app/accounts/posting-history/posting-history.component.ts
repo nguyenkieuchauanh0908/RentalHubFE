@@ -289,6 +289,7 @@ export class PostingHistoryComponent {
 
   toEditPostDialog(post: any) {
     this.postService.setCurrentChosenTags(post._tags);
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(PostEditDialogComponent, {
       width: '1000px',
       data: post,
@@ -299,6 +300,7 @@ export class PostingHistoryComponent {
   }
 
   activatePost(postId: string) {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn yêu cầu duyệt lại bài viết này không?',

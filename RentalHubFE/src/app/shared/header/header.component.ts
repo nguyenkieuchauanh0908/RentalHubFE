@@ -140,6 +140,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   readNotiDetail(noti: any) {
     if (noti._type !== 'REPORTED_POST') {
+      window.scrollTo(0, 0); // Scrolls the page to the top
       const dialog = this.dialog.open(DisplayNotiDialogComponent, {
         width: '600px',
         data: noti,
@@ -151,6 +152,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.$destroy))
         .subscribe((res) => {
           if (res.data) {
+            window.scrollTo(0, 0); // Scrolls the page to the top
             const dialogRef = this.dialog.open(PostEditDialogComponent, {
               width: '1000px',
               data: res.data,
@@ -213,6 +215,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn đăng xuất?',

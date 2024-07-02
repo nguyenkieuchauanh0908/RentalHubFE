@@ -30,6 +30,7 @@ export class AccountEditDialogComponent {
       _phone: form.phone,
       _email: form.email,
     };
+    window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Xác nhận cập nhật thông tin?',
