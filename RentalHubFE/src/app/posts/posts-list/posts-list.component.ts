@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PostItemComponent } from './post-item/post-item.component';
 import { PostItem } from './post-item/post-item.model';
@@ -49,6 +56,7 @@ export interface FilterCriteria {
   styleUrls: ['./posts-list.component.scss'],
 })
 export class PostsListComponent implements OnInit, OnDestroy {
+  @ViewChild('landingImg') landingImg!: ElementRef;
   backgroundImages = [
     '../../../assets/images/background_3.jpg',
     '../../../assets/images/background_2.jpg',
@@ -57,9 +65,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
   imageIndex = 0;
   filterCriteria!: FilterCriteria;
   priceRanges!: PriceRanges;
-
   currentFavourites: String[] | null = [];
-
   isLoading: boolean = false;
   postList!: PostItem[];
   postListChangedSub: Subscription = new Subscription();
@@ -405,6 +411,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
       });
     this.postListChangedSub = this.postService.postListChanged.subscribe(
       (posts: PostItem[]) => {
+        window.scrollTo(0, this.landingImg.nativeElement.offsetHeight);
         this.postList = posts;
         this.isLoading = false;
       }
