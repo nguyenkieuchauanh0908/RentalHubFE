@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { AccountService } from 'src/app/accounts/accounts.service';
@@ -114,27 +114,77 @@ export class ProfileHeaderComponent {
   }
 
   readNotiDetail(noti: any) {
-    if (noti._type !== 'REPORTED_POST') {
-      const dialog = this.dialog.open(DisplayNotiDialogComponent, {
-        width: '600px',
-        data: noti,
-      });
-    } else {
-      //Hiện lên chi tiết bài post kèm message thông báo
-      this.postService.getReportPostDetails(noti._id).subscribe((res) => {
-        if (res.data) {
-          window.scrollTo(0, 0); // Scrolls the page to the top
-
-          const dialogRef = this.dialog.open(PostEditDialogComponent, {
-            width: '1000px',
-            data: res.data,
+    switch (noti._type) {
+      case 'REPORTED_POST':
+        //Hiện lên chi tiết bài post kèm message thông báo
+        this.postService
+          .getReportPostDetails(noti._id)
+          .pipe(takeUntil(this.$destroy))
+          .subscribe((res) => {
+            if (res.data) {
+              window.scrollTo(0, 0); // Scrolls the page to the top
+              const dialogRef = this.dialog.open(PostEditDialogComponent, {
+                width: '1000px',
+                data: res.data,
+              });
+              dialogRef.afterClosed().subscribe((result) => {
+                console.log(`Dialog result: + $(result)`);
+              });
+            }
           });
-          dialogRef.afterClosed().subscribe((result) => {
-            console.log(`Dialog result: + $(result)`);
-          });
-        }
-      });
+        break;
+      case 'NEW_COMMENT':
+        this.markAsRead(noti);
+        this.seeSocialPost(noti);
+        break;
+      default:
+        window.scrollTo(0, 0); // Scrolls the page to the top
+        const dialog = this.dialog.open(DisplayNotiDialogComponent, {
+          width: '600px',
+          data: noti,
+        });
     }
+    // if (noti._type !== 'REPORTED_POST') {
+    //   window.scrollTo(0, 0); // Scrolls the page to the top
+    //   const dialog = this.dialog.open(DisplayNotiDialogComponent, {
+    //     width: '600px',
+    //     data: noti,
+    //   });
+    // } else {
+    //   //Hiện lên chi tiết bài post kèm message thông báo
+    //   this.postService
+    //     .getReportPostDetails(noti._id)
+    //     .pipe(takeUntil(this.$destroy))
+    //     .subscribe((res) => {
+    //       if (res.data) {
+    //         window.scrollTo(0, 0); // Scrolls the page to the top
+    //         const dialogRef = this.dialog.open(PostEditDialogComponent, {
+    //           width: '1000px',
+    //           data: res.data,
+    //         });
+    //         dialogRef.afterClosed().subscribe((result) => {
+    //           console.log(`Dialog result: + $(result)`);
+    //         });
+    //       }
+    //     });
+    // }
+  }
+
+  seeSocialPost(noti: any) {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        data: noti,
+      },
+    };
+    this.router
+      .navigate(['/forum/post/', noti._postId], navigationExtras)
+      .then(() => {
+        window.location.reload();
+      });
+  }
+
+  markAsRead(noti: any) {
+    this.notificationService.markNotiFicationAsReadById(noti._id).subscribe();
   }
 
   toUpdateLoginDetail() {

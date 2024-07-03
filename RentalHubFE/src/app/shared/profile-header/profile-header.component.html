@@ -140,7 +140,14 @@
                       class="flex flex-col text-sm pr-3 pl-3 pt-3 hover:cursor-pointer hover:bg-gray-100"
                       (click)="readNotiDetail(noti)"
                     >
-                      <p class="text-primary-text-color font-medium mb-0">
+                      <p
+                        mat-raised-button
+                        class="text-sub-text-color line-clamp-2"
+                        [matTooltip]="noti._message"
+                        [matTooltipPosition]="'left'"
+                        [matTooltipClass]="'mr-3'"
+                        matTooltipHideDelay="400"
+                      >
                         {{ noti._title }}
                       </p>
                       <p class="text-sub-text-color line-clamp-2">
@@ -168,6 +175,7 @@
                     "
                   >
                     <div
+                      (click)="readNotiDetail(noti)"
                       *ngFor="let noti of seenNotiList; index as i"
                       class="flex flex-col text-sm pr-3 pl-3 pt-3 bg-gray-100"
                     >
