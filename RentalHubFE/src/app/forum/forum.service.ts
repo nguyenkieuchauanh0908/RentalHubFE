@@ -20,6 +20,13 @@ export class ForumService {
     this.currentKeyword.next(updatedKeyword);
   }
 
+  goToSocialPostDetailStatus = new BehaviorSubject<boolean>(false);
+  getGoToSocialPostDetailStatus =
+    this.goToSocialPostDetailStatus.asObservable();
+  setGoToSocialPostDetailStatus(updatedStatus: boolean) {
+    this.goToSocialPostDetailStatus.next(updatedStatus);
+  }
+
   currentSearchResultPosts = new BehaviorSubject<ForumPostModel[] | null>(null);
   getCurrentSearchResultPosts = this.currentSearchResultPosts.asObservable();
   setCurrentSearchResultPosts(searchResult: ForumPostModel[] | null) {
@@ -90,6 +97,15 @@ export class ForumService {
           }
         })
       );
+  }
+
+  getSocialPostById(pId: string) {
+    let queryParams = new HttpParams().append('postId', pId);
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'social/get-social-post-id', {
+        params: queryParams,
+      })
+      .pipe(catchError(handleError));
   }
 
   createSocialPost(form: any, image: File) {

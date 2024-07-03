@@ -4,6 +4,8 @@ import { AuthGuard } from '../auth/auth.guard';
 import { RouterModule, Routes } from '@angular/router';
 import { ProfileComponent } from './profile/profile.component';
 import { ForumSearchResultComponent } from './forum-search-result/forum-search-result.component';
+import { PostDetailComponent } from '../posts/post-detail/post-detail.component';
+import { ForumPostDetailComponent } from './forum-post-detail/forum-post-detail.component';
 
 const routes: Routes = [
   {
@@ -12,6 +14,11 @@ const routes: Routes = [
       {
         path: 'home',
         component: ForumHomeComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'post/:pId',
+        component: ForumPostDetailComponent,
         canActivate: [AuthGuard],
       },
       {

@@ -2,6 +2,8 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NotificationService } from '../notifications/notification.service';
 import { NotifierService } from 'angular-notifier';
+import { NavigationExtras, Router } from '@angular/router';
+import { ResourceLoader } from '@angular/compiler';
 
 @Component({
   selector: 'app-display-noti-dialog',
@@ -12,7 +14,8 @@ export class DisplayNotiDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private notificationService: NotificationService,
-    public notifier: NotifierService
+    public notifier: NotifierService,
+    private router: Router
   ) {}
 
   markAsRead() {
@@ -25,6 +28,19 @@ export class DisplayNotiDialogComponent {
             'Đánh dấu thông báo đã đọc thành công!'
           );
         }
+      });
+  }
+
+  seeSocialPost() {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        data: this.data,
+      },
+    };
+    this.router
+      .navigate(['/forum/post/', this.data._postId], navigationExtras)
+      .then(() => {
+        window.location.reload();
       });
   }
 }
