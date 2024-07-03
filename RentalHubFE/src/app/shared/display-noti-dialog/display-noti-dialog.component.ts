@@ -31,16 +31,16 @@ export class DisplayNotiDialogComponent {
       });
   }
 
-  seeSocialPost() {
-    let navigationExtras: NavigationExtras = {
-      state: {
-        data: this.data,
-      },
-    };
-    this.router
-      .navigate(['/forum/post/', this.data._postId], navigationExtras)
-      .then(() => {
-        window.location.reload();
-      });
-  }
+  // seeSocialPost() {
+  //   let navigationExtras: NavigationExtras = {
+  //     state: {
+  //       data: this.data,
+  //     },
+  //   };
+  //   this.router
+  //     .navigate(['/forum/post/', this.data._postId], navigationExtras)
+  //     .then(() => {
+  //       window.location.reload();
+  //     });
+  // }
 }
