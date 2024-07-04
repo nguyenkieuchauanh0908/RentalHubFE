@@ -25,6 +25,7 @@ import { PostCommentModel } from '../write-post-comment-form/post-comment.model'
   styleUrls: ['./post-reply-comment.component.scss'],
 })
 export class PostReplyCommentComponent implements OnInit, OnDestroy {
+  @Input() notiReplyCommentTree: PostCommentModel[] | null = null;
   @Input() comment!: PostCommentModel;
   @Output() deleteChildCommentSuccess = new EventEmitter();
   @Output() updateChildCommentSuccess = new EventEmitter<PostCommentModel[]>();
@@ -57,6 +58,9 @@ export class PostReplyCommentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.notiReplyCommentTree) {
+      console.log('notiCmtTree 1', this.notiReplyCommentTree);
+    }
     this.moment = moment;
     this.moment.locale('vn');
     this.accountService.getCurrentUser
@@ -149,18 +153,25 @@ export class PostReplyCommentComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.$destroy))
         .subscribe((res) => {
           if (res.data) {
+            let resDt: PostCommentModel[] = res.data;
+            if (this.notiReplyCommentTree) {
+              resDt = res.data.filter((cmt: any) => {
+                for (let i = 0; i < this.notiReplyCommentTree!.length; i++) {
+                  if (
+                    i === this.notiReplyCommentTree!.length - 1 &&
+                    cmt._id !== this.notiReplyCommentTree![i]._id
+                  ) {
+                    return cmt;
+                  }
+                }
+              });
+            }
             if (this.replies === null) {
-              this.replies = res.data;
+              this.replies = resDt;
             } else {
-              this.replies = this.replies.concat(res.data);
+              this.replies = this.replies.concat(resDt);
             }
             this.totalReplyPage = res.pagination.total;
-            // console.log(
-            //   '🚀 ~ PostCommentComponent ~ .subscribe ~ totalReplyPage:',
-            //   this.totalReplyPage,
-
-            //   this.currentReplyPage
-            // );
           }
         });
     }

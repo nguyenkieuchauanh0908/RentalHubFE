@@ -10,6 +10,7 @@ import { User } from 'src/app/auth/user.model';
 import { ForumPostModel } from '../forum-post/forum-post.model';
 import { PostCommentComponent } from 'src/app/shared/post-comment/post-comment.component';
 import { PostCommentDialogComponent } from 'src/app/shared/post-comment-dialog/post-comment-dialog.component';
+import { PostCommentModel } from 'src/app/shared/post-comment/write-post-comment-form/post-comment.model';
 
 @Component({
   selector: 'app-forum-post-detail',
@@ -25,6 +26,8 @@ export class ForumPostDetailComponent implements OnInit, OnDestroy {
   postId: string | null = null;
   currentPost: ForumPostModel | null = null;
   isAuthenticated: boolean = false;
+  commentId: string | null = null;
+  notiCommentTree: PostCommentModel[] | null = null;
   constructor(
     private forumService: ForumService,
     private accountService: AccountService,
@@ -42,7 +45,6 @@ export class ForumPostDetailComponent implements OnInit, OnDestroy {
     this.moment = moment;
     this.moment.locale('vn');
     this.postId = this.route.snapshot.paramMap.get('pId');
-
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
@@ -57,13 +59,9 @@ export class ForumPostDetailComponent implements OnInit, OnDestroy {
             if (this.postId) {
               this.loadPostDetail();
               const stateData = history.state;
-              console.log(
-                '🚀 ~ ProfileComponent ~ .subscribe ~ stateData:',
-                stateData
-              );
               if (stateData) {
-                // this.profileName = stateData['profileName'];
-                // this.profileImage = stateData['profileImage'];
+                this.commentId = stateData['data']._commentId;
+                this.loadNotiComment(this.commentId!);
               }
               this.initialized = true;
               this.isLoading = false;
@@ -104,6 +102,17 @@ export class ForumPostDetailComponent implements OnInit, OnDestroy {
           }
         );
     }
+  }
+
+  loadNotiComment(commentId: string) {
+    this.forumService
+      .getCommentTrees(commentId)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((res) => {
+        if (res.data) {
+          this.notiCommentTree = res.data;
+        }
+      });
   }
 
   changePostStatus($event: any) {

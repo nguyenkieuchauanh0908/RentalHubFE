@@ -25,6 +25,7 @@ import { NotifierService } from 'angular-notifier';
   styleUrls: ['./post-comment.component.scss'],
 })
 export class PostCommentComponent implements OnInit, OnDestroy {
+  @Input() notiCommentTree: PostCommentModel[] | null = null;
   @Input() comment!: PostCommentModel;
   @Output() deleteCommentSuccess = new EventEmitter();
   @Output() updateCommentSuccess = new EventEmitter<PostCommentModel[]>();
@@ -61,6 +62,9 @@ export class PostCommentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.notiCommentTree) {
+      console.log('notiCmtTree 0', this.notiCommentTree);
+    }
     this.moment = moment;
     this.moment.locale('vn');
     this.accountService.getCurrentUser
@@ -159,18 +163,25 @@ export class PostCommentComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.$destroy))
         .subscribe((res) => {
           if (res.data) {
+            let resDt: PostCommentModel[] = res.data;
+            if (this.notiCommentTree) {
+              resDt = res.data.filter((cmt: any) => {
+                for (let i = 0; i < this.notiCommentTree!.length; i++) {
+                  if (
+                    i === this.notiCommentTree!.length - 1 &&
+                    cmt._id !== this.notiCommentTree![i]._id
+                  ) {
+                    return cmt;
+                  }
+                }
+              });
+            }
             if (this.replies === null) {
-              this.replies = res.data;
+              this.replies = resDt;
             } else {
-              this.replies = this.replies.concat(res.data);
+              this.replies = this.replies.concat(resDt);
             }
             this.totalReplyPage = res.pagination.total;
-            // console.log(
-            //   '🚀 ~ PostCommentComponent ~ .subscribe ~ totalReplyPage:',
-            //   this.totalReplyPage,
-
-            //   this.currentReplyPage
-            // );
           }
         });
     }

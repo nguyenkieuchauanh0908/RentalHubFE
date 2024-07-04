@@ -312,6 +312,18 @@ export class ForumService {
       .pipe(catchError(handleError));
   }
 
+  getCommentTrees(commentId: string) {
+    let queryParams = new HttpParams().append('commentId', commentId);
+    return this.http
+      .get<resDataDTO>(
+        environment.baseUrl + 'comment/get-comments-notification',
+        {
+          params: queryParams,
+        }
+      )
+      .pipe(catchError(handleError));
+  }
+
   searchByKeyword(keyword: string, type: number, page: number, limit: number) {
     console.log(
       '🚀 ~ ForumService ~ searchByKeyword ~ keyword ~ type:',

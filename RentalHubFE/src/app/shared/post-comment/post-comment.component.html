@@ -134,6 +134,7 @@
     [ngClass]="this.comment._nameParent ? '' : 'pl-5'"
   >
     <app-post-reply-comment
+      [notiReplyCommentTree]="this.notiCommentTree"
       [comment]="comment"
       (deleteChildCommentSuccess)="deleteChildCommentSuccess(comment)"
     ></app-post-reply-comment>

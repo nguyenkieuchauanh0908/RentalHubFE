@@ -38,6 +38,7 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('socialContentToDisplay') socialContentToDisplay:
     | ElementRef
     | undefined;
+  @Input() notiCommentTree: PostCommentModel[] | null = null;
   @Input() post!: ForumPostModel;
   @Output() changePostStatus: EventEmitter<{ status: number; pId: string }> =
     new EventEmitter();
@@ -76,22 +77,6 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
             this.isLoading = false;
             if (this.post._totalComment > 0) {
               this.loadComments();
-              // this.forumService
-              //   .getParentCommentsOfPost(
-              //     this.post._id,
-              //     this.currentCommentPage,
-              //     this.commentLimt
-              //   )
-              //   .pipe(takeUntil(this.$destroy))
-              //   .subscribe(
-              //     (res) => {
-              //       if (res.data) {
-              //         this.postCommentsToDisplay = res.data;
-              //         this.totalCommentPage = res.pagination.total;
-              //       }
-              //     },
-              //     (err) => {}
-              //   );
             }
           }
         } else {
@@ -158,13 +143,18 @@ export class ForumPostComponent implements OnInit, OnDestroy, AfterViewInit {
           (res) => {
             if (res.data) {
               this.isLoading = false;
+              let resDt: any[] = res.data;
+              if (this.notiCommentTree) {
+                resDt = res.data.filter(
+                  (cmt: any) => cmt._id !== this.notiCommentTree![0]._id
+                );
+              }
               this.totalCommentPage = res.pagination.total;
               if (!this.postCommentsToDisplay) {
-                this.postCommentsToDisplay = res.data;
+                this.postCommentsToDisplay = resDt;
               } else {
-                this.postCommentsToDisplay = this.postCommentsToDisplay.concat(
-                  res.data
-                );
+                this.postCommentsToDisplay =
+                  this.postCommentsToDisplay.concat(resDt);
               }
             }
           },
