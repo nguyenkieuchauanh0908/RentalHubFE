@@ -63,7 +63,7 @@ export class PostCommentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.notiCommentTree) {
-      console.log('notiCmtTree 0', this.notiCommentTree);
+      console.log('notiCmtTree 1', this.notiCommentTree);
     }
     this.moment = moment;
     this.moment.locale('vn');
@@ -165,15 +165,11 @@ export class PostCommentComponent implements OnInit, OnDestroy {
           if (res.data) {
             let resDt: PostCommentModel[] = res.data;
             if (this.notiCommentTree) {
+              const notiCmtTree = new Set(
+                this.notiCommentTree.map((cmt: any) => cmt._id)
+              );
               resDt = res.data.filter((cmt: any) => {
-                for (let i = 0; i < this.notiCommentTree!.length; i++) {
-                  if (
-                    i === this.notiCommentTree!.length - 1 &&
-                    cmt._id !== this.notiCommentTree![i]._id
-                  ) {
-                    return cmt;
-                  }
-                }
+                return !notiCmtTree.has(cmt._id);
               });
             }
             if (this.replies === null) {
@@ -223,7 +219,7 @@ export class PostCommentComponent implements OnInit, OnDestroy {
         });
       });
     dialogRef.afterClosed().subscribe(() => {
-      // sub.unsubscribe();
+      sub.unsubscribe();
     });
   }
 

@@ -155,15 +155,11 @@ export class PostReplyCommentComponent implements OnInit, OnDestroy {
           if (res.data) {
             let resDt: PostCommentModel[] = res.data;
             if (this.notiReplyCommentTree) {
+              const notiCmtTree = new Set(
+                this.notiReplyCommentTree.map((cmt: any) => cmt._id)
+              );
               resDt = res.data.filter((cmt: any) => {
-                for (let i = 0; i < this.notiReplyCommentTree!.length; i++) {
-                  if (
-                    i === this.notiReplyCommentTree!.length - 1 &&
-                    cmt._id !== this.notiReplyCommentTree![i]._id
-                  ) {
-                    return cmt;
-                  }
-                }
+                return !notiCmtTree.has(cmt._id);
               });
             }
             if (this.replies === null) {
