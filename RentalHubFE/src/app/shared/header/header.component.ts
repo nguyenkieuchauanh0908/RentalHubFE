@@ -162,6 +162,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.markAsRead(noti);
         this.seeSocialPost(noti);
         break;
+      case 'UPDATE_COMMENT':
+        this.markAsRead(noti);
+        this.seeSocialPost(noti);
+        break;
       default:
         window.scrollTo(0, 0); // Scrolls the page to the top
         const dialog = this.dialog.open(DisplayNotiDialogComponent, {
@@ -169,30 +173,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           data: noti,
         });
     }
-    // if (noti._type !== 'REPORTED_POST') {
-    //   window.scrollTo(0, 0); // Scrolls the page to the top
-    //   const dialog = this.dialog.open(DisplayNotiDialogComponent, {
-    //     width: '600px',
-    //     data: noti,
-    //   });
-    // } else {
-    //   //Hiện lên chi tiết bài post kèm message thông báo
-    //   this.postService
-    //     .getReportPostDetails(noti._id)
-    //     .pipe(takeUntil(this.$destroy))
-    //     .subscribe((res) => {
-    //       if (res.data) {
-    //         window.scrollTo(0, 0); // Scrolls the page to the top
-    //         const dialogRef = this.dialog.open(PostEditDialogComponent, {
-    //           width: '1000px',
-    //           data: res.data,
-    //         });
-    //         dialogRef.afterClosed().subscribe((result) => {
-    //           console.log(`Dialog result: + $(result)`);
-    //         });
-    //       }
-    //     });
-    // }
   }
 
   seeSocialPost(noti: any) {

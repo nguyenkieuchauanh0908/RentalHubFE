@@ -157,6 +157,10 @@ export class ForumHeaderComponent implements OnInit, OnDestroy {
         this.markAsRead(noti);
         this.seeSocialPost(noti);
         break;
+      case 'UPDATE_COMMENT':
+        this.markAsRead(noti);
+        this.seeSocialPost(noti);
+        break;
       default:
         window.scrollTo(0, 0); // Scrolls the page to the top
         const dialog = this.dialog.open(DisplayNotiDialogComponent, {

@@ -61,7 +61,14 @@ export class ForumPostDetailComponent implements OnInit, OnDestroy {
               const stateData = history.state;
               if (stateData) {
                 this.commentId = stateData['data']._commentId;
-                this.loadNotiComment(this.commentId!);
+                if (this.commentId) {
+                  this.loadNotiComment(this.commentId!);
+                } else {
+                  this.notifier.notify(
+                    'warning',
+                    'Bình luận này có thể đã bị xóa!'
+                  );
+                }
               }
               this.initialized = true;
               this.isLoading = false;
@@ -108,11 +115,16 @@ export class ForumPostDetailComponent implements OnInit, OnDestroy {
     this.forumService
       .getCommentTrees(commentId)
       .pipe(takeUntil(this.$destroy))
-      .subscribe((res) => {
-        if (res.data) {
-          this.notiCommentTree = res.data;
+      .subscribe(
+        (res) => {
+          if (res.data) {
+            this.notiCommentTree = res.data;
+          }
+        },
+        (err) => {
+          this.notifier.notify('warning', 'Bình luận này có thể đã bị xóa!');
         }
-      });
+      );
   }
 
   changePostStatus($event: any) {
