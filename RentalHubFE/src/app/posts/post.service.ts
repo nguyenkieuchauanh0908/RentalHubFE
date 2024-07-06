@@ -517,10 +517,10 @@ export class PostService {
             this.notiService.setCurrentUnseenNotifications([]);
             this.notiService.setTotalNotifications(0);
           } else {
-            this.notiService.getUnseenNotifications().subscribe();
+            this.notiService.getUnseenNotifications(1, 10).subscribe();
           }
 
-          this.notiService.getSeenNotifications().subscribe();
+          this.notiService.getSeenNotifications(1, 10).subscribe();
         })
       );
   }

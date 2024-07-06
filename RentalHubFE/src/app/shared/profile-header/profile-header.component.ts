@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
@@ -12,13 +12,14 @@ import { PostEditDialogComponent } from 'src/app/accounts/posting-history/post-e
 import { DisplayNotiDialogComponent } from '../display-noti-dialog/display-noti-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { Pagination } from '../pagination/pagination.service';
 
 @Component({
   selector: 'app-profile-header',
   templateUrl: './profile-header.component.html',
   styleUrls: ['./profile-header.component.scss'],
 })
-export class ProfileHeaderComponent {
+export class ProfileHeaderComponent implements OnInit, OnDestroy {
   isLoading = false;
   error: string = '';
   private userSub!: Subscription;
@@ -28,7 +29,9 @@ export class ProfileHeaderComponent {
   fullName!: string;
   isAuthenticatedUser: boolean = false;
   seenNotiList!: any;
+  seenNotiPagination: Pagination = { page: 0, total: 1, limit: 10 };
   unseenNotificaionList!: any;
+  unseenNotiPagination: Pagination = { page: 0, total: 1, limit: 10 };
   notificationTotals!: number;
   $destroy: Subject<boolean> = new Subject<boolean>();
 
@@ -40,58 +43,80 @@ export class ProfileHeaderComponent {
     private notificationService: NotificationService,
     private authService: AuthService,
     public dialog: MatDialog
-  ) {
+  ) {}
+  ngOnDestroy() {
+    console.log('destroying profile header...');
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
+    this.notificationService.destroy();
+  }
+
+  ngOnInit() {
+    console.log('init profile header...');
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         console.log('On rendering headers...');
-        // console.log(user);
         this.isAuthenticatedUser = !!user;
-        // console.log('User is authenticated: ', this.isAuthenticatedUser);
         this.user = user;
         if (this.user?._fname && this.user?._lname) {
           this.fullName = this.user?._fname + ' ' + this.user._lname;
         }
+        if (this.isAuthenticatedUser) {
+          //Lấy các noti đã xem
+          this.notificationService.getCurrentSeenNotifications
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((notifications) => {
+              if (notifications) {
+                this.seenNotiList = notifications;
+                console.log(
+                  '🚀 ~ ProfileHeaderComponent ~ .subscribe ~ this.seenNotiList:',
+                  this.seenNotiList
+                );
+              } else {
+                this.seenNotiList = [];
+              }
+            });
+          //Lấy pagination của các noti đã xem
+          this.notificationService.getSeenNotificationsPagination
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((seenNotiPagination: any) => {
+              this.seenNotiPagination = seenNotiPagination;
+              console.log(
+                '🚀 ~ ProfileHeaderComponent ~ .subscribe ~   this.seenNotiPagination:',
+                this.seenNotiPagination
+              );
+            });
+
+          //Lấy các noti chưa xem
+          this.notificationService.getCurrentUnseenNotifications
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((unseenNotifications) => {
+              if (unseenNotifications) {
+                this.unseenNotificaionList = unseenNotifications;
+              } else {
+                this.unseenNotificaionList = [];
+              }
+            });
+          //Lấy pagination của các noti chưa xem
+          this.notificationService.getUnseenNotificationspagination
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((unseenNotiPagination: Pagination) => {
+              this.unseenNotiPagination = unseenNotiPagination;
+            });
+
+          //Lấy tổng các noti chưa xem
+          this.notificationService.getTotalNotifications
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((notificationTotal) => {
+              this.notificationTotals = notificationTotal;
+            });
+        } else {
+          this.notificationTotals = 0;
+          this.notificationService.setCurrentSeenNotifications([]);
+          this.notificationService.setCurrentUnseenNotifications([]);
+        }
       });
-
-    if (this.isAuthenticatedUser) {
-      //Lấy các noti đã xem
-      this.notificationService.getCurrentSeenNotifications.subscribe(
-        (notifications) => {
-          this.seenNotiList = notifications;
-        }
-      );
-
-      //Lấy các noti chưa xem
-      this.notificationService.getCurrentUnseenNotifications.subscribe(
-        (unseenNotifications) => {
-          this.unseenNotificaionList = unseenNotifications;
-        }
-      );
-
-      //Lấy tổng các noti chưa xem
-      this.notificationService.getTotalNotifications.subscribe(
-        (notificationTotal) => {
-          this.notificationTotals = notificationTotal;
-        }
-      );
-    } else {
-      this.notificationTotals = 0;
-      this.notificationService.setCurrentSeenNotifications([]);
-      this.notificationService.setCurrentUnseenNotifications([]);
-    }
-  }
-
-  ngOnInit() {
-    this.userSub = this.accountService.getCurrentUser.subscribe((user) => {
-      console.log('On rendering headers...');
-      this.isAuthenticatedUser = !!user;
-      console.log('User is authenticated: ', this.isAuthenticatedUser);
-      this.user = user;
-      if (this.user?._fname && this.user?._lname) {
-        this.fullName = this.user?._fname + ' ' + this.user._lname;
-      }
-    });
   }
 
   markAsReadAll() {
@@ -111,6 +136,40 @@ export class ProfileHeaderComponent {
         );
       }
     );
+  }
+
+  seeMoreNoti(type: string) {
+    switch (type) {
+      case 'unseen':
+        console.log('Getting more unseen notifications...');
+        this.notificationService
+          .getUnseenNotifications(
+            this.unseenNotiPagination!.page + 1,
+            this.unseenNotiPagination!.limit
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
+        break;
+      case 'seen':
+        console.log('Getting more seen notifications...');
+        this.notificationService
+          .getSeenNotifications(
+            this.seenNotiPagination!.page + 1,
+            this.seenNotiPagination!.limit
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
+
+        break;
+      default:
+        this.notificationService
+          .getUnseenNotifications(
+            this.seenNotiPagination!.page,
+            this.seenNotiPagination!.limit
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
+    }
   }
 
   readNotiDetail(noti: any) {
@@ -270,11 +329,6 @@ export class ProfileHeaderComponent {
     } else {
       this.notifierService.notify('error', 'Vui lòng nhập từ khóa tìm kiếm!');
     }
-  }
-
-  ngOnDestroy() {
-    this.$destroy.next(true);
-    this.$destroy.unsubscribe();
   }
 
   toHome() {

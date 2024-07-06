@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { resDataDTO } from '../resDataDTO';
 import { handleError } from '../handle-errors';
-import { BehaviorSubject, Subscription, catchError, tap } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, catchError, tap } from 'rxjs';
 import { ChatBotService } from '../chat-bot/chat-bot.service';
 import { Notification } from './notification.model';
+import { Pagination } from '../pagination/pagination.service';
 
 export interface SocketNotification {
   _uId: string;
@@ -28,6 +29,16 @@ export class NotificationService {
   setCurrentSeenNotifications(updatedNotifications: any[]) {
     this.currentSeenNoti.next(updatedNotifications);
   }
+  private seenNotificationsPagination = new BehaviorSubject<any>({
+    page: 0,
+    total: 1,
+    limit: 10,
+  });
+  getSeenNotificationsPagination =
+    this.seenNotificationsPagination.asObservable();
+  updateSeenNotificationsPagination(updatedPagination: any[]) {
+    this.seenNotificationsPagination.next(updatedPagination);
+  }
 
   private totalNotifications = new BehaviorSubject<number>(0);
   getTotalNotifications = this.totalNotifications.asObservable();
@@ -41,6 +52,18 @@ export class NotificationService {
   setCurrentUnseenNotifications(updatedUnseenNotifications: any[]) {
     this.currentUnseenNotifications.next(updatedUnseenNotifications);
   }
+
+  private unseenNotificationsPagination = new BehaviorSubject<any>({
+    page: 0,
+    total: 1,
+    limit: 10,
+  });
+  getUnseenNotificationspagination =
+    this.unseenNotificationsPagination.asObservable();
+  updateUnseenNotificationsPagination(updatedPagination: any) {
+    this.unseenNotificationsPagination.next(updatedPagination);
+  }
+
   private subscriptions: Subscription[] = [];
   constructor(private http: HttpClient, private chatService: ChatBotService) {
     this.onReceivingNewNotificationToUpdate();
@@ -58,38 +81,93 @@ export class NotificationService {
   }
 
   //Lấy seen notification
-  getSeenNotifications() {
+  getSeenNotifications(page: number, limit: number) {
+    let queryParam = new HttpParams()
+      .append('limit', limit)
+      .append('page', page);
     return this.http
-      .get<resDataDTO>(environment.baseUrl + 'notification/get-noti-readed')
+      .get<resDataDTO>(environment.baseUrl + 'notification/get-noti-readed', {
+        params: queryParam,
+      })
       .pipe(
         catchError(handleError),
-        tap((res) => {
-          if (res.data) {
-            console.log('Getting seen notifications successfully!', res.data);
-            this.setCurrentSeenNotifications(res.data);
+        tap(
+          (res) => {
+            if (res.pagination) {
+              this.updateSeenNotificationsPagination(res.pagination);
+            }
+            if (res.data) {
+              console.log('Getting seen notifications successfully!', res.data);
+              let seenNoti: any[] = [];
+              let seenNotiSub = this.getCurrentSeenNotifications.subscribe(
+                (notis) => {
+                  seenNoti = notis;
+                }
+              );
+              if (seenNoti) {
+                this.setCurrentSeenNotifications(seenNoti.concat(res.data));
+              } else {
+                this.setCurrentSeenNotifications(res.data);
+              }
+              this.subscriptions.push(seenNotiSub);
+            } else {
+              this.setCurrentUnseenNotifications([]);
+            }
+          },
+          (err) => {
+            this.setCurrentSeenNotifications([]);
           }
-        })
+        )
       );
   }
 
   //Lấy unseen notifications
-  getUnseenNotifications() {
-    return this.http.get<resDataDTO>(environment.baseUrl + 'notification').pipe(
-      catchError(handleError),
-      tap((res) => {
-        if (res.data) {
-          console.log(
-            'Getting unseen notifications successfully!',
-            res.data.notifications
-          );
-          this.setCurrentUnseenNotifications(res.data.notifications);
-          this.setTotalNotifications(res.data.totalNewNotification);
-        } else {
-          this.setCurrentUnseenNotifications([]);
-          this.setTotalNotifications(0);
-        }
+  getUnseenNotifications(page: number, limit: number) {
+    let queryParam = new HttpParams()
+      .append('limit', limit)
+      .append('page', page);
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'notification', {
+        params: queryParam,
       })
-    );
+      .pipe(
+        catchError(handleError),
+        tap(
+          (res) => {
+            if (res.pagination) {
+              this.updateUnseenNotificationsPagination(res.pagination);
+            }
+            if (res.data) {
+              console.log(
+                'Getting unseen notifications successfully!',
+                res.data.notifications
+              );
+              let unseenNoti: any[] = [];
+              let unseenNotiSub = this.getCurrentUnseenNotifications.subscribe(
+                (notis) => {
+                  unseenNoti = notis;
+                }
+              );
+              if (unseenNoti) {
+                this.setCurrentUnseenNotifications(
+                  unseenNoti.concat(res.data.notifications)
+                );
+              } else {
+                this.setCurrentUnseenNotifications(res.data.notifications);
+              }
+              this.setTotalNotifications(res.data.totalNewNotification);
+              this.subscriptions.push(unseenNotiSub);
+            } else {
+              this.setCurrentUnseenNotifications([]);
+              this.setTotalNotifications(0);
+            }
+          },
+          (err) => {
+            this.setCurrentUnseenNotifications([]);
+            this.setTotalNotifications(0);
+          }
+        )
+      );
   }
 
   //Đánh dấu đã đọc theo id

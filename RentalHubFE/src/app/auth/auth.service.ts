@@ -401,7 +401,7 @@ export class AuthService {
   }
 
   getNotifications() {
-    this.notiService.getSeenNotifications().subscribe();
-    this.notiService.getUnseenNotifications().subscribe();
+    this.notiService.getSeenNotifications(1, 10).subscribe();
+    this.notiService.getUnseenNotifications(1, 10).subscribe(); //Lấy thông báo chưa đọc của trang đầu tiên
   }
 }

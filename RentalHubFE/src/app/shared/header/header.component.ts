@@ -41,7 +41,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   fullName!: string;
   isAuthenticatedUser: boolean = false;
   seenNotiList!: any;
+  seenNotiPagination: Pagination = { page: 0, total: 1, limit: 10 };
   unseenNotificaionList!: any;
+  unseenNotiPagination: Pagination = { page: 0, total: 1, limit: 10 };
   notificationTotals!: number;
   $destroy: Subject<boolean> = new Subject<boolean>();
 
@@ -73,14 +75,34 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.notificationService.getCurrentSeenNotifications
         .pipe(takeUntil(this.$destroy))
         .subscribe((notifications) => {
-          this.seenNotiList = notifications;
+          if (notifications) {
+            this.seenNotiList = notifications;
+          } else {
+            this.seenNotiList = [];
+          }
+        });
+      //Lấy pagination của các noti đã xem
+      this.notificationService.getSeenNotificationsPagination
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((seenNotiPagination: any) => {
+          this.seenNotiPagination = seenNotiPagination;
         });
 
       //Lấy các noti chưa xem
       this.notificationService.getCurrentUnseenNotifications
         .pipe(takeUntil(this.$destroy))
         .subscribe((unseenNotifications) => {
-          this.unseenNotificaionList = unseenNotifications;
+          if (unseenNotifications) {
+            this.unseenNotificaionList = unseenNotifications;
+          } else {
+            this.unseenNotificaionList = [];
+          }
+        });
+      //Lấy pagination của các noti chưa xem
+      this.notificationService.getUnseenNotificationspagination
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((unseenNotiPagination: Pagination) => {
+          this.unseenNotiPagination = unseenNotiPagination;
         });
 
       //Lấy tổng các noti chưa xem
@@ -190,6 +212,40 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   markAsRead(noti: any) {
     this.notificationService.markNotiFicationAsReadById(noti._id).subscribe();
+  }
+
+  seeMoreNoti(type: string) {
+    switch (type) {
+      case 'unseen':
+        console.log('Getting more unseen notifications...');
+        this.notificationService
+          .getUnseenNotifications(
+            this.unseenNotiPagination!.page + 1,
+            this.unseenNotiPagination!.limit
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
+        break;
+      case 'seen':
+        console.log('Getting more seen notifications...');
+        this.notificationService
+          .getSeenNotifications(
+            this.seenNotiPagination!.page + 1,
+            this.seenNotiPagination!.limit
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
+
+        break;
+      default:
+        this.notificationService
+          .getUnseenNotifications(
+            this.seenNotiPagination!.page,
+            this.seenNotiPagination!.limit
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe();
+    }
   }
 
   onSearchByKeyword(searchForm: any) {
