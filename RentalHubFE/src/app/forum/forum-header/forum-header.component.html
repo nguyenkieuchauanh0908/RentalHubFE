@@ -19,26 +19,26 @@
         </button>
         <mat-menu #sidebar="matMenu" yPosition="below" class="lg:hidden">
           <a (click)="$event.stopPropagation()">
-            <button mat-menu-item>
+            <button mat-menu-item (click)="goToForumHome()">
               <mat-icon>perm_identity</mat-icon>
               <span class="text-primary-text-color mb-0 text-sm">Diễn đàn</span>
             </button>
 
-            <button mat-menu-item>
+            <button mat-menu-item (click)="goToSocialProfile()">
               <mat-icon>account_box</mat-icon>
               <span class="text-primary-text-color mb-0 text-sm"
                 >Tường nhà</span
               >
             </button>
 
-            <button mat-menu-item>
+            <button mat-menu-item (click)="openCreateSocialPostDialog()">
               <mat-icon>add_location</mat-icon>
               <span class="text-primary-text-color mb-0 text-sm">Đăng bài</span>
             </button>
-            <button mat-menu-item>
+            <!-- <button mat-menu-item>
               <mat-icon> location_on</mat-icon>
               <span class="text-primary-text-color mb-0 text-sm">Bảng tin</span>
-            </button>
+            </button> -->
           </a>
         </mat-menu>
       </div>

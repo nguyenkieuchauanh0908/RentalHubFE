@@ -17,6 +17,7 @@ import { Pagination } from 'src/app/shared/pagination/pagination.service';
 import { resDataDTO } from 'src/app/shared/resDataDTO';
 import { ForumService } from '../forum.service';
 import { ForumPostModel } from '../forum-post/forum-post.model';
+import { SocialPostEditDialogComponent } from '../social-post-edit-dialog/social-post-edit-dialog.component';
 @Component({
   selector: 'app-forum-header',
   templateUrl: './forum-header.component.html',
@@ -337,5 +338,32 @@ export class ForumHeaderComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         sub.unsubscribe();
       });
+  }
+
+  openCreateSocialPostDialog() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
+
+    const dialogRef = this.dialog.open(SocialPostEditDialogComponent, {
+      width: '800px',
+    });
+  }
+
+  goToSocialProfile() {
+    if (this.user) {
+      let navigationExtras: NavigationExtras = {
+        state: {
+          profileName: this.user._fname + this.user._lname,
+          profileImage: this.user._avatar,
+        },
+      };
+      this.router.navigate(
+        ['/forum/profile', this.user?._id],
+        navigationExtras
+      );
+    }
+  }
+
+  goToForumHome() {
+    this.router.navigate(['/forum/home']);
   }
 }
