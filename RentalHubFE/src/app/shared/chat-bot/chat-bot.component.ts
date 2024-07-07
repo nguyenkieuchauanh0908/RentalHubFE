@@ -21,6 +21,7 @@ export class ChatBotComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   currentChats: UserChatsType[] | null = null;
   currentChat: UserChatsType | null = null;
+  searchText = '';
   $destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -106,6 +107,7 @@ export class ChatBotComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((res) => {
         if (res.data) {
+          this.searchText = '';
           this.chatBotService.setSeeContactList(false);
           this.currentChat = chat;
         }
