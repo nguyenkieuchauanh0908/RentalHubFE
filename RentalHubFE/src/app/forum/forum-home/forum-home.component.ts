@@ -21,6 +21,10 @@ import 'moment/locale/vi';
 import * as moment from 'moment';
 import { NotifierService } from 'angular-notifier';
 import { ForumPostModel } from '../forum-post/forum-post.model';
+import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
+import { PostService } from 'src/app/posts/post.service';
+import { FilterCriteria } from 'src/app/posts/posts-list/posts-list.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forum-home',
@@ -42,13 +46,18 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
   pageLimit: number = 5;
   totalPages: number = 0;
   currentPostStatus: number | null = null;
+  rentalPosts: PostItem[] | any[] = [];
+  rentalFilterCriteria!: FilterCriteria;
+  currentFavourites: String[] | null = [];
 
   constructor(
     private forumService: ForumService,
     private accountService: AccountService,
     public dialog: MatDialog,
     private renderer: Renderer2,
-    private notifier: NotifierService
+    private notifier: NotifierService,
+    private postService: PostService,
+    private router: Router
   ) {}
   ngAfterViewInit(): void {
     console.log('forum-home component ngAfterViewInit');
@@ -73,7 +82,9 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isAuthenticated = !!user;
         if (this.isAuthenticated) {
           console.log('User is authenticated');
+          this.getFavoritePostId();
           this.loadSocialPosts();
+          this.getRentalPosts();
           this.initialized = true;
         }
       });
@@ -183,5 +194,78 @@ export class ForumHomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
+  }
+
+  getFavoritePostId() {
+    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+      this.currentFavourites = favourites;
+    });
+  }
+
+  setRentalFiltterCriteria() {
+    this.rentalFilterCriteria = {
+      roomPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      electricityPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      waterPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      range: {
+        priceRange: { max: 10000000000, min: 100000 },
+        electricRanges: { max: 10000000000, min: 100000 },
+        waterRange: { max: 10000000000, min: 100000 },
+      },
+      priorities: new Array<String>(),
+    };
+  }
+
+  getRentalPosts() {
+    this.isLoading = true;
+    this.setRentalFiltterCriteria();
+    if (this.rentalFilterCriteria) {
+      this.postService
+        .getPostList(1, 5, this.rentalFilterCriteria)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.postService.postListChanged.subscribe((posts: any[]) => {
+                console.log(
+                  '🚀 ~ ForumHomeComponent ~ this.postService.postListChanged.subscribe ~ posts:',
+                  posts
+                );
+                this.rentalPosts = [...posts];
+                this.isLoading = false;
+              });
+              console.log(
+                '🚀 ~ ForumHomeComponent ~ this.postService.postListChanged.subscribe ~ this.rentalPosts:',
+                this.rentalPosts
+              );
+            }
+          },
+          (err) => {
+            this.isLoading = false;
+          }
+        );
+    }
+  }
+
+  toRentalPosts() {
+    this.router.navigate(['']);
   }
 }

@@ -182,7 +182,10 @@
     </div>
     <!-- Item list -->
     <div class="grid grid-flow-row auto-rows-max">
-      <div class="grid grid-cols-12 gap-1">
+      <div
+        class="grid grid-cols-12 gap-1"
+        *ngIf="this.postList && this.currentFavourites"
+      >
         <div
           *ngFor="let post of postList"
           class="xs:col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-3"

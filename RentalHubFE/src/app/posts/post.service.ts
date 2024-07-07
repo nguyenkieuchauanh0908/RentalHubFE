@@ -13,7 +13,7 @@ import { NotificationService } from '../shared/notifications/notification.servic
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
-  postListChanged = new Subject<PostItem[]>();
+  postListChanged = new BehaviorSubject<PostItem[]>([]);
   posts: PostItem[] = [];
   searchResultsChanged = new Subject<PostItem[]>();
   searchResult: PostItem[] = [];
