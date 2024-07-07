@@ -23,6 +23,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { ForumPostModel } from '../forum-post/forum-post.model';
 import { UpdateAvatarDialogComponent } from 'src/app/accounts/update-avatar-dialog/update-avatar-dialog.component';
+import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
+import { FilterCriteria } from 'src/app/posts/posts-list/posts-list.component';
+import { PostService } from 'src/app/posts/post.service';
 
 @Component({
   selector: 'app-profile',
@@ -49,6 +52,10 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   profileName: string | null = null;
   profileImage: string | null = null;
 
+  rentalPosts: PostItem[] | any[] = [];
+  rentalFilterCriteria!: FilterCriteria;
+  currentFavourites: String[] | null = [];
+
   constructor(
     private forumService: ForumService,
     private accountService: AccountService,
@@ -56,7 +63,8 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     private renderer: Renderer2,
     private route: ActivatedRoute,
     private router: Router,
-    private notifier: NotifierService
+    private notifier: NotifierService,
+    private postService: PostService
   ) {}
   ngAfterViewInit(): void {
     console.log('forum-profile component ngAfterViewInit');
@@ -89,12 +97,10 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
             this.urlProfileId = params['uId'];
             this.socialPostsToDisplay = null;
             if (this.urlProfileId) {
+              this.getFavoritePostId();
               this.loadSocialPosts();
+              this.getRentalPosts();
               const stateData = history.state;
-              console.log(
-                '🚀 ~ ProfileComponent ~ .subscribe ~ stateData:',
-                stateData
-              );
               if (stateData) {
                 this.profileName = stateData['profileName'];
                 this.profileImage = stateData['profileImage'];
@@ -288,5 +294,78 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   openEditBackground() {
     console.log('openEditBackground...');
+  }
+
+  getFavoritePostId() {
+    this.postService.getCurrentFavoritesId.subscribe((favourites) => {
+      this.currentFavourites = favourites;
+    });
+  }
+
+  setRentalFiltterCriteria() {
+    this.rentalFilterCriteria = {
+      roomPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      electricityPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      waterPrice: {
+        lowToHigh: false,
+        highToLow: false,
+        greaterThan: 0,
+        lowerThan: 10000000,
+        checked: false,
+      },
+      range: {
+        priceRange: { max: 10000000000, min: 100000 },
+        electricRanges: { max: 10000000000, min: 100000 },
+        waterRange: { max: 10000000000, min: 100000 },
+      },
+      priorities: new Array<String>(),
+    };
+  }
+
+  getRentalPosts() {
+    this.isLoading = true;
+    this.setRentalFiltterCriteria();
+    if (this.rentalFilterCriteria) {
+      this.postService
+        .getPostList(1, 5, this.rentalFilterCriteria)
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              this.postService.postListChanged.subscribe((posts: any[]) => {
+                console.log(
+                  '🚀 ~ ForumHomeComponent ~ this.postService.postListChanged.subscribe ~ posts:',
+                  posts
+                );
+                this.rentalPosts = [...posts];
+                this.isLoading = false;
+              });
+              console.log(
+                '🚀 ~ ForumHomeComponent ~ this.postService.postListChanged.subscribe ~ this.rentalPosts:',
+                this.rentalPosts
+              );
+            }
+          },
+          (err) => {
+            this.isLoading = false;
+          }
+        );
+    }
+  }
+
+  toRentalPosts() {
+    this.router.navigate(['']);
   }
 }
