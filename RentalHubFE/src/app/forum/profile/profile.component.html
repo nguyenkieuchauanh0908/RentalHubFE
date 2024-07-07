@@ -9,7 +9,7 @@
   >
     <app-forum-sidemenu></app-forum-sidemenu>
   </div>
-  <!--Avatar - Post new - Posts  -->
+  <!--Avatar - Posts  -->
   <div
     class="flex flex-col col-span-12 lg:col-span-7 mt-2.5 bg-white-background shadow-md rounded-md text-center"
   >
@@ -51,7 +51,7 @@
         </div>
       </div>
       <!-- Edit background image -->
-      <mat-icon
+      <!-- <mat-icon
         *ngIf="this.currentUser?._id === this.urlProfileId"
         (click)="openEditBackground()"
         matRipple
@@ -59,9 +59,8 @@
         [matRippleUnbounded]="true"
         class="absolute bottom-2 right-2 cursor-pointer"
         >edit</mat-icon
-      >
+      > -->
     </div>
-    <!-- Post new -->
     <!-- Posts -->
     <div
       #socialPostContainer
