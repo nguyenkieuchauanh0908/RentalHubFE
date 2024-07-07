@@ -34,16 +34,19 @@ export class ChatUserComponent implements OnInit, OnDestroy {
         if (user) {
           //Lấy info người nhận
           let recipientId = this.chat?.members.find((id) => id !== user?._id);
-          if (recipientId) {
-            this.chatBotService
-              .fetchRecipientInfo(recipientId!.toString())
-              .subscribe((res) => {
-                if (res.data) {
-                  this.recipienInfo = res.data;
-                  this.chat!.updatedAt = new Date(this.chat.updatedAt);
-                }
-              });
-          }
+          this.chat!.updatedAt = new Date(this.chat.updatedAt);
+          // if (recipientId) {
+          //   this.chat!.updatedAt = new Date(this.chat.updatedAt);
+
+          //   this.chatBotService
+          //     .fetchRecipientInfo(recipientId!.toString())
+          //     .subscribe((res) => {
+          //       if (res.data) {
+          //         this.recipienInfo = res.data;
+          //         this.chat!.updatedAt = new Date(this.chat.updatedAt);
+          //       }
+          //     });
+          // }
 
           //Kiểm tra người nhận có online hay không
           this.chatBotService.getCurrentOnlineUsers

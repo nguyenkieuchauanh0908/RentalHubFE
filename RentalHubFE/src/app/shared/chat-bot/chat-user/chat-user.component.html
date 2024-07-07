@@ -1,11 +1,11 @@
 <div
-  *ngIf="this.recipienInfo"
+  *ngIf="this.chat"
   class="flex flex-row gap-2 p-2 hover:cursor-pointer hover:bg-gray-100"
 >
   <!-- Avatar -->
   <div class="relative row-span-2">
     <img
-      src="{{ this.recipienInfo!._avatar }}"
+      src="{{ this.chat.reciverAvatar }}"
       alt="User's avatar"
       class="w-9 h-9 rounded-full"
     />
@@ -14,7 +14,7 @@
   <!-- Chat sumary -->
   <div class="row-span-10 w-full flex flex-col">
     <div class="flex flex-row justify-between line-clamp-1">
-      <span class="font-normal text-sm">{{ this.recipienInfo!._name }}</span>
+      <span class="font-normal text-sm">{{ this.chat.reciverName }}</span>
       <span
         class="relative top-1 text-xs font-normal text-gray-500 dark:text-gray-400 line-clamp-1"
       >

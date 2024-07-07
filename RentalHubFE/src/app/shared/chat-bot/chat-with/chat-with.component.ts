@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Input,
   OnDestroy,
   OnInit,
   Renderer2,
@@ -33,7 +34,7 @@ import * as moment from 'moment';
   styleUrls: ['./chat-with.component.scss'],
 })
 export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
-  // @ViewChild('scrollableDiv') scrollableDiv: ElementRef | undefined;
+  @Input() chat: UserChatsType | null = null;
   @ViewChild('chatContainer', { static: false })
   private chatContainer!: ElementRef;
   isLoading: boolean = false;
@@ -122,14 +123,6 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
                 );
                 //Lấy recipientInfor và kiểm tra xem recipient có info không
                 if (recipientId) {
-                  this.chatBotService
-                    .fetchRecipientInfo(recipientId.toString())
-                    .pipe(takeUntil(this.$destroy))
-                    .subscribe((res) => {
-                      if (res.data) {
-                        this.recipientInfor = res.data;
-                      }
-                    });
                   //Kiểm tra người nhận có online hay không
                   this.chatBotService.getCurrentOnlineUsers
                     .pipe(takeUntil(this.$destroy))
