@@ -1,5 +1,5 @@
 <div
-  *ngIf="this.recipientInfor && this.currentUser"
+  *ngIf="this.chat && this.currentUser"
   [ngClass]="isLoading ? 'opacity-70' : ''"
 >
   <div *ngIf="isLoading" class="spinner__loading">
@@ -15,14 +15,14 @@
     <div class="relative row-span-2">
       <img
         class="w-8 h-8 rounded-full"
-        src="{{ recipientInfor._avatar }}"
+        src="{{ this.chat.reciverAvatar }}"
         alt="recipient image"
       />
       <span [ngClass]="this.isOnline ? 'user-online' : ''"></span>
     </div>
 
     <span class="ml-1 text-sm line-clamp-1">
-      {{ this.recipientInfor._name }}
+      {{ this.chat.reciverName }}
     </span>
   </div>
 
@@ -41,7 +41,7 @@
         <!-- Avatar -->
         <img
           class="w-8 h-8 rounded-full"
-          src="{{ recipientInfor._avatar }}"
+          src="{{ this.chat.reciverAvatar }}"
           alt="recipient image"
         />
         <!-- Message Content  -->
@@ -50,7 +50,7 @@
         >
           <span
             class="text-xs font-medium text-gray-900 dark:text-white line-clamp-1"
-            >{{ recipientInfor._name }}</span
+            >{{ this.chat.reciverName }}</span
           >
           <p class="text-xs font-normal py-1 text-gray-900 dark:text-white">
             {{ message.text }}

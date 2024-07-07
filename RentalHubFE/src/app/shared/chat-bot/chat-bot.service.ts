@@ -22,6 +22,8 @@ export interface UserChatsType {
   lssender: String;
   createdAt: Date;
   updatedAt: Date;
+  reciverName: string;
+  reciverAvatar: string;
   totalUnRead: number;
 }
 
@@ -400,9 +402,12 @@ export class ChatBotService {
   fetchMyChats(uId: string) {
     let queryParams = new HttpParams().append('userId', uId);
     return this.http
-      .get<resDataDTO>(environment.baseUrl + 'chat/find-user-chats', {
-        params: queryParams,
-      })
+      .get<resDataDTO>(
+        environment.baseUrl + 'chat/find-detail-user-chats-pagination',
+        {
+          params: queryParams,
+        }
+      )
       .pipe(
         catchError(handleError),
         tap((res) => {

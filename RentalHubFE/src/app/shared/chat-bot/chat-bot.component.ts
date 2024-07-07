@@ -20,6 +20,8 @@ export class ChatBotComponent implements OnInit, OnDestroy {
   totalUnreadMsgs: number | null = 0;
   currentUser: User | null = null;
   currentChats: UserChatsType[] | null = null;
+  currentChat: UserChatsType | null = null;
+  searchText = '';
   $destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -100,10 +102,15 @@ export class ChatBotComponent implements OnInit, OnDestroy {
 
   toChatBot(chat: UserChatsType) {
     console.log('To chat bot id:', chat._id);
-    this.chatBotService.setSeeContactList(false);
     this.chatBotService
       .fetchCurrentChat(chat.members[0], chat.members[1])
       .pipe(takeUntil(this.$destroy))
-      .subscribe();
+      .subscribe((res) => {
+        if (res.data) {
+          this.searchText = '';
+          this.chatBotService.setSeeContactList(false);
+          this.currentChat = chat;
+        }
+      });
   }
 }
