@@ -12,6 +12,7 @@ import { LoginDetailUpdateComponent } from './login-detail-update/login-detail-u
 import { RegisterAddressComponent } from './register-address/register-address.component';
 import { ManageAddressesComponent } from './manage-addresses/manage-addresses.component';
 import { ManageIdentityComponent } from './manage-identity/manage-identity.component';
+import { PaymentPackagesComponent } from '../payment/payment-packages/payment-packages.component';
 
 const routes: Routes = [
   {

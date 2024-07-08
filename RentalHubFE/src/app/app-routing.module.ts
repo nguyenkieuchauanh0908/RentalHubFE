@@ -10,6 +10,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { ProfileLayoutComponent } from './shared/layout/profile-layout/profile-layout.component';
 import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
 import { ForumLayoutComponent } from './forum/forum-layout/forum-layout.component';
+import { PaymentPackagesComponent } from './payment/payment-packages/payment-packages.component';
 export const routerOptions: ExtraOptions = {
   anchorScrolling: 'enabled',
 };
@@ -36,6 +37,13 @@ const routes: Routes = [
     component: ProfileLayoutComponent,
     loadChildren: () =>
       import('./accounts/accounts.module').then((m) => m.AccountsModule),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'payment',
+    component: MainLayoutComponent,
+    loadChildren: () =>
+      import('./payment/payment.module').then((m) => m.PaymentModule),
     canActivate: [AuthGuard],
   },
   {
