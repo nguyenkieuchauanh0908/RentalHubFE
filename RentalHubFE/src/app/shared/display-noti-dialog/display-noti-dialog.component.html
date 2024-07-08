@@ -4,16 +4,15 @@
   <notifier-container></notifier-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <!-- <button
-    *ngIf="this.data._type === 'NEW_COMMENT'"
+  <button
     class="bg-green-700 hover:bg-green-800"
     style="color: white; background-color: #228b22"
-    (click)="seeSocialPost()"
+    (click)="redirectoManagement(this.data._type)"
     mat-dialog-close
     mat-button
   >
-    Xem bài viết
-  </button> -->
+    Đi đến quản lý
+  </button>
   <button
     class="bg-blue-700 hover:bg-blue-800"
     style="color: white; background-color: #1a56db"

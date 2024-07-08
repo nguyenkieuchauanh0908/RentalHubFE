@@ -196,6 +196,7 @@ export class NotificationService {
                   for (let i = 0; i < unseenNotifications.length; i++) {
                     if (unseenNotifications[i]._id === id) {
                       thisNoti = unseenNotifications[i];
+                      thisNoti._read = true;
                       break;
                     }
                   }

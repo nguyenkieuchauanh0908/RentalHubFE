@@ -29,10 +29,6 @@ export class PostItemComponent implements OnInit, OnDestroy {
     this.isAuthenticated = false;
     this.accountService.getCurrentUser.subscribe((user) => {
       this.isAuthenticated = !!user;
-      // console.log(
-      //   '🚀 ~ file: post-item.component.ts:32 ~ PostItemComponent ~ this.accountService.getCurrentUser.subscribe ~ this.isAuthenticated:',
-      //   this.isAuthenticated
-      // );
     });
   }
 

@@ -42,7 +42,8 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService,
     private notificationService: NotificationService,
     private authService: AuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private notifier: NotifierService
   ) {}
   ngOnDestroy() {
     console.log('destroying profile header...');
@@ -173,64 +174,70 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
   }
 
   readNotiDetail(noti: any) {
-    switch (noti._type) {
-      case 'REPORTED_POST':
-        //Hiện lên chi tiết bài post kèm message thông báo
-        this.postService
-          .getReportPostDetails(noti._id)
-          .pipe(takeUntil(this.$destroy))
-          .subscribe((res) => {
-            if (res.data) {
-              window.scrollTo(0, 0); // Scrolls the page to the top
-              const dialogRef = this.dialog.open(PostEditDialogComponent, {
-                width: '1000px',
-                data: res.data,
-              });
-              dialogRef.afterClosed().subscribe((result) => {
-                console.log(`Dialog result: + $(result)`);
-              });
-            }
+    if (this.user) {
+      switch (noti._type) {
+        case 'NEW_COMMENT':
+          if (!noti._read) {
+            this.markAsRead(noti);
+          }
+          this.seeSocialPost(noti);
+          break;
+        case 'UPDATE_COMMENT':
+          if (!noti._read) {
+            this.markAsRead(noti);
+          }
+          this.seeSocialPost(noti);
+          break;
+        case 'ACTIVE_HOST_SUCCESS':
+          if (!noti._read) {
+            this.markAsRead(noti);
+          }
+          this.router.navigate(['/profile/post-new', this.user._id]);
+          break;
+        case 'CREATE_POST_SUCCESS':
+          if (!noti._read) {
+            this.markAsRead(noti);
+          }
+          this.router.navigate(['/posts', noti._postId]);
+          break;
+        case 'REGISTER_ADDRESS_SUCCESS':
+          if (!noti._read) {
+            this.markAsRead(noti);
+          }
+          this.router.navigate(['/profile/post-new', this.user._id]);
+          break;
+        case 'REPORTED_POST':
+          //Hiện lên chi tiết bài post kèm message thông báo
+          this.postService
+            .getReportPostDetails(noti._id)
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((res) => {
+              if (res.data) {
+                window.scrollTo(0, 0); // Scrolls the page to the top
+                const dialogRef = this.dialog.open(PostEditDialogComponent, {
+                  width: '1000px',
+                  data: res.data,
+                });
+                dialogRef.afterClosed().subscribe(() => {
+                  if (!noti._read) {
+                    this.markAsRead(noti);
+                  }
+                });
+              }
+            });
+          break;
+
+        default:
+          window.scrollTo(0, 0); // Scrolls the page to the top
+          const dialog = this.dialog.open(DisplayNotiDialogComponent, {
+            width: '600px',
+            data: noti,
           });
-        break;
-      case 'NEW_COMMENT':
-        this.markAsRead(noti);
-        this.seeSocialPost(noti);
-        break;
-      case 'UPDATE_COMMENT':
-        this.markAsRead(noti);
-        this.seeSocialPost(noti);
-        break;
-      default:
-        window.scrollTo(0, 0); // Scrolls the page to the top
-        const dialog = this.dialog.open(DisplayNotiDialogComponent, {
-          width: '600px',
-          data: noti,
-        });
+      }
+    } else {
+      window.location.reload();
+      this.notifier.notify('warning', 'Vui lòng đăng nhập để tiếp tục');
     }
-    // if (noti._type !== 'REPORTED_POST') {
-    //   window.scrollTo(0, 0); // Scrolls the page to the top
-    //   const dialog = this.dialog.open(DisplayNotiDialogComponent, {
-    //     width: '600px',
-    //     data: noti,
-    //   });
-    // } else {
-    //   //Hiện lên chi tiết bài post kèm message thông báo
-    //   this.postService
-    //     .getReportPostDetails(noti._id)
-    //     .pipe(takeUntil(this.$destroy))
-    //     .subscribe((res) => {
-    //       if (res.data) {
-    //         window.scrollTo(0, 0); // Scrolls the page to the top
-    //         const dialogRef = this.dialog.open(PostEditDialogComponent, {
-    //           width: '1000px',
-    //           data: res.data,
-    //         });
-    //         dialogRef.afterClosed().subscribe((result) => {
-    //           console.log(`Dialog result: + $(result)`);
-    //         });
-    //       }
-    //     });
-    // }
   }
 
   seeSocialPost(noti: any) {
