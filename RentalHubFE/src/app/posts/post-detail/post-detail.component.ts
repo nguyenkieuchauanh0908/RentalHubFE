@@ -19,6 +19,7 @@ import { PostCardComponent } from '../post-card/post-card.component';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { GoogleMapsModule, MapGeocoder } from '@angular/google-maps';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   standalone: true,
@@ -40,9 +41,9 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   favoredPosts!: String[] | null | any[];
   isFavoured!: boolean;
   $destroy: Subject<boolean> = new Subject<boolean>();
-  center!: google.maps.LatLngLiteral;
-  latitudeVariable!: number;
-  longitudeVariable!: number;
+  center: google.maps.LatLngLiteral | null = null;
+  // latitudeVariable!: number;
+  // longitudeVariable!: number;
 
   constructor(
     private postService: PostService,
@@ -58,15 +59,11 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+    this.center = null;
     this.postService.getCurrentFavoritesId
       .pipe(takeUntil(this.$destroy))
       .subscribe((favourites) => {
         this.favoredPosts = favourites;
-      });
-    this.postService.getCurrentFavoritesId
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((favorites) => {
-        this.favoredPosts = favorites;
       });
     if (this.post && this.favoredPosts) {
       this.isFavoured = this.favoredPosts.some((pid) => pid === this.post._id);
@@ -89,7 +86,7 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
                   address: this.post.roomAddress,
                 })
                 .subscribe(({ results }) => {
-                  console.log(results);
+                  console.log('Test map', results);
                   if (results.length > 0) {
                     const location: any = results[0].geometry.location;
                     // Render map with obtained coordinates
@@ -98,7 +95,10 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
                       lng: location.lng(),
                     };
                   } else {
-                    console.error('No results found');
+                    this.notifierService.notify(
+                      'warning',
+                      'Đã sử dụng hết request trong ngày cho API Map!'
+                    );
                   }
                 });
               this.route.data
