@@ -17,6 +17,7 @@ export class PaymentPackagesComponent implements OnInit, OnDestroy {
     this.$destroy.unsubscribe();
   }
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.paymentOptions = [
       {
         name: 'Cơ bản',

@@ -18,4 +18,8 @@ export class PaymentService {
       }
     );
   }
+
+  getPaymentPackageInfo() {
+    //Lấy thông tin của gói đăng và cập nhật lại currentUser
+  }
 }

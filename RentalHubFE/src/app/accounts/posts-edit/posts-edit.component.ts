@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription, map, startWith, tap } from 'rxjs';
+import { Observable, Subject, Subscription, map, startWith, tap } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
@@ -62,6 +62,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   addressOptions: String[] = new Array<string>();
   filteredAddressOptions!: Observable<String[]> | undefined;
+  $destroy: Subject<boolean> = new Subject<boolean>();
 
   public customToolbar: Object = {
     items: [
@@ -105,41 +106,52 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private addressesService: AddressesService
-  ) {
-    this.postService.getCurrentChosenTags.subscribe((tags) => {
-      if (tags) {
-        this.selectedTags = tags;
-      }
-    });
-  }
+  ) {}
 
   ngOnInit() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
     this.myProfileSub = this.accountService.getCurrentUser.subscribe((user) => {
       if (user) {
         this.myProfile = user;
         this.isHost = user._isHost;
+        if (this.myProfile) {
+          console.log(
+            '🚀 ~ PostsEditComponent ~ this.myProfileSub=this.accountService.getCurrentUser.subscribe ~ this.myProfile:',
+            this.myProfile
+          );
+          if (this.myProfile._totalPosts === this.myProfile._usePosts) {
+            this.notifierService.notify(
+              'warning',
+              'Đã dùng hết lượt đăng bài! Vui lòng mua thêm!'
+            );
+          }
+          //Sucribe Gọi API lấy thông tin về gói đăng bài
+          //Get tags
+          this.postService.getCurrentChosenTags.subscribe((tags) => {
+            if (tags) {
+              this.selectedTags = tags;
+            }
+          });
+          this.postService.setCurrentChosenTags([]);
+          this.getTagSub = this.postService.getAllTags().subscribe();
+
+          //List địa chỉ của user
+          this.addressOptions = [];
+          this.addressesService.getCurrentRegisteredAddress.subscribe(
+            (addresses) => {
+              if (addresses) this.addressOptions = addresses;
+            }
+          );
+          this.filteredAddressOptions =
+            this.postEditForm.controls.addressInputControl.valueChanges.pipe(
+              startWith(''),
+              map((value) =>
+                _filterForStringOptions(this.addressOptions, value || '')
+              )
+            );
+        }
       }
     });
-    window.scrollTo(0, 0); // Scrolls the page to the top
-    this.postService.setCurrentChosenTags([]);
-    this.getTagSub = this.postService.getAllTags().subscribe();
-
-    //List địa chỉ của user
-    this.addressOptions = [];
-    this.addressesService.getCurrentRegisteredAddress.subscribe((addresses) => {
-      if (addresses) this.addressOptions = addresses;
-      console.log(
-        '🚀 ~ PostsEditComponent ~ this.addressesService.getCurrentRegisteredAddress.subscribe ~ this.addressOptions:',
-        this.addressOptions
-      );
-    });
-    this.filteredAddressOptions =
-      this.postEditForm.controls.addressInputControl.valueChanges.pipe(
-        startWith(''),
-        map((value) =>
-          _filterForStringOptions(this.addressOptions, value || '')
-        )
-      );
   }
 
   ngOnDestroy(): void {
@@ -169,19 +181,15 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   onSubmitPost() {
     this.isLoading = true;
-    // this.postHtmlContent = this.textEditorForPostContent.getHtml();
-    // this.postEditForm.patchValue({
-    //   contentInputControl: this.postHtmlContent,
-    // });
-    console.log('on submiting post ...Form data: ', this.postEditForm.value);
-    console.log(
-      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
-      this.selectedTags
-    );
-    console.log(
-      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
-      this.selectedFiles
-    );
+    // console.log('on submiting post ...Form data: ', this.postEditForm.value);
+    // console.log(
+    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
+    //   this.selectedTags
+    // );
+    // console.log(
+    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
+    //   this.selectedFiles
+    // );
     this.notifierService.hideAll();
     if (this.selectedFiles && this.selectedTags) {
       this.postService
