@@ -199,8 +199,8 @@
         <p class="text-base font-medium">Bản đồ</p>
         <google-map
           *ngIf="this.center; else noMap"
-          class="absolute left-1/2 -translate-x-1/2 max-w-full"
-          height="450"
+          class="w-full mx-auto block"
+          height="400"
           [center]="center"
           [zoom]="6"
         >
@@ -209,15 +209,17 @@
           ></map-marker>
         </google-map>
         <ng-template #noMap>
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62700.93704999798!2d106.69172745153247!3d10.82595731073329!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f23816ab%3A0x282f711441b6916f!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBTxrAgcGjhuqFtIEvhu7kgdGh14bqtdCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmg!5e0!3m2!1svi!2s!4v1720512154187!5m2!1svi!2s"
-            width="600"
-            height="450"
-            style="border: 0"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
+          <div class="w-full flex flex-row justify-self-center text-center">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62700.93704999798!2d106.69172745153247!3d10.82595731073329!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f23816ab%3A0x282f711441b6916f!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBTxrAgcGjhuqFtIEvhu7kgdGh14bqtdCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmg!5e0!3m2!1svi!2s!4v1720512154187!5m2!1svi!2s"
+              height="400"
+              class="w-full mx-auto block"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
         </ng-template>
       </div>
     </div>
