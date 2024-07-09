@@ -1,7 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { PaymentService } from '../payment.service';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
+import { AccountService } from 'src/app/accounts/accounts.service';
+import { User } from '../../auth/user.model';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-payment-option',
@@ -10,19 +13,38 @@ import { Router } from '@angular/router';
 })
 export class PaymentOptionComponent implements OnInit, OnDestroy {
   @Input() option: any = null;
-  longText = `The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog
-  from Japan. A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was
-  originally bred for hunting.`;
-  $destroy: Subject<boolean> = new Subject();
+  $destroy: Subject<boolean> = new Subject<boolean>();
+  currentUser: User | null = null;
 
-  constructor(private paymentService: PaymentService, private router: Router) {}
+  constructor(
+    private paymentService: PaymentService,
+    private router: Router,
+    private accountService: AccountService,
+    private notifier: NotifierService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        if (user) {
+          this.currentUser = user;
+        } else {
+          this.router.navigate(['']);
+          this.notifier.notify('warning', 'Bạn cần đăng nhập để tiếp tục!');
+        }
+      });
+  }
+
   ngOnDestroy(): void {
     this.$destroy.next(true);
     this.$destroy.unsubscribe();
   }
-  goToPaymentPage() {}
+  goToPaymentPage() {
+    if (this.currentUser) {
+      this.paymentService.payByVNPay(this.currentUser._id, 100000).subscribe();
+    }
+  }
 
   backToHomePage() {
     this.router.navigate(['']);
