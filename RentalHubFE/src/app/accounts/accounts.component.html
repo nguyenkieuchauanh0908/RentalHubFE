@@ -2,11 +2,7 @@
   class="grid grid-cols-12 xs:gap-1 xs:px-1 xs:py-1 md:px-4 md:gap-4 md:py-8 lg:px-20 bg-grey-background min-h-screen"
 >
   <div class="xs:hidden md:block md:col-span-3 text-center">
-    <app-sidebar
-      [profile]="profile"
-      [myProfile]="myProfile"
-      [seeMyProfile]="seeMyProfile"
-    ></app-sidebar>
+    <app-sidebar></app-sidebar>
   </div>
   <div class="xs:col-span-12 md:col-span-9">
     <router-outlet></router-outlet>

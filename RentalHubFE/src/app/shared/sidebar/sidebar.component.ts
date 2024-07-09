@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SharedModule } from '../shared.module';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { resDataDTO } from '../resDataDTO';
 import { User } from 'src/app/auth/user.model';
 import { AccountService } from 'src/app/accounts/accounts.service';
@@ -18,37 +18,42 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  @Input() profile!: User | null;
-  @Input() myProfile!: User | null;
-  @Input() seeMyProfile!: boolean;
+  myProfile: User | null = null;
+  loginType: number | 0 = 0;
+  $destroy: Subject<boolean> = new Subject();
 
   constructor(
     private authService: AuthService,
+    private accountService: AccountService,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit() {
-    console.log('Am I seeing my profile from sidebar: ', this.seeMyProfile);
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        this.myProfile = user;
+        if (this.myProfile) {
+          this.loginType = Number(localStorage.getItem('loginType'));
+        }
+      });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
+  }
 
   showAccount() {
-    // this.router.navigate(['/profile/user', this.myProfile?._id]);
     window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(AccountEditDialogComponent, {
       width: '400px',
       data: this.myProfile,
     });
-    console.log(
-      '🚀 ~ file: sidebar.component.ts:43 ~ SidebarComponent ~ showAccount ~ this.myProfile:',
-      this.myProfile
-    );
   }
 
   toLoginDetail() {
-    console.log('On opening up edit login detail component...');
     window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(LoginDetailUpdateDialogComponent, {
       width: '400px',
@@ -57,9 +62,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    console.log('On logging out...');
     window.scrollTo(0, 0); // Scrolls the page to the top
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn đăng xuất?',
@@ -95,16 +98,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile/post-new', this.myProfile?._id]);
   }
 
-  // toAllNotifications() {
-  //   this.router.navigate(['/profile/notifications', this.myProfile?._id]);
-  // }
-
   toAddressesManagement() {
     this.router.navigate(['/profile/manage-addresses', this.myProfile?._id]);
   }
 
   editAvatar() {
-    // this.router.navigate(['/profile/user/edit-avatar', this.myProfile?._id]);
     window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(UpdateAvatarDialogComponent, {
       width: '400px',

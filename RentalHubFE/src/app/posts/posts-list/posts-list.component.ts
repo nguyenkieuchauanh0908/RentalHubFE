@@ -170,7 +170,6 @@ export class PostsListComponent implements OnInit, OnDestroy {
         this.currentFavourites = favourites;
       });
     }
-    // });
   }
 
   navigateNextSilderImage(next: boolean) {

@@ -40,9 +40,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   user!: User | null;
   fullName!: string;
   isAuthenticatedUser: boolean = false;
-  seenNotiList!: any;
+  seenNotiList: any[] = [];
   seenNotiPagination: Pagination = { page: 0, total: 1, limit: 10 };
-  unseenNotificaionList!: any;
+  unseenNotificaionList: any[] = [];
   unseenNotiPagination: Pagination = { page: 0, total: 1, limit: 10 };
   notificationTotals!: number;
   $destroy: Subject<boolean> = new Subject<boolean>();
@@ -214,7 +214,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
               }
             });
           break;
-
         default:
           window.scrollTo(0, 0); // Scrolls the page to the top
           const dialog = this.dialog.open(DisplayNotiDialogComponent, {
