@@ -13,13 +13,11 @@
       </div>
       <!-- User name -->
       <div class="p-2">
-        <div *ngIf="seeMyProfile">
-          <p
-            class="text-center text-base text-gray-900 font-medium leading-8 cursor-text"
-          >
-            {{ myProfile?._fname }} {{ myProfile?._lname }}
-          </p>
-        </div>
+        <p
+          class="text-center text-base text-gray-900 font-medium leading-8 cursor-text"
+        >
+          {{ myProfile?._fname }} {{ myProfile?._lname }}
+        </p>
       </div>
       <!-- Manage list -->
       <div class="flex flex-col gap-4">
@@ -34,7 +32,10 @@
         </div>
 
         <!-- Login detail -->
-        <div class="flex flex-col gap-2 text-center cursor-pointer">
+        <div
+          *ngIf="this.loginType === 0"
+          class="flex flex-col gap-2 text-center cursor-pointer"
+        >
           <a
             class="hover:text-primary-600 hover:font-medium"
             (click)="toLoginDetail()"
@@ -82,16 +83,6 @@
           >
           <mat-divider></mat-divider>
         </div>
-
-        <!-- Notifications -->
-        <!-- <div class="flex flex-col gap-2 text-center cursor-pointer">
-          <a
-            class="hover:text-primary-600 hover:font-medium"
-            (click)="toAllNotifications()"
-            >Thông báo</a
-          >
-          <mat-divider></mat-divider>
-        </div> -->
 
         <!-- Favorite posts -->
         <div class="flex flex-col gap-2 text-center cursor-pointer">

@@ -214,7 +214,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
               }
             });
           break;
-
         default:
           window.scrollTo(0, 0); // Scrolls the page to the top
           const dialog = this.dialog.open(DisplayNotiDialogComponent, {
