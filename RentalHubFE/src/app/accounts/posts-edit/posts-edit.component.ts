@@ -147,6 +147,10 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     this.getTagSub.unsubscribe();
   }
 
+  goToPaymentPackacges() {
+    this.router.navigate(['/payment/packages']);
+  }
+
   getIdOfCity(): string[] {
     return [];
   }

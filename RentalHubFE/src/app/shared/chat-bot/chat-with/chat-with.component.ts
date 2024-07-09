@@ -34,7 +34,6 @@ import * as moment from 'moment';
   styleUrls: ['./chat-with.component.scss'],
 })
 export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() chat: UserChatsType | null = null;
   @ViewChild('chatContainer', { static: false })
   private chatContainer!: ElementRef;
   isLoading: boolean = false;
@@ -79,7 +78,6 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log('Chat container is ready');
       this.attachScrollEvent();
     } else {
-      console.error('Chat container is still not ready');
       // Retry attaching the event after a slight delay
       setTimeout(() => this.initializeScrollEvent(), 100);
     }
@@ -123,6 +121,14 @@ export class ChatWithComponent implements OnInit, OnDestroy, AfterViewInit {
                 );
                 //Lấy recipientInfor và kiểm tra xem recipient có info không
                 if (recipientId) {
+                  this.chatBotService
+                    .fetchRecipientInfo(recipientId.toString())
+                    .pipe(takeUntil(this.$destroy))
+                    .subscribe((res) => {
+                      if (res.data) {
+                        this.recipientInfor = res.data;
+                      }
+                    });
                   //Kiểm tra người nhận có online hay không
                   this.chatBotService.getCurrentOnlineUsers
                     .pipe(takeUntil(this.$destroy))

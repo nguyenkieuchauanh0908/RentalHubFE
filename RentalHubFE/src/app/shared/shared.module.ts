@@ -38,6 +38,7 @@ import { PostCommentEditDialogComponent } from './post-comment/post-comment-edit
 import { PostReplyCommentComponent } from './post-comment/post-reply-comment/post-reply-comment.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { ChatFilterPipe } from './pipe/chat-filter.pipe';
+import { MatCardModule } from '@angular/material/card';
 @NgModule({
   declarations: [
     TagsComponent,
@@ -79,6 +80,7 @@ import { ChatFilterPipe } from './pipe/chat-filter.pipe';
     PostCardComponent,
     PickerComponent,
     MatChipsModule,
+    MatCardModule,
   ],
   exports: [
     CommonModule,
@@ -102,6 +104,7 @@ import { ChatFilterPipe } from './pipe/chat-filter.pipe';
     PickerComponent,
     MatChipsModule,
     ChatFilterPipe,
+    MatCardModule,
   ],
 })
 export class SharedModule {}
