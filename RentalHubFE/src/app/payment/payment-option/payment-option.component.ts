@@ -42,11 +42,15 @@ export class PaymentOptionComponent implements OnInit, OnDestroy {
   }
   goToPaymentPage() {
     if (this.currentUser) {
-      this.paymentService.payByVNPay(this.currentUser._id, 100000).subscribe();
+      this.paymentService
+        .payByVNPay(this.currentUser._id, this.option.price)
+        .subscribe();
     }
   }
 
   backToHomePage() {
     this.router.navigate(['']);
   }
+
+  customizeOption() {}
 }
