@@ -66,6 +66,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.isAuthenticatedUser = !!user;
         console.log('User is authenticated: ', this.isAuthenticatedUser);
         this.user = user;
+        console.log(
+          '🚀 ~ HeaderComponent ~ .subscribe ~ this.user:',
+          this.user
+        );
         if (this.user?._fname && this.user?._lname) {
           this.fullName = this.user?._fname + ' ' + this.user._lname;
         }
