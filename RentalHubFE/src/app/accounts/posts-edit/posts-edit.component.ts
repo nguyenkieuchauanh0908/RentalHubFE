@@ -1,6 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subject, Subscription, map, startWith, tap } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  Subscription,
+  map,
+  startWith,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
@@ -14,6 +22,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
 import { AddressesService } from '../register-address/addresses.service';
 import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor';
+import { PaymentService } from 'src/app/payment/payment.service';
 
 export const _filter = (
   optionsToFilter: PublicAPIData[],
@@ -105,27 +114,34 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private addressesService: AddressesService
+    private addressesService: AddressesService,
+    private paymentService: PaymentService
   ) {}
 
   ngOnInit() {
     window.scrollTo(0, 0); // Scrolls the page to the top
-    this.myProfileSub = this.accountService.getCurrentUser.subscribe((user) => {
-      if (user) {
-        this.myProfile = user;
-        this.isHost = user._isHost;
-        if (this.myProfile) {
-          console.log(
-            '🚀 ~ PostsEditComponent ~ this.myProfileSub=this.accountService.getCurrentUser.subscribe ~ this.myProfile:',
-            this.myProfile
-          );
-          if (this.myProfile._totalPosts === this.myProfile._usePosts) {
-            this.notifierService.notify(
-              'warning',
-              'Đã dùng hết lượt đăng bài! Vui lòng mua thêm!'
-            );
-          }
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        if (user) {
+          this.myProfile = user;
+          this.isHost = user._isHost;
           //Sucribe Gọi API lấy thông tin về gói đăng bài
+          this.paymentService
+            .getPaymentPackageInfo()
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((res) => {
+              if (res.data) {
+                this.myProfile!._totalPosts = res.data._totalPosts;
+                this.myProfile!._usePosts = res.data._usePosts;
+                if (this.myProfile!._totalPosts === this.myProfile!._usePosts) {
+                  this.notifierService.notify(
+                    'warning',
+                    'Đã dùng hết lượt đăng bài! Vui lòng mua thêm!'
+                  );
+                }
+              }
+            });
           //Get tags
           this.postService.getCurrentChosenTags.subscribe((tags) => {
             if (tags) {
@@ -150,8 +166,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
               )
             );
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy(): void {

@@ -23,13 +23,16 @@ export class PaymentService {
       .pipe(
         catchError(handleError),
         tap((res) => {
-          console.log('🚀 ~ PaymentService ~ tap ~ res:', res);
-          window.location.href = res.data;
+          if (res.data) {
+            window.location.href = res.data;
+          }
         })
       );
   }
 
   getPaymentPackageInfo() {
-    //Lấy thông tin của gói đăng và cập nhật lại currentUser
+    return this.http
+      .get<resDataDTO>(environment.baseUrl + 'users/get-packages-user')
+      .pipe(catchError(handleError));
   }
 }
