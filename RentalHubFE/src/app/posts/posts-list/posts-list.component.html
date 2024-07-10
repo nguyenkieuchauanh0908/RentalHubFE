@@ -52,18 +52,22 @@
         [matMenuTriggerFor]="menu"
         class="cursor-pointer mr-3"
       >
-        <p class="text-black-color font-medium text-center">
-          Bộ lọc <mat-icon class="relative top-1.5 ml-1"> filter_list</mat-icon>
-        </p>
+        <div class="flex flex-row flex-nowrap">
+          <div><mat-icon> filter_list</mat-icon></div>
+          <p class="text-black-color font-medium text-center relative top-1">
+            Bộ lọc
+          </p>
+        </div>
       </button>
       <mat-menu #menu="matMenu" yPosition="below" class="md:hidden">
         <a (click)="$event.stopPropagation()">
           <div class="xs:block bg-white-background rounded-lg">
             <!-- Title -->
-            <p class="text-black-color font-medium text-center">
-              <mat-icon class="relative top-1.5 mr-1"> filter_list</mat-icon>Bộ
-              lọc
-            </p>
+            <div class="relative top-1.5 mr-1">
+              <p class="text-black-color font-medium text-center">
+                <mat-icon> filter_list</mat-icon>Bộ lọc
+              </p>
+            </div>
             <!-- Filter by room's price -->
             <div class="flex flex-col text-sm py-1 px-3">
               <p class="text-black-color font-medium">Giá nhà:</p>
@@ -210,9 +214,12 @@
     <!-- Filter for medium screen -->
     <div class="xs:hidden md:block bg-white-background rounded-lg">
       <!-- Title -->
-      <p class="text-black-color font-medium text-center">
-        <mat-icon class="relative top-1.5 mr-1"> filter_list</mat-icon>Bộ lọc
-      </p>
+      <div class="flex flex-row flex-nowrap items-center justify-center">
+        <div><mat-icon> filter_list</mat-icon></div>
+        <p class="text-black-color font-medium text-center relative top-1.5">
+          Bộ lọc
+        </p>
+      </div>
       <!-- Filter by room's price -->
       <div class="flex flex-col text-sm py-1 px-3">
         <p class="text-black-color font-medium">Giá nhà (VNĐ):</p>

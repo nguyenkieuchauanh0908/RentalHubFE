@@ -74,19 +74,20 @@
                 >
                   <!-- Image -->
                   <div class="relative grid xs:col-span-3 lg:col-span-2">
-                    <mat-icon
-                      class="absolute top-1 right-1 z-10 cursor-pointer"
-                      color="warn"
-                      *ngIf="this.favoredPosts!.includes(post._id)"
-                      (click)="addOrRemovePostToFavorites(post._id, false)"
-                      >favorite</mat-icon
-                    >
-                    <mat-icon
-                      *ngIf="!this.favoredPosts!.includes(post._id)"
-                      class="absolute top-1 right-1 z-10 text-white cursor-pointer"
-                      (click)="addOrRemovePostToFavorites(post._id, true)"
-                      >favorite</mat-icon
-                    >
+                    <div class="absolute top-1 right-1 z-10 cursor-pointer">
+                      <mat-icon
+                        color="warn"
+                        *ngIf="this.favoredPosts!.includes(post._id)"
+                        (click)="addOrRemovePostToFavorites(post._id, false)"
+                        >favorite</mat-icon
+                      >
+                      <mat-icon
+                        *ngIf="!this.favoredPosts!.includes(post._id)"
+                        class="text-white"
+                        (click)="addOrRemovePostToFavorites(post._id, true)"
+                        >favorite</mat-icon
+                      >
+                    </div>
                     <img
                       class="hover:cursor-pointer object-fill h-32 w-full rounded-lg"
                       src="{{ post._images[0] }}"

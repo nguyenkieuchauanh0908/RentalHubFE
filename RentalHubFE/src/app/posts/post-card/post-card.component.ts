@@ -1,15 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { PostItem } from '../posts-list/post-item/post-item.model';
 import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { PostService } from '../post.service';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
-
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   standalone: true,
   imports: [MatIconModule, CommonModule],
@@ -17,22 +16,29 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
   templateUrl: './post-card.component.html',
   styleUrls: ['./post-card.component.scss'],
 })
-export class PostCardComponent {
+export class PostCardComponent implements OnInit, OnDestroy {
   @Input() post!: PostItem;
-  @Input() isFavoured: boolean | null = null;
+  @Input() isFavoured: boolean = false;
   isAuthenticated: boolean = false;
-
+  $destroy: Subject<boolean> = new Subject<boolean>();
   constructor(
     private router: Router,
     private notifierService: NotifierService,
     private postService: PostService,
     private accountService: AccountService,
     public dialog: MatDialog
-  ) {
+  ) {}
+  ngOnDestroy(): void {
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
+  }
+  ngOnInit(): void {
     this.isAuthenticated = false;
-    this.accountService.getCurrentUser.subscribe((user) => {
-      this.isAuthenticated = !!user;
-    });
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        this.isAuthenticated = !!user;
+      });
   }
 
   goToPost() {

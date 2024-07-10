@@ -24,21 +24,21 @@
       <div class="grid grid-rows justify-center">
         <!-- sm screen above -->
         <div
-          *ngIf="historyPosts.length > 0; else noPostsBlock"
+          *ngIf="favoredPosts.length > 0; else noPostsBlock"
           class="xs:hidden sm:block"
         >
           <div
-            *ngFor="let post of historyPosts"
+            *ngFor="let post of favoredPosts"
             class="grid gap-2 grid-cols-12 mb-4 w-full h-max-full bg-gray-50 p-4 rounded-lg"
           >
             <!-- Image -->
             <div class="relative grid xs:col-span-3 lg:col-span-2">
-              <mat-icon
-                class="absolute top-1 right-1 z-10"
-                color="warn"
-                (click)="toUnfavorPost(post._postId)"
-                >favorite</mat-icon
-              >
+              <div class="absolute top-1 right-1 z-10">
+                <mat-icon color="warn" (click)="toUnfavorPost(post._postId)"
+                  >favorite</mat-icon
+                >
+              </div>
+
               <img
                 class="hover:cursor-pointer object-fill h-32 w-full rounded-lg"
                 src="{{ post._images[0] }}"
@@ -119,14 +119,13 @@
           ></app-pagination>
         </div>
         <!-- xs screen -->
-        <div *ngIf="historyPosts.length > 0" class="xs:block sm:hidden">
-          <div *ngFor="let post of historyPosts" class="relative">
-            <mat-icon
-              class="absolute top-1.5 right-1.5 z-10"
-              color="warn"
-              (click)="toUnfavorPost(post._postId)"
-              >favorite</mat-icon
-            >
+        <div *ngIf="favoredPosts.length > 0" class="xs:block sm:hidden">
+          <div *ngFor="let post of favoredPosts" class="relative">
+            <div class="absolute top-1.5 right-1.5 z-10">
+              <mat-icon color="warn" (click)="toUnfavorPost(post._postId)"
+                >favorite</mat-icon
+              >
+            </div>
             <app-post-card [post]="post"></app-post-card>
           </div>
           <!-- Pagination -->

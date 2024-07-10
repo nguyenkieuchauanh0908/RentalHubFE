@@ -18,12 +18,11 @@ import { PostEditDialogComponent } from '../posting-history/post-edit-dialog/pos
   styleUrls: ['./favorite-posts.component.scss'],
 })
 export class FavoritePostsComponent implements OnInit, OnDestroy {
-  private getPostHistorySub!: Subscription;
   $destroy: Subject<boolean> = new Subject();
   profile!: User | null;
   currentUid!: string | null;
   myProfile!: User | null;
-  historyPosts: PostItem[] | any = new Array<PostItem>();
+  favoredPosts: PostItem[] | any = new Array<PostItem>();
   totalPages: number = 1;
   currentPage: number = 1;
   pageItemLimit: number = 5;
@@ -45,7 +44,7 @@ export class FavoritePostsComponent implements OnInit, OnDestroy {
 
   currentActiveStatus = {
     status: 0, //All posts
-    data: this.historyPosts,
+    data: this.favoredPosts,
   };
 
   currentFavourites: String[] | null = [];
@@ -63,7 +62,7 @@ export class FavoritePostsComponent implements OnInit, OnDestroy {
     window.scrollTo(0, 0); // Scrolls the page to the top
     this.currentPage = 1;
     this.isLoading = true;
-    this.historyPosts = [];
+    this.favoredPosts = [];
     this.accountService.getCurrentUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
@@ -77,7 +76,7 @@ export class FavoritePostsComponent implements OnInit, OnDestroy {
               (res) => {
                 this.postService.getCurrentFavorites.subscribe(
                   (postingHistory) => {
-                    this.historyPosts = postingHistory!;
+                    this.favoredPosts = postingHistory!;
                   }
                 );
                 this.paginationService.pagination = res.pagination;
@@ -114,15 +113,15 @@ export class FavoritePostsComponent implements OnInit, OnDestroy {
             console.log(post._postId, postId);
             return String(post._postId) !== postId;
           });
-          this.historyPosts = favorites;
+          this.favoredPosts = favorites;
         }
       });
     this.postService
       .createFavorite(postId)
       .pipe(takeUntil(this.$destroy))
       .subscribe();
-    this.getPostHistorySub = this.postService
-      .getFavorites(this.currentPage, this.pageItemLimit)
+    this.postService
+      .getFavorites(this.currentPage, this.pageItemLimit).pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
@@ -134,7 +133,7 @@ export class FavoritePostsComponent implements OnInit, OnDestroy {
                     console.log(post._postId, postId);
                     return String(post._postId) !== postId;
                   });
-                  this.historyPosts = favorites;
+                  this.favoredPosts = favorites;
                   this.notifier.notify(
                     'success',
                     'Bỏ thích bài viết thành công!'
@@ -159,7 +158,7 @@ export class FavoritePostsComponent implements OnInit, OnDestroy {
     toLastPage: boolean
   ) {
     this.isLoading = true;
-    this.historyPosts = [];
+    this.favoredPosts = [];
     if (position === 1 || position === -1) {
       this.currentPage = this.paginationService.navigatePage(
         position,
@@ -172,17 +171,17 @@ export class FavoritePostsComponent implements OnInit, OnDestroy {
       this.currentPage = this.totalPages;
     }
 
-    this.getPostHistorySub = this.postService
+    this.postService
       .getFavorites(this.currentPage, this.pageItemLimit)
       .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           window.scrollTo(0, 0); // Scrolls the page to the top
-          this.historyPosts = res.data;
+          this.favoredPosts = res.data;
           this.postService.getCurrentFavorites
             .pipe(takeUntil(this.$destroy))
             .subscribe((postingHistory) => {
-              this.historyPosts = postingHistory!;
+              this.favoredPosts = postingHistory!;
             });
           this.paginationService.pagination = res.pagination;
           this.totalPages = res.pagination.total;
