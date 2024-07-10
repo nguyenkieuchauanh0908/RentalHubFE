@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { User } from '../../auth/user.model';
 import { NotifierService } from 'angular-notifier';
+import { MatDialog } from '@angular/material/dialog';
+import { CustomizeOptionDialogComponent } from './customize-option-dialog/customize-option-dialog.component';
 
 @Component({
   selector: 'app-payment-option',
@@ -20,7 +22,8 @@ export class PaymentOptionComponent implements OnInit, OnDestroy {
     private paymentService: PaymentService,
     private router: Router,
     private accountService: AccountService,
-    private notifier: NotifierService
+    private notifier: NotifierService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -52,5 +55,28 @@ export class PaymentOptionComponent implements OnInit, OnDestroy {
     this.router.navigate(['']);
   }
 
-  customizeOption() {}
+  customizeOption() {
+    if (this.currentUser) {
+      window.scrollTo(0, 0);
+      const dialogRef = this.dialog.open(CustomizeOptionDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'Tùy chỉnh gói đăng bài',
+          label: 'Nhập số lượt muốn mua',
+          price: 3000,
+        },
+      });
+      const sub = dialogRef.componentInstance.send.subscribe(
+        (amount: number) => {
+          this.paymentService
+            .payByVNPay(this.currentUser!._id, amount)
+            .pipe(takeUntil(this.$destroy))
+            .subscribe();
+        }
+      );
+      dialogRef.afterClosed().subscribe(() => {
+        sub.unsubscribe();
+      });
+    }
+  }
 }
