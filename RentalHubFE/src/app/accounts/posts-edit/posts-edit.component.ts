@@ -1,6 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription, map, startWith, tap } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  Subscription,
+  map,
+  startWith,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
@@ -14,6 +22,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
 import { AddressesService } from '../register-address/addresses.service';
 import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor';
+import { PaymentService } from 'src/app/payment/payment.service';
 
 export const _filter = (
   optionsToFilter: PublicAPIData[],
@@ -62,6 +71,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   addressOptions: String[] = new Array<string>();
   filteredAddressOptions!: Observable<String[]> | undefined;
+  $destroy: Subject<boolean> = new Subject<boolean>();
 
   public customToolbar: Object = {
     items: [
@@ -104,42 +114,59 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private addressesService: AddressesService
-  ) {
-    this.postService.getCurrentChosenTags.subscribe((tags) => {
-      if (tags) {
-        this.selectedTags = tags;
-      }
-    });
-  }
+    private addressesService: AddressesService,
+    private paymentService: PaymentService
+  ) {}
 
   ngOnInit() {
-    this.myProfileSub = this.accountService.getCurrentUser.subscribe((user) => {
-      if (user) {
-        this.myProfile = user;
-        this.isHost = user._isHost;
-      }
-    });
     window.scrollTo(0, 0); // Scrolls the page to the top
-    this.postService.setCurrentChosenTags([]);
-    this.getTagSub = this.postService.getAllTags().subscribe();
+    this.accountService.getCurrentUser
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        if (user) {
+          this.myProfile = user;
+          this.isHost = user._isHost;
+          //Sucribe Gọi API lấy thông tin về gói đăng bài
+          this.paymentService
+            .getPaymentPackageInfo()
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((res) => {
+              if (res.data) {
+                this.myProfile!._totalPosts = res.data._totalPosts;
+                this.myProfile!._usePosts = res.data._usePosts;
+                if (this.myProfile!._totalPosts === this.myProfile!._usePosts) {
+                  this.notifierService.notify(
+                    'warning',
+                    'Đã dùng hết lượt đăng bài! Vui lòng mua thêm!'
+                  );
+                }
+              }
+            });
+          //Get tags
+          this.postService.getCurrentChosenTags.subscribe((tags) => {
+            if (tags) {
+              this.selectedTags = tags;
+            }
+          });
+          this.postService.setCurrentChosenTags([]);
+          this.getTagSub = this.postService.getAllTags().subscribe();
 
-    //List địa chỉ của user
-    this.addressOptions = [];
-    this.addressesService.getCurrentRegisteredAddress.subscribe((addresses) => {
-      if (addresses) this.addressOptions = addresses;
-      console.log(
-        '🚀 ~ PostsEditComponent ~ this.addressesService.getCurrentRegisteredAddress.subscribe ~ this.addressOptions:',
-        this.addressOptions
-      );
-    });
-    this.filteredAddressOptions =
-      this.postEditForm.controls.addressInputControl.valueChanges.pipe(
-        startWith(''),
-        map((value) =>
-          _filterForStringOptions(this.addressOptions, value || '')
-        )
-      );
+          //List địa chỉ của user
+          this.addressOptions = [];
+          this.addressesService.getCurrentRegisteredAddress.subscribe(
+            (addresses) => {
+              if (addresses) this.addressOptions = addresses;
+            }
+          );
+          this.filteredAddressOptions =
+            this.postEditForm.controls.addressInputControl.valueChanges.pipe(
+              startWith(''),
+              map((value) =>
+                _filterForStringOptions(this.addressOptions, value || '')
+              )
+            );
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -169,19 +196,15 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   onSubmitPost() {
     this.isLoading = true;
-    // this.postHtmlContent = this.textEditorForPostContent.getHtml();
-    // this.postEditForm.patchValue({
-    //   contentInputControl: this.postHtmlContent,
-    // });
-    console.log('on submiting post ...Form data: ', this.postEditForm.value);
-    console.log(
-      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
-      this.selectedTags
-    );
-    console.log(
-      '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
-      this.selectedFiles
-    );
+    // console.log('on submiting post ...Form data: ', this.postEditForm.value);
+    // console.log(
+    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
+    //   this.selectedTags
+    // );
+    // console.log(
+    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
+    //   this.selectedFiles
+    // );
     this.notifierService.hideAll();
     if (this.selectedFiles && this.selectedTags) {
       this.postService

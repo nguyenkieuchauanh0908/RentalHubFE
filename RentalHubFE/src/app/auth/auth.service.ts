@@ -120,7 +120,9 @@ export class AuthService {
         user?._RFToken,
         user?._RFExpiredTime,
         user?._ACToken,
-        user?._ACExpiredTime
+        user?._ACExpiredTime,
+        user?._usePosts,
+        user?._totalPosts
       );
       if (loadedUserData.ACToken && loadedUserData.RFToken) {
         this.accountService.setCurrentUser(loadedUserData);
@@ -278,7 +280,9 @@ export class AuthService {
                 res.data.refreshToken,
                 res.data.expiredRefresh,
                 res.data.accessToken,
-                res.data.expiredAccess
+                res.data.expiredAccess,
+                res.data._usePost,
+                res.data._totalPosts
               );
               localStorage.setItem('userData', JSON.stringify(this.resetUser));
             }
@@ -352,7 +356,9 @@ export class AuthService {
       data.refreshToken,
       data.expiredRefresh,
       data.accessToken,
-      data.expiredAccess
+      data.expiredAccess,
+      data._usePosts,
+      data._totalPosts
     );
     this.accountService.setCurrentUser(user);
     localStorage.setItem('userData', JSON.stringify(user));

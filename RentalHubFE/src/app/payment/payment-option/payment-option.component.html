@@ -1,6 +1,6 @@
 <mat-card
-  *ngIf="this.option && this.option.name !== 'GOD'"
-  class="hover:-translate-y-0.5 text-center"
+  *ngIf="this.option"
+  class="hover:-translate-y-0.5 text-center h-[100%]"
 >
   <mat-card-header>
     <div class="flex justify-between text-center mb-4">
@@ -11,8 +11,9 @@
         {{ this.option.name }}
       </span>
       <mat-card-title
-        >{{ this.option.price }}VNĐ<span class="text-sm font-normal"
-          >/{{ this.option.turns }}lượt đăng bài</span
+        >{{ this.option.price.toLocaleString() }}VNĐ<span
+          class="text-sm font-normal"
+          >/{{ this.option.turns }} lượt đăng bài</span
         ></mat-card-title
       >
     </div>
@@ -24,7 +25,7 @@
   <mat-card-actions align="end">
     <button
       (click)="goToPaymentPage()"
-      *ngIf="this.option.name !== 'Cơ bản'"
+      *ngIf="this.option.name !== 'Cơ bản' && this.option.name !== 'GOD'"
       type="button"
       class="text-gray-900 bg-white hover:bg-gray-100 hover:border-blue-600 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 dark:hover:bg-gray-200 me-2 mb-2"
     >
@@ -47,34 +48,13 @@
       />
       Về trang chủ
     </button>
-  </mat-card-actions>
-</mat-card>
-<!-- Customized option -->
-<mat-card *ngIf="this.option && this.option.name === 'GOD'">
-  <mat-card-header>
-    <div class="flex justify-between text-center mb-4">
-      <span
-        id="badge-dismiss-default"
-        class="inline-flex items-center px-2 py-1 me-2 text-sm font-medium text-blue-800 bg-blue-100 rounded dark:bg-blue-900 dark:text-blue-300"
-      >
-        {{ this.option.name }}
-      </span>
-    </div>
-  </mat-card-header>
-  <mat-card-content>
-    <p>{{ this.option.desc }}</p>
-    <mat-divider></mat-divider>
-  </mat-card-content>
-  <mat-card-actions align="end">
     <button
+      (click)="customizeOption()"
+      *ngIf="this.option.name === 'GOD'"
       type="button"
-      class="text-gray-900 bg-white hover:bg-gray-100 hover:border-blue-600 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 dark:hover:bg-gray-200 me-2 mb-2"
+      class="text-white bg-[#2557D6] hover:bg-[#2557D6]/90 focus:ring-4 focus:ring-[#2557D6]/50 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#2557D6]/50 me-2 mb-2"
     >
-      <img
-        src="https://stcd02206177151.cloud.edgevnpay.vn/assets/images/logo-icon/logo-primary.svg"
-        class="w-10 h-3 me-2 -ms-1"
-      />
-      Thanh toán bằng VNPAY
+      Tùy chỉnh gói
     </button>
   </mat-card-actions>
 </mat-card>
