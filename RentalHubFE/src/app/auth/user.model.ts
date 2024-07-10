@@ -17,7 +17,9 @@ export class User {
     private _RFToken: string,
     public _RFExpiredTime: number,
     private _ACToken: string,
-    public _ACExpiredTime: number
+    public _ACExpiredTime: number,
+    public _usePosts: number,
+    public _totalPosts: number
   ) {}
 
   get ACToken() {

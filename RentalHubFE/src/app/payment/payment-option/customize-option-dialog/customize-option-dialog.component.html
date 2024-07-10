@@ -1,0 +1,73 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>
+  <form
+    #customizeForm="ngForm"
+    (ngSubmit)="submit(customizeForm)"
+    class="space-y-4"
+  >
+    <label
+      for="input"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >{{ data.label }}</label
+    >
+    <input
+      type="text"
+      id="input"
+      name="input"
+      required
+      ngModel
+      input
+      #input="ngModel"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    />
+    <div class="w-full text-right">
+      <mat-error
+        class="text-sm block"
+        *ngIf="
+          (input.dirty || input.touched) &&
+          (customizeForm.form.value.input < 70 ||
+            customizeForm.form.value.input > 150)
+        "
+      >
+        Số lượt tùy chỉnh phải lớn hơn <strong>70</strong> và nhỏ hơn
+        <strong>150</strong>
+      </mat-error>
+      <span class="block text-sm font-medium text-gray-900 dark:text-white"
+        >{{
+          (
+            this.customizeForm.form.value.input * this.data.price
+          ).toLocaleString()
+        }}
+        VNĐ</span
+      >
+    </div>
+  </form>
+  <notifier-container></notifier-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    type="button"
+    mat-dialog-close
+    class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+  >
+    Hủy
+  </button>
+
+  <button
+    type="submit"
+    [disabled]="
+      customizeForm.invalid ||
+      customizeForm.form.value.input < 70 ||
+      customizeForm.form.value.input > 150
+    "
+    (click)="submit(customizeForm)"
+    mat-dialog-close="true"
+    class="text-gray-900 bg-white hover:bg-gray-100 hover:border-blue-600 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 dark:hover:bg-gray-200 me-2 mb-2"
+  >
+    <img
+      src="https://stcd02206177151.cloud.edgevnpay.vn/assets/images/logo-icon/logo-primary.svg"
+      class="w-10 h-3 me-2 -ms-1"
+    />
+    Thanh toán bằng VNPAY
+  </button>
+</mat-dialog-actions>
