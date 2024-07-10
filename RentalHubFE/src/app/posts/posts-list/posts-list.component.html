@@ -1,9 +1,5 @@
 <!-- Background landing images slider -->
-<div
-  #landingImg
-  class="relative bg-cover bg-no-repeat bg-center min-h-screen mx-0 my-0 p-0"
-  style="background-color: rgb(0, 0, 0)"
->
+<div #landingImg class="relative bg-cover bg-no-repeat bg-center mx-0 my-0 p-0">
   <!-- Next Img -->
   <div
     (click)="navigateNextSilderImage(true)"
@@ -25,7 +21,7 @@
   <img
     src="{{ this.backgroundImages[this.imageIndex] }}"
     id="landing"
-    class="max-h-screen min-w-full img-gradient"
+    class="h-screen min-w-full"
   />
   <div
     class="absolute flex flex-col top-1/2 right-1/2 -translate-y-full translate-x-1/2 text-white-text-color text-lg"

@@ -58,9 +58,10 @@ export interface FilterCriteria {
 export class PostsListComponent implements OnInit, OnDestroy {
   @ViewChild('landingImg') landingImg!: ElementRef;
   backgroundImages = [
+    '../../../assets/images/background_1.jpg',
     '../../../assets/images/background_3.jpg',
     '../../../assets/images/background_2.jpg',
-    '../../../assets/images/background_1.jpg',
+    '../../../assets/images/background_4.jpg',
   ];
   imageIndex = 0;
   filterCriteria!: FilterCriteria;
@@ -93,7 +94,6 @@ export class PostsListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.currentPage = 1;
     let loginType = localStorage.getItem('loginType');
-    // this.authService.getTypeOfLogin.subscribe((type) => {
     //Đăng nhập bằng GG
     if (loginType === '1') {
       console.log('On getting user identity in case loggin in with GG');
