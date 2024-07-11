@@ -60,7 +60,7 @@
           </button>
           <button mat-menu-item (click)="deleteComment()">
             <mat-icon>delete</mat-icon>
-            <!-- Chỉ có chủ bài đăng hoặc bài viết ms đc xóa bình luận -->
+            <!-- Chỉ có chủ bài đăng hoặc chủ cmt ms đc xóa bình luận -->
             <span
               class="text-primary-text-color mb-0 text-sm"
               *ngIf="this.comment._uId === this.currentUser._id"

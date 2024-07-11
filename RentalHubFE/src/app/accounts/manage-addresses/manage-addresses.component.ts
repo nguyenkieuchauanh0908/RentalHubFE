@@ -125,7 +125,6 @@ export class ManageAddressesComponent implements OnInit, OnDestroy {
   }
 
   updateAddressStatus(addressId: String, status: number) {
-    this.isLoading = true;
     let dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn gỡ/mở lại địa chỉ này?',

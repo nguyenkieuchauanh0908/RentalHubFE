@@ -344,7 +344,6 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     window.scrollTo(0, 0); // Scrolls the page to the top
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: 'Bạn có chắc muốn đăng xuất?',
@@ -355,7 +354,11 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
         this.authService
           .logout(this.user?.RFToken)
           .pipe(takeUntil(this.$destroy))
-          .subscribe();
+          .subscribe((res) => {
+            if (res.data) {
+              this.router.navigate(['/']);
+            }
+          });
       });
     dialogRef
       .afterClosed()

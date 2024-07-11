@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { AccountService } from 'src/app/accounts/accounts.service';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -24,7 +25,8 @@ export class LoginDetailUpdateDialogComponent implements OnInit {
     private accountService: AccountService,
     private notifierService: NotifierService,
     private authService: AuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private router: Router
   ) {
     console.log(this.data);
   }
@@ -49,12 +51,14 @@ export class LoginDetailUpdateDialogComponent implements OnInit {
           (res) => {
             if (res.data) {
               this.isLoading = false;
+              this.dialog.closeAll();
               this.notifierService.notify(
                 'success',
                 'Cập nhật thông tin đăng nhập thành công!Vui lòng đăng nhập lại!'
               );
-              this.dialog.closeAll();
-              this.authService.logout(this.accountService.getCurrentUserId());
+              localStorage.removeItem('userData');
+              this.accountService.setCurrentUser(null);
+              this.router.navigate(['']);
             }
           },
           (errorMsg) => {

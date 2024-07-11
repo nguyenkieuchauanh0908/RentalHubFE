@@ -188,11 +188,11 @@ export class AuthService {
   }
 
   logout(refreshToken: any) {
-    console.log('On loging out ...');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
     this.tokenExpirationTimer = null;
+    console.log('On loging out ...');
     return this.http
       .post<resDataDTO>(environment.baseUrl + 'users/accounts/logout', {
         refreshToken: refreshToken,
@@ -201,7 +201,7 @@ export class AuthService {
         catchError(handleError),
         tap((res) => {
           if (res.data) {
-            this.router.navigate(['/']);
+            this.router.navigate(['']);
             if (
               localStorage.getItem('userData') ||
               localStorage.getItem('favorite-posts') ||

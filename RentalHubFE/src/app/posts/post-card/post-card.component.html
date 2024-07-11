@@ -1,8 +1,9 @@
 <div
   class="max-w-xs relative bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-2 cursor-pointer hover:-translate-y-0.5 hover:shadow-primary-200"
 >
-  <div (click)="goToPost()" class="relative">
+  <div class="relative">
     <img
+      (click)="goToPost()"
       class="rounded-t-lg w-full h-60"
       src="{{ post._images[0] }}"
       alt="room's images"

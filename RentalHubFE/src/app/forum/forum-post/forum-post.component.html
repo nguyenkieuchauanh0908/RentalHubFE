@@ -141,20 +141,25 @@
     <div class="flex justify-between py-2">
       <!-- Like icon -->
       <div class="flex items-center relative bottom-1 text-gray-500">
-        <mat-icon
-          (click)="likePost(false)"
-          *ngIf="this.post._isLiked"
-          [ngStyle]="{ color: 'tomato' }"
-          class="cursor-pointer ml-2"
-          >favorite</mat-icon
-        >
-        <mat-icon
-          (click)="likePost(true)"
-          *ngIf="!this.post._isLiked"
-          [ngStyle]="{ color: 'tomato' }"
-          class="cursor-pointer ml-2"
-          >favorite_border</mat-icon
-        >
+        <div>
+          <mat-icon
+            (click)="likePost(false)"
+            *ngIf="this.post._isLiked"
+            [ngStyle]="{ color: 'tomato' }"
+            class="cursor-pointer ml-2"
+            >favorite</mat-icon
+          >
+        </div>
+        <div>
+          <mat-icon
+            (click)="likePost(true)"
+            *ngIf="!this.post._isLiked"
+            [ngStyle]="{ color: 'tomato' }"
+            class="cursor-pointer ml-2"
+            >favorite_border</mat-icon
+          >
+        </div>
+
         <span *ngIf="this.post._totalLike - 1 > 0 && this.post._isLiked"
           >Bạn và {{ this.post._totalLike - 1 }} người khác thích nội dung
           này</span
