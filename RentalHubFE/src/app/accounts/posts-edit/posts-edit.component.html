@@ -34,7 +34,7 @@
   >
     <!-- Host đã đăng ký địa chỉ -->
     <div
-      *ngIf="this.addressOptions; else noRegisteredAddresses"
+      *ngIf="this.addressOptions.length > 0; else noRegisteredAddresses"
       class="bg-white-background rounded-lg xs:p-2 md:p-6"
     >
       <div class="flex flex-row flex-wrap justify-between">

@@ -7,6 +7,8 @@ import { BehaviorSubject, Subject, Subscription, catchError, tap } from 'rxjs';
 import { ChatBotService } from '../chat-bot/chat-bot.service';
 import { Notification } from './notification.model';
 import { Pagination } from '../pagination/pagination.service';
+import { User } from 'src/app/auth/user.model';
+import { AccountService } from 'src/app/accounts/accounts.service';
 
 export interface SocketNotification {
   _uId: string;
@@ -18,6 +20,7 @@ export interface SocketNotification {
   _type: string;
   _recipientRole: number;
   _recipientId: string;
+  _address: string;
 }
 
 @Injectable({
@@ -65,7 +68,11 @@ export class NotificationService {
   }
 
   private subscriptions: Subscription[] = [];
-  constructor(private http: HttpClient, private chatService: ChatBotService) {
+  constructor(
+    private http: HttpClient,
+    private chatService: ChatBotService,
+    private accountService: AccountService
+  ) {
     this.onReceivingNewNotificationToUpdate();
   }
 
@@ -276,6 +283,7 @@ export class NotificationService {
             _message: noti._message,
             _read: noti._read,
             _type: noti._type,
+            _address: noti._address,
           };
           //Thêm newNotiComing vào unseenNotificaionList và lưu lại
           let unseenNotiSub = this.getCurrentUnseenNotifications.subscribe(
@@ -285,6 +293,39 @@ export class NotificationService {
           );
 
           if (newNotiComing) {
+            if (newNotiComing._type === 'ACTIVE_HOST_SUCCESS') {
+              console.log('ACTIVE_HOST_SUCCESS');
+              let user!: User;
+              let userSub = this.accountService.getCurrentUser.subscribe(
+                (u) => {
+                  if (u) {
+                    user = u;
+                  }
+                }
+              );
+              if (user) {
+                user._isHost = true;
+                this.accountService.setCurrentUser(user);
+                localStorage.setItem('userData', JSON.stringify(user));
+              }
+              this.subscriptions.push(userSub);
+            }
+            if (newNotiComing._type === 'REGISTER_ADDRESS_SUCCESS') {
+              let user!: User;
+              let userSub = this.accountService.getCurrentUser.subscribe(
+                (u) => {
+                  if (u) {
+                    user = u;
+                  }
+                }
+              );
+              if (user) {
+                user._addressRental.push(noti._address);
+                this.accountService.setCurrentUser(user);
+                localStorage.setItem('userData', JSON.stringify(user));
+              }
+              this.subscriptions.push(userSub);
+            }
             if (unseenNotificaionList) {
               unseenNotificaionList.unshift(newNotiComing);
             } else {

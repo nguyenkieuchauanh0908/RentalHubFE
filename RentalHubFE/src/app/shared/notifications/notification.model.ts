@@ -6,6 +6,7 @@ export class Notification {
     public _title: string,
     public _message: string,
     public _read: boolean,
-    public _type: string
+    public _type: string,
+    public _address: string
   ) {}
 }

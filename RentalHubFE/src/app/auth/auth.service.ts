@@ -392,11 +392,7 @@ export class AuthService {
   setRegisteredAddressesWhenLogin(registeredAddress: String[]) {
     //Lấy registered addresses do api login trả về ra lưu vào services và local storage
     if (!registeredAddress) {
-      registeredAddress = [
-        '1 Võ Văn Ngân, Linh Chiểu, Thủ Đức',
-        '26/17 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh',
-        '123/4/5 Lê Văn Thọ, Làng Hoa, Gò Vấp',
-      ];
+      registeredAddress = [];
     }
 
     this.addressesService.setcurrentRegisteredAddresses(registeredAddress);
