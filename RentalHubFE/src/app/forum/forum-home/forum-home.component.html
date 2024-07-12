@@ -13,7 +13,10 @@
     *ngIf="this.socialPostsToDisplay"
     class="grid col-span-12 lg:col-span-7 mt-6 mb-12 bg-white-background shadow-md rounded-md text-center scroll-container scroll-smooth scrollbar-hide"
   >
-    <div *ngFor="let post of this.socialPostsToDisplay">
+    <div
+      *ngFor="let post of this.socialPostsToDisplay"
+      class="border-gray-300 shadow-sm"
+    >
       <app-forum-post
         [post]="post"
         (changePostStatus)="changePostStatus($event)"
