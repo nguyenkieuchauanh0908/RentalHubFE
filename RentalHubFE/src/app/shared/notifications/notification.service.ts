@@ -9,6 +9,7 @@ import { Notification } from './notification.model';
 import { Pagination } from '../pagination/pagination.service';
 import { User } from 'src/app/auth/user.model';
 import { AccountService } from 'src/app/accounts/accounts.service';
+import { AddressesService } from 'src/app/accounts/register-address/addresses.service';
 
 export interface SocketNotification {
   _uId: string;
@@ -71,7 +72,8 @@ export class NotificationService {
   constructor(
     private http: HttpClient,
     private chatService: ChatBotService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private addressService: AddressesService
   ) {
     this.onReceivingNewNotificationToUpdate();
   }
@@ -321,9 +323,20 @@ export class NotificationService {
               );
               if (user) {
                 user._addressRental.push(noti._address);
+                this.addressService.setcurrentRegisteredAddresses(
+                  user._addressRental
+                );
                 this.accountService.setCurrentUser(user);
                 localStorage.setItem('userData', JSON.stringify(user));
+                localStorage.setItem(
+                  'registered-addresses',
+                  JSON.stringify(user._addressRental)
+                );
               }
+              console.log(
+                '🚀 ~ NotificationService ~ socket.on ~ user._addressRental:',
+                user._addressRental
+              );
               this.subscriptions.push(userSub);
             }
             if (unseenNotificaionList) {
