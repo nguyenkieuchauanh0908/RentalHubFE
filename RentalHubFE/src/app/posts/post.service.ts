@@ -507,7 +507,7 @@ export class PostService {
   getReportPostDetails(reportedId: any) {
     let queryParams = new HttpParams().append('notiId', reportedId);
     return this.http
-      .get<resDataDTO>(environment.baseUrl + 'posts/get-report-post-user/', {
+      .get<resDataDTO>(environment.baseUrl + 'posts/get-report-post-user', {
         params: queryParams,
       })
       .pipe(
