@@ -107,11 +107,12 @@ export class ReportDialogComponent implements OnDestroy, OnInit {
           .reportPosts(this.postIdToReport, this.updatedReportedContent)
           .subscribe((res) => {
             if (res.data) {
-              this.isLoading = true;
+              this.isLoading = false;
               this.notifierService.notify(
                 'success',
                 'Đã báo cáo bài viết thành công!'
               );
+              this.matDialog.closeAll();
             }
           });
       }
