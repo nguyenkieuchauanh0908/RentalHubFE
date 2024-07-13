@@ -243,7 +243,7 @@ export class NotificationService {
   //Đánh dấu đã đọc toàn bộ
   markAsReadAll() {
     return this.http
-      .patch<resDataDTO>(
+      .get<resDataDTO>(
         environment.baseUrl + 'notification/read-all-notification',
         {}
       )
