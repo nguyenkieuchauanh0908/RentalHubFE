@@ -57,13 +57,18 @@ export interface UserOnlineType {
   providedIn: 'root',
 })
 export class ChatBotService {
-  socket = io('http://localhost:3000');
+  socket = io('http://localhost:3000', {
+    autoConnect: true,
+  });
 
   $destroy: Subject<boolean> = new Subject<boolean>();
   private currentSocket = new BehaviorSubject<Socket | null>(null); //Socket
   getCurrentSocket = this.currentSocket.asObservable();
   setCurrentSocket(socket: Socket | null) {
-    this.currentSocket.next(null);
+    // this.currentSocket.next(null);
+    if (socket) {
+      socket.connect();
+    }
     this.currentSocket.next(socket);
   }
 
@@ -179,19 +184,21 @@ export class ChatBotService {
     console.log('Connecting to socket...');
     this.setCurrentSocket(this.socket);
 
-    return () => {
-      this.socket.disconnect();
-    };
+    // return () => {
+    //   this.socket.disconnect();
+    // };
   }
 
   //Disconnects the socket
   disconnectToSocket(): void {
-    this.getCurrentSocket.subscribe((socket) => {
-      if (socket) {
-        socket.disconnect();
-        console.log('socket disconnected!');
-      }
-    });
+    // let socketSub = this.getCurrentSocket.subscribe((socket) => {
+    //   if (socket) {
+    //     socket.close();
+    //     console.log('socket disconnected!');
+    //   }
+    // });
+    // socketSub.unsubscribe();
+    this.socket.disconnect();
   }
 
   //destroy
@@ -200,7 +207,6 @@ export class ChatBotService {
     this.subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });
-    // this.$destroy.unsubscribe();
     console.log(
       'destroying subscription of chat service!',
       this.subscriptions.length
@@ -211,6 +217,7 @@ export class ChatBotService {
   emittingAddingMeToOnlineUsers(user: User) {
     this.getCurrentSocket.subscribe((socket) => {
       if (socket) {
+        console.log('🚀 add me to new user', user._id);
         socket.emit('addNewUser', { userId: user._id, role: 0 });
       }
     });
