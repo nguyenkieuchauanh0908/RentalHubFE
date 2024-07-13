@@ -39,6 +39,7 @@ import { PostReplyCommentComponent } from './post-comment/post-reply-comment/pos
 import { MatChipsModule } from '@angular/material/chips';
 import { ChatFilterPipe } from './pipe/chat-filter.pipe';
 import { MatCardModule } from '@angular/material/card';
+import { LinkyModule, LinkyPipe } from 'ngx-linky';
 @NgModule({
   declarations: [
     TagsComponent,
@@ -81,6 +82,7 @@ import { MatCardModule } from '@angular/material/card';
     PickerComponent,
     MatChipsModule,
     MatCardModule,
+    LinkyModule,
   ],
   exports: [
     CommonModule,
@@ -105,6 +107,7 @@ import { MatCardModule } from '@angular/material/card';
     MatChipsModule,
     ChatFilterPipe,
     MatCardModule,
+    LinkyModule,
   ],
 })
 export class SharedModule {}
