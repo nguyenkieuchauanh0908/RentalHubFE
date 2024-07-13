@@ -16,7 +16,7 @@
     <div class="flex flex-col">
       <!-- General Information -->
       <div class="mb-8">
-        <!-- Title, time, like, report -->
+        <!-- Title, time, like, report, copy URL -->
         <div class="row flex justify-between mb-0 flex-wrap">
           <div class="flex flex-row justify-between flex-wrap">
             <p class="text-lg font-medium mb-0 mr-1">
@@ -58,6 +58,20 @@
                 class="cursor-pointer"
                 >favorite_</mat-icon
               >
+            </div>
+            <!-- Copy URL to clipboard -->
+            <div
+              class="relative top-1"
+              #tooltip="matTooltip"
+              matTooltip="Lưu đường dẫn vào bộ nhớ tạm"
+              [matTooltipPosition]="'above'"
+              matTooltipHideDelay="1000"
+              (click)="copyURLtoClipboard()"
+              mat-ripple
+              [matRippleCentered]="true"
+              [matRippleUnbounded]="true"
+            >
+              <mat-icon class="cursor-pointer">link</mat-icon>
             </div>
           </div>
         </div>
