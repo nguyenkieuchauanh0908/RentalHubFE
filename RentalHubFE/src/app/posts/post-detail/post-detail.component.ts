@@ -145,6 +145,16 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this.$destroy.unsubscribe();
   }
 
+  copyURLtoClipboard() {
+    let baseURL = 'http://localhost:4200';
+    let currentURL: string = baseURL + this.router.url;
+    if (currentURL) {
+      navigator.clipboard.writeText(currentURL).then(() => {
+        this.notifierService.notify('success', 'Đã lưu vào bộ nhớ tạm');
+      });
+    }
+  }
+
   attachingInnerHtmlContent() {
     if (this.contentToDisplay) {
       this.contentToDisplay.nativeElement.innerHTML = this.post._content;
