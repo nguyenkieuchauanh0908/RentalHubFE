@@ -12,6 +12,7 @@ import { AccountService } from 'src/app/accounts/accounts.service';
 import { AddressesService } from 'src/app/accounts/register-address/addresses.service';
 
 export interface SocketNotification {
+  _id: string;
   _uId: string;
   _postId: string; //optional
   _addressId: string; //optional
@@ -22,6 +23,7 @@ export interface SocketNotification {
   _recipientRole: number;
   _recipientId: string;
   _address: string;
+  _rootId: string;
 }
 
 @Injectable({
@@ -270,32 +272,22 @@ export class NotificationService {
   //Socket event's name: getNotification
   onReceivingNewNotificationToUpdate = () => {
     console.log('Receiving new noti...');
-    let newNotiComing: Notification | null = null;
+    let noti: Notification | null = null;
     let unseenNotificaionList: Notification[] | null = null;
     let totalNotisUnseen: number = 0;
     let socketSub = this.chatService.getCurrentSocket.subscribe((socket) => {
       if (socket) {
         socket.on('getNotification', (noti: SocketNotification) => {
           console.log('🚀 ~ NotificationService ~ socket.on ~ noti:', noti);
-          newNotiComing = {
-            _id: noti._uId,
-            _uId: noti._uId,
-            _postId: noti._postId,
-            _title: noti._title,
-            _message: noti._message,
-            _read: noti._read,
-            _type: noti._type,
-            _address: noti._address,
-          };
-          //Thêm newNotiComing vào unseenNotificaionList và lưu lại
+          //Thêm noti vào unseenNotificaionList và lưu lại
           let unseenNotiSub = this.getCurrentUnseenNotifications.subscribe(
             (unseenNotis: any[]) => {
               unseenNotificaionList = unseenNotis;
             }
           );
 
-          if (newNotiComing) {
-            if (newNotiComing._type === 'ACTIVE_HOST_SUCCESS') {
+          if (noti) {
+            if (noti._type === 'ACTIVE_HOST_SUCCESS') {
               console.log('ACTIVE_HOST_SUCCESS');
               let user!: User;
               let userSub = this.accountService.getCurrentUser.subscribe(
@@ -312,7 +304,7 @@ export class NotificationService {
               }
               this.subscriptions.push(userSub);
             }
-            if (newNotiComing._type === 'REGISTER_ADDRESS_SUCCESS') {
+            if (noti._type === 'REGISTER_ADDRESS_SUCCESS') {
               let user!: User;
               let userSub = this.accountService.getCurrentUser.subscribe(
                 (u) => {
@@ -340,9 +332,9 @@ export class NotificationService {
               this.subscriptions.push(userSub);
             }
             if (unseenNotificaionList) {
-              unseenNotificaionList.unshift(newNotiComing);
+              unseenNotificaionList.unshift(noti);
             } else {
-              unseenNotificaionList = [newNotiComing];
+              unseenNotificaionList = [noti];
             }
             console.log(
               '🚀 ~ NotificationService ~ socket.on ~ unseenNotificaionList:',
