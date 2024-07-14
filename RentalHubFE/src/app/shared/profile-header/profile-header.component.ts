@@ -178,35 +178,42 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
       switch (noti._type) {
         case 'NEW_COMMENT':
           if (!noti._read) {
-            this.markAsRead(noti);
+            this.markAsRead(noti, true);
+          } else {
+            this.seeSocialPost(noti);
           }
-          this.seeSocialPost(noti);
           break;
         case 'UPDATE_COMMENT':
           if (!noti._read) {
-            this.markAsRead(noti);
+            this.markAsRead(noti, true);
+          } else {
+            this.seeSocialPost(noti);
           }
-          this.seeSocialPost(noti);
           break;
         case 'ACTIVE_HOST_SUCCESS':
           if (!noti._read) {
-            this.markAsRead(noti);
+            this.markAsRead(noti, false);
           }
           this.router.navigate(['/profile/post-new', this.user._id]);
           break;
         case 'CREATE_POST_SUCCESS':
           if (!noti._read) {
-            this.markAsRead(noti);
+            this.markAsRead(noti, true);
+          } else {
+            this.seeRentalPost(noti);
           }
-          this.router.navigate(['/posts', noti._postId]);
+
           break;
         case 'REGISTER_ADDRESS_SUCCESS':
           if (!noti._read) {
-            this.markAsRead(noti);
+            this.markAsRead(noti, false);
           }
           this.router.navigate(['/profile/post-new', this.user._id]);
           break;
         case 'REPORTED_POST':
+          if (!noti._read) {
+            this.markAsRead(noti, false);
+          }
           //Hiện lên chi tiết bài post kèm message thông báo
           this.postService
             .getReportPostDetails(noti._id)
@@ -220,7 +227,7 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
                 });
                 dialogRef.afterClosed().subscribe(() => {
                   if (!noti._read) {
-                    this.markAsRead(noti);
+                    this.markAsRead(noti, false);
                   }
                 });
               }
@@ -253,8 +260,31 @@ export class ProfileHeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-  markAsRead(noti: any) {
-    this.notificationService.markNotiFicationAsReadById(noti._id).subscribe();
+  seeRentalPost(noti: any) {
+    this.router.navigate(['/posts', noti._postId]).then(() => {
+      window.location.reload();
+    });
+  }
+
+  markAsRead(noti: any, redirect: boolean) {
+    this.notificationService
+      .markNotiFicationAsReadById(noti._id)
+      .subscribe((res) => {
+        if (res.data) {
+          if (redirect) {
+            if (
+              noti._type === 'NEW_COMMENT' ||
+              noti._type === 'UPDATE_COMMENT'
+            ) {
+              this.seeSocialPost(noti);
+            }
+
+            if (noti._type === 'CREATE_POST_SUCCESS') {
+              this.seeRentalPost(noti);
+            }
+          }
+        }
+      });
   }
 
   toUpdateLoginDetail() {

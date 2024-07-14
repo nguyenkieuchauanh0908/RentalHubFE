@@ -5,6 +5,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button
+    *ngIf="this.data._type !== 'REPORTED_SOCIAL_POST'"
     class="bg-green-700 hover:bg-green-800"
     style="color: white; background-color: #228b22"
     (click)="redirectoManagement(this.data._type)"
@@ -14,6 +15,7 @@
     Đi đến quản lý
   </button>
   <button
+    *ngIf="!this.data._read"
     class="bg-blue-700 hover:bg-blue-800"
     style="color: white; background-color: #1a56db"
     (click)="markAsRead()"

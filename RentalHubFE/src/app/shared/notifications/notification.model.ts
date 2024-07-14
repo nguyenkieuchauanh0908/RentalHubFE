@@ -1,12 +1,16 @@
 export class Notification {
   constructor(
-    public _id: string,
-    public _uId: string,
-    public _postId: string,
-    public _title: string,
-    public _message: string,
-    public _read: boolean,
-    public _type: string,
-    public _address: string
+    _id: string,
+    _uId: string,
+    _postId: string, //optional
+    _addressId: string, //optional
+    _title: string,
+    _message: string,
+    _read: boolean,
+    _type: string,
+    _recipientRole: number,
+    _recipientId: string,
+    _address: string,
+    _rootId: string
   ) {}
 }
