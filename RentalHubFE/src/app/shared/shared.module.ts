@@ -40,6 +40,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { ChatFilterPipe } from './pipe/chat-filter.pipe';
 import { MatCardModule } from '@angular/material/card';
 import { LinkyModule, LinkyPipe } from 'ngx-linky';
+
 @NgModule({
   declarations: [
     TagsComponent,

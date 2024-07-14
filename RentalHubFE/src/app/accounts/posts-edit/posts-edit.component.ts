@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import {
   Observable,
@@ -6,6 +13,7 @@ import {
   Subscription,
   map,
   startWith,
+  take,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -23,6 +31,10 @@ import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
 import { AddressesService } from '../register-address/addresses.service';
 import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor';
 import { PaymentService } from 'src/app/payment/payment.service';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 export const _filter = (
   optionsToFilter: PublicAPIData[],
@@ -50,6 +62,8 @@ export const _filterForStringOptions = (
   styleUrls: ['./posts-edit.component.scss'],
 })
 export class PostsEditComponent implements OnInit, OnDestroy {
+  @ViewChild('fruitInput') fruitInput!: ElementRef<HTMLInputElement>;
+  announcer = inject(LiveAnnouncer);
   @ViewChild('postContent')
   textEditorForPostContent!: RichTextEditorComponent;
   postHtmlContent!: string;
@@ -58,8 +72,6 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   isLoading = false;
   isHost: boolean = false;
   myProfile!: User | null;
-  myProfileSub = new Subscription();
-  getTagSub = new Subscription();
 
   previews: string[] = [];
   selectedImage!: File;
@@ -67,11 +79,15 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   selectedFileNames: string[] = [];
   updatedFiles!: FileList;
   deletedImageIndexes: number[] = [];
-  selectedTags!: Tags[];
 
   addressOptions: String[] = new Array<string>();
   filteredAddressOptions!: Observable<String[]> | undefined;
   $destroy: Subject<boolean> = new Subject<boolean>();
+
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  chosenTags: Tags[] = [];
+  sourceTags: Tags[] = [];
+  filteredTags: Observable<Tags[]> | undefined;
 
   public customToolbar: Object = {
     items: [
@@ -105,6 +121,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     utilitiesInputControl: ['', Validators.required],
     addFilesInputControl: [],
     updateFilesInputControl: [],
+    tagInputContro: [''],
   });
 
   constructor(
@@ -116,7 +133,17 @@ export class PostsEditComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private addressesService: AddressesService,
     private paymentService: PaymentService
-  ) {}
+  ) {
+    this.postService.setCurrentChosenTags([]);
+    this.postService
+      .getAllTags()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((res) => {
+        if (res.data) {
+          this.sourceTags = res.data;
+        }
+      });
+  }
 
   ngOnInit() {
     window.scrollTo(0, 0); // Scrolls the page to the top
@@ -142,14 +169,16 @@ export class PostsEditComponent implements OnInit, OnDestroy {
                 }
               }
             });
-          //Get tags
-          this.postService.getCurrentChosenTags.subscribe((tags) => {
-            if (tags) {
-              this.selectedTags = tags;
-            }
-          });
+
+          //Get tags source
           this.postService.setCurrentChosenTags([]);
-          this.getTagSub = this.postService.getAllTags().subscribe();
+          this.filteredTags =
+            this.postEditForm.controls.tagInputContro.valueChanges.pipe(
+              startWith(''),
+              map((fruit: string | null) =>
+                fruit ? this._filter(fruit) : this.sourceTags.slice()
+              )
+            );
 
           //List địa chỉ của user
           this.addressOptions = [];
@@ -170,8 +199,57 @@ export class PostsEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.myProfileSub.unsubscribe();
-    this.getTagSub.unsubscribe();
+    this.$destroy.next(true);
+    this.$destroy.unsubscribe();
+  }
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    // Add our fruit
+    if (value) {
+      this.postService.createTag(value).subscribe((res) => {
+        if (res.data) {
+          //update current tags
+          this.notifierService.notify('success', 'Tạo tag thành công!');
+          this.sourceTags.push(res.data);
+          this.chosenTags.push(res.data);
+        } else {
+          this.notifierService.hideAll();
+          this.notifierService.notify(
+            'error',
+            'Tạo tag thất bại! Đã có lỗi xảy ra!'
+          );
+        }
+      });
+    }
+    // Clear the input value
+    event.chipInput!.clear();
+    this.postEditForm.controls.tagInputContro.setValue(null);
+  }
+
+  remove(fruit: any): void {
+    const index = this.chosenTags.indexOf(fruit);
+    console.log('🚀 ~ PostsEditComponent ~ remove ~ fruit:', fruit, index);
+    if (index >= 0) {
+      this.chosenTags.splice(index, 1);
+      this.announcer.announce(`Removed ${fruit}`);
+    }
+  }
+
+  selected(tag: Tags): void {
+    this.chosenTags.push(tag);
+    this.fruitInput.nativeElement.value = '';
+    this.postEditForm.controls.tagInputContro.setValue(null);
+  }
+
+  private _filter(tag: string): Tags[] {
+    const filterValue = tag;
+    if (typeof tag === 'string') {
+      const filterValue = tag.toLowerCase();
+    }
+    return this.sourceTags.filter((option) =>
+      option._tag.toLowerCase().includes(filterValue!)
+    );
   }
 
   goToPaymentPackacges() {
@@ -196,23 +274,10 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   onSubmitPost() {
     this.isLoading = true;
-    // console.log('on submiting post ...Form data: ', this.postEditForm.value);
-    // console.log(
-    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
-    //   this.selectedTags
-    // );
-    // console.log(
-    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
-    //   this.selectedFiles
-    // );
     this.notifierService.hideAll();
-    if (this.selectedFiles && this.selectedTags) {
+    if (this.selectedFiles && this.chosenTags) {
       this.postService
-        .createPost(
-          this.postEditForm.value,
-          this.updatedFiles,
-          this.selectedTags
-        )
+        .createPost(this.postEditForm.value, this.updatedFiles, this.chosenTags)
         .subscribe(
           (res) => {
             if (res.data) {
@@ -307,28 +372,5 @@ export class PostsEditComponent implements OnInit, OnDestroy {
         this.deletedImageIndexes
       );
     }
-  }
-
-  updateChosentags(tag: any) {
-    if (this.selectedTags.includes(tag)) {
-      const updatedTags = this.selectedTags.filter(
-        (currentTag) => currentTag !== tag
-      );
-      this.postService.setCurrentChosenTags(
-        this.selectedTags.filter((currentTag) => currentTag !== tag)
-      );
-    } else {
-      this.selectedTags.push(tag);
-    }
-    this.postService.setCurrentChosenTags(this.selectedTags);
-  }
-
-  createTag() {
-    const dialogRef = this.dialog.open(AddTagDialogComponent, {
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
-    });
   }
 }
