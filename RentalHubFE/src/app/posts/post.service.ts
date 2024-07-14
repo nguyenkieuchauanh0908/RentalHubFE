@@ -130,35 +130,29 @@ export class PostService {
       .pipe(catchError(handleError));
   }
 
-  createPost(form: any, images: FileList, selectedTags: any) {
+  createPost(form: any, images: FileList, selectedTags: Tags[]) {
     let body = new FormData();
     body.append('_title', form.titleInputControl);
     body.append('_desc', form.descInputControl);
     body.append('_content', form.contentInputControl);
     body.append('_address', form.addressInputControl);
-    // body.append('_street', form.streetInputControl);
-    // body.append('_district', form.districtInputControl);
     body.append('_area', form.areaInputControl);
     body.append('_price', form.renting_priceInputControl);
     body.append('_electricPrice', form.electricInputControl);
     body.append('_waterPrice', form.water_priceInputControl);
     body.append('_services', form.servicesInputControl);
     body.append('_utilities', form.utilitiesInputControl);
-    // body.append('_city', form.cityInputControl);
-    // if (form.city) {
-    //   body.append('_city', form.city);
-    // }
     const numberOfImages = images.length;
     for (let i = 0; i < numberOfImages; i++) {
       const reader = new FileReader();
       reader.readAsDataURL(images[i]);
       body.append('_images', images[i]);
-      // console.log(
-      //   '🚀 ~ file: post.service.ts:85 ~ PostService ~ createPost ~ images[i]:',
-      //   images[i]
-      // );
     }
     if (selectedTags) {
+      console.log(
+        '🚀 ~ PostService ~ createPost ~ selectedTags:',
+        selectedTags
+      );
       for (let tag of selectedTags) {
         body.append('_tags', tag._id);
       }

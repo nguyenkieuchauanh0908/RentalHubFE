@@ -257,7 +257,6 @@
         <mat-form-field class="w-full">
           <mat-label>Tiện ích đi kèm</mat-label>
           <input
-            placeholder="Vui lòng chọn một"
             aria-label="Tiện ích đi kèm"
             matInput
             formControlName="utilitiesInputControl"
@@ -274,51 +273,50 @@
         </mat-form-field>
 
         <!-- Tags -->
-        <div class="my-6">
-          <label
-            for="base-input"
-            class="flex flex-row mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Gắn thẻ bài viết
-
-            <span
-              (click)="createTag()"
-              class="relative left-1 bottom-1 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
-              ><mat-icon
-                matRipple
-                [matRippleUnbounded]="true"
-                (click)="createTag()"
-                >add</mat-icon
-              ></span
+        <mat-form-field class="w-full">
+          <mat-label>Thẻ bài viết</mat-label>
+          <mat-chip-grid #chipGrid aria-label="Fruit selection">
+            <mat-chip-row
+              *ngFor="let tag of this.chosenTags"
+              (removed)="remove(tag)"
             >
-          </label>
-          <mat-error *ngIf="this.selectedTags.length === 0">
-            Vui lòng gắn <strong>ít nhất 1 thẻ</strong>
-          </mat-error>
-          <!-- Your chosen tags -->
-          <div class="flex flex-row flex-wrap">
-            <div
-              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
-              *ngFor="let tag of selectedTags"
+              {{ tag._tag }}
+              <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          </mat-chip-grid>
+          <input
+            #fruitInput
+            [formControl]="this.postEditForm.controls.tagInputContro"
+            [matChipInputFor]="chipGrid"
+            aria-label="Tag"
+            matInput
+            [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (matChipInputTokenEnd)="add($event)"
+          />
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option
+              (click)="selected(tag)"
+              *ngFor="let tag of filteredTags | async"
+              [value]="tag"
             >
-              <span class="tag" (click)="updateChosentags(tag)">
-                {{ tag._tag }}
-              </span>
-              <span
-                (click)="updateChosentags(tag)"
-                *ngIf="selectedTags.includes(tag)"
-              >
-                <mat-icon>clear</mat-icon></span
-              >
-            </div>
-          </div>
-        </div>
+              {{ tag._tag }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="this.chosenTags.length === 0"
+            >Vui lòng gắn <strong>ít nhất một tag</strong> cho bài
+            viết</mat-error
+          >
+        </mat-form-field>
 
         <!-- Images -->
         <div class="mb-6">
           <label
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             for="multiple_files"
-            >Giấy phép kinh doanh (tối đa 5 ảnh)</label
+            >Hình ảnh (tối đa 5 ảnh)</label
           >
           <mat-error *ngIf="this.previews.length === 0">
             Vui lòng chọn <strong>ít nhất 1 ảnh</strong>
