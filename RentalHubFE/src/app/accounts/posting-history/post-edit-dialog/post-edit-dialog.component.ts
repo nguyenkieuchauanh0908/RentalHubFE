@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  inject,
   Inject,
   OnDestroy,
   OnInit,
@@ -31,6 +32,9 @@ import { PublicAPIData } from 'src/app/shared/resPublicAPIDataDTO';
 import { AddressesService } from '../../register-address/addresses.service';
 import { _filterForStringOptions } from '../../posts-edit/posts-edit.component';
 import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-post-edit-dialog',
@@ -40,6 +44,8 @@ import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor'
 export class PostEditDialogComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>;
+  announcer = inject(LiveAnnouncer);
   @ViewChild('contentToDisplay') contentToDisplay: ElementRef | undefined;
   @ViewChild('postContent')
   textEditorForPostContent!: RichTextEditorComponent;
@@ -90,10 +96,13 @@ export class PostEditDialogComponent
   updatedFiles!: FileList;
   deletedImageIndexes: number[] = [];
 
-  selectedTags!: Tags[];
-
   addressOptions: String[] = new Array<string>();
   filteredAddressOptions!: Observable<String[]> | undefined;
+
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  chosenTags: Tags[] = [];
+  sourceTags: Tags[] = [];
+  filteredTags: Observable<Tags[]> | undefined;
 
   currentPost!: PostItem;
 
@@ -123,6 +132,7 @@ export class PostEditDialogComponent
     ],
     addFilesInputControl: [],
     updateFilesInputControl: [],
+    tagInputContro: [''],
   });
   constructor(
     private postService: PostService,
@@ -131,7 +141,18 @@ export class PostEditDialogComponent
     private formBuilder: FormBuilder,
     private addressesService: AddressesService,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  ) {
+    this.postService.setCurrentChosenTags([]);
+    this.chosenTags = data._tags;
+    this.postService
+      .getAllTags()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((res) => {
+        if (res.data) {
+          this.sourceTags = res.data;
+        }
+      });
+  }
   ngOnDestroy(): void {
     this.$destroy.next(true);
     this.$destroy.unsubscribe();
@@ -191,9 +212,64 @@ export class PostEditDialogComponent
         )
       );
     this.previews = this.data._images;
-    this.postService.getCurrentChosenTags.subscribe((tags) => {
-      this.selectedTags = tags;
-    });
+
+    //Get tags source
+    this.filteredTags =
+      this.postEditForm.controls.tagInputContro.valueChanges.pipe(
+        startWith(''),
+        map((fruit: string | null) =>
+          fruit ? this._filter(fruit) : this.sourceTags.slice()
+        )
+      );
+  }
+
+  private _filter(tag: string): Tags[] {
+    const filterValue = tag;
+    if (typeof tag === 'string') {
+      const filterValue = tag.toLowerCase();
+    }
+    return this.sourceTags.filter((option) =>
+      option._tag.toLowerCase().includes(filterValue!)
+    );
+  }
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    // Add our fruit
+    if (value) {
+      this.postService.createTag(value).subscribe((res) => {
+        if (res.data) {
+          //update current tags
+          this.notifierService.notify('success', 'Tạo tag thành công!');
+          this.sourceTags.push(res.data);
+          this.chosenTags.push(res.data);
+        } else {
+          this.notifierService.hideAll();
+          this.notifierService.notify(
+            'error',
+            'Tạo tag thất bại! Đã có lỗi xảy ra!'
+          );
+        }
+      });
+    }
+    // Clear the input value
+    event.chipInput!.clear();
+    this.postEditForm.controls.tagInputContro.setValue(null);
+  }
+
+  remove(fruit: any): void {
+    const index = this.chosenTags.indexOf(fruit);
+    console.log('🚀 ~ PostsEditComponent ~ remove ~ fruit:', fruit, index);
+    if (index >= 0) {
+      this.chosenTags.splice(index, 1);
+      this.announcer.announce(`Removed ${fruit}`);
+    }
+  }
+
+  selected(tag: Tags): void {
+    this.chosenTags.push(tag);
+    this.tagInput.nativeElement.value = '';
+    this.postEditForm.controls.tagInputContro.setValue(null);
   }
 
   attachingInnerHtmlContent() {
@@ -212,16 +288,16 @@ export class PostEditDialogComponent
     console.log('Form data: ', this.postEditForm.value);
     this.notifierService.hideAll();
     if (
-      this.selectedTags.length > 0 &&
+      this.chosenTags.length > 0 &&
       (this.updatedFiles || this.deletedImageIndexes || this.data._images)
     ) {
-      console.log('🚀 ~ onSubmitPost ~ this.selectedTags:', this.selectedTags);
+      console.log('🚀 ~ onSubmitPost ~ this.chosenTags:', this.chosenTags);
       this.postService
         .updatePost(
           this.postEditForm.value,
           this.updatedFiles,
           this.deletedImageIndexes,
-          this.selectedTags,
+          this.chosenTags,
           this.data._id
         )
         .pipe(takeUntil(this.$destroy))
@@ -313,21 +389,21 @@ export class PostEditDialogComponent
   }
 
   updateChosentags(tag: any) {
-    if (this.selectedTags.includes(tag)) {
-      const updatedTags = this.selectedTags.filter(
+    if (this.chosenTags.includes(tag)) {
+      const updatedTags = this.chosenTags.filter(
         (currentTag) => currentTag !== tag
       );
-      this.selectedTags = updatedTags;
+      this.chosenTags = updatedTags;
     } else {
-      this.selectedTags.push(tag);
+      this.chosenTags.push(tag);
     }
     this.postService.getCurrentPostingHistory.subscribe((historyPosts) => {
       historyPosts!.forEach((post) => {
         if (post._id === this.currentPost._id) {
-          post._tags = this.selectedTags;
+          post._tags = this.chosenTags;
         }
       });
-      this.postService.setCurrentChosenTags(this.selectedTags);
+      this.postService.setCurrentChosenTags(this.chosenTags);
     });
   }
 

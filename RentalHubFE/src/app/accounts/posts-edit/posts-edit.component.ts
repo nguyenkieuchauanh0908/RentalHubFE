@@ -62,7 +62,7 @@ export const _filterForStringOptions = (
   styleUrls: ['./posts-edit.component.scss'],
 })
 export class PostsEditComponent implements OnInit, OnDestroy {
-  @ViewChild('fruitInput') fruitInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('tagInput') tagInput!: ElementRef<HTMLInputElement>;
   announcer = inject(LiveAnnouncer);
   @ViewChild('postContent')
   textEditorForPostContent!: RichTextEditorComponent;
@@ -171,7 +171,6 @@ export class PostsEditComponent implements OnInit, OnDestroy {
             });
 
           //Get tags source
-          this.postService.setCurrentChosenTags([]);
           this.filteredTags =
             this.postEditForm.controls.tagInputContro.valueChanges.pipe(
               startWith(''),
@@ -238,7 +237,7 @@ export class PostsEditComponent implements OnInit, OnDestroy {
 
   selected(tag: Tags): void {
     this.chosenTags.push(tag);
-    this.fruitInput.nativeElement.value = '';
+    this.tagInput.nativeElement.value = '';
     this.postEditForm.controls.tagInputContro.setValue(null);
   }
 

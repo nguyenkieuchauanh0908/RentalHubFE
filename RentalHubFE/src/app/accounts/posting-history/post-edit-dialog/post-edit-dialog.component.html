@@ -247,7 +247,44 @@
         </mat-form-field>
 
         <!-- Tags -->
-        <div *ngIf="data._status !== 4; else tagsNoUpdate" class="my-6">
+        <mat-form-field class="w-full">
+          <mat-label>Thẻ bài viết</mat-label>
+          <mat-chip-grid #chipGrid aria-label="Fruit selection">
+            <mat-chip-row
+              *ngFor="let tag of this.chosenTags"
+              (removed)="remove(tag)"
+            >
+              {{ tag._tag }}
+              <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          </mat-chip-grid>
+          <input
+            #tagInput
+            [formControl]="this.postEditForm.controls.tagInputContro"
+            [matChipInputFor]="chipGrid"
+            aria-label="Tag"
+            matInput
+            [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (matChipInputTokenEnd)="add($event)"
+          />
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option
+              (click)="selected(tag)"
+              *ngFor="let tag of filteredTags | async"
+              [value]="tag"
+            >
+              {{ tag._tag }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="this.chosenTags.length === 0"
+            >Vui lòng gắn <strong>ít nhất một tag</strong> cho bài
+            viết</mat-error
+          >
+        </mat-form-field>
+        <!-- <div *ngIf="data._status !== 4; else tagsNoUpdate" class="my-6">
           <label
             for="base-input"
             class="flex flex-row mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -267,7 +304,7 @@
           <mat-error *ngIf="this.selectedTags.length === 0">
             Vui lòng gắn <strong>ít nhất 1 thẻ</strong>
           </mat-error>
-          <!-- Your chosen tags -->
+      
           <div class="flex flex-row flex-wrap">
             <div
               class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover"
@@ -284,7 +321,7 @@
               >
             </div>
           </div>
-        </div>
+        </div> -->
 
         <ng-template #tagsNoUpdate>
           <div
@@ -300,12 +337,12 @@
             <div class="flex flex-row flex-wrap">
               <div
                 class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover"
-                *ngFor="let tag of selectedTags"
+                *ngFor="let tag of chosenTags"
               >
                 <span class="tag">
                   {{ tag._tag }}
                 </span>
-                <span *ngIf="selectedTags.includes(tag)">
+                <span *ngIf="chosenTags.includes(tag)">
                   <mat-icon>clear</mat-icon></span
                 >
               </div>
