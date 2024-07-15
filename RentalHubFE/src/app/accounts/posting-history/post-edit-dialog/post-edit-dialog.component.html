@@ -102,11 +102,9 @@
           <mat-label>Địa chỉ</mat-label>
           <input
             [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            placeholder="Vui lòng chọn một địa chỉ"
             aria-label="Địa chỉ"
             matInput
             formControlName="addressInputControl"
-            [matAutocomplete]="address"
           />
           <mat-error
             *ngIf="

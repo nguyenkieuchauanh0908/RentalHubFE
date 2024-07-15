@@ -102,7 +102,7 @@ export class PostEditDialogComponent
     titleInputControl: [{ value: '', disabled: false }, Validators.required],
     descInputControl: [{ value: '', disabled: false }, Validators.required],
     contentInputControl: [{ value: '', disabled: false }, Validators.required],
-    addressInputControl: [{ value: '', disabled: false }, Validators.required],
+    addressInputControl: [{ value: '', disabled: true }, Validators.required],
     areaInputControl: [{ value: 0, disabled: false }, Validators.required],
     renting_priceInputControl: [
       { value: 0, disabled: false },
@@ -200,7 +200,6 @@ export class PostEditDialogComponent
     if (this.contentToDisplay) {
       this.contentToDisplay.nativeElement.innerHTML = this.data._content;
     } else {
-      console.log('contentToDisplay is not ready yet');
       setTimeout(() => this.attachingInnerHtmlContent(), 100);
     }
   }
@@ -212,7 +211,10 @@ export class PostEditDialogComponent
     console.log('on submiting post ...');
     console.log('Form data: ', this.postEditForm.value);
     this.notifierService.hideAll();
-    if (this.selectedTags.length > 0 && this.updatedFiles) {
+    if (
+      this.selectedTags.length > 0 &&
+      (this.updatedFiles || this.deletedImageIndexes || this.data._images)
+    ) {
       console.log('🚀 ~ onSubmitPost ~ this.selectedTags:', this.selectedTags);
       this.postService
         .updatePost(
