@@ -5,7 +5,6 @@ import { NotifierService } from 'angular-notifier';
 import { Subscription, Observable, Subject, takeUntil } from 'rxjs';
 import { User } from 'src/app/auth/user.model';
 import { PostService } from 'src/app/posts/post.service';
-import { PostItem } from 'src/app/posts/posts-list/post-item/post-item.model';
 import { PaginationService } from 'src/app/shared/pagination/pagination.service';
 import { Tags } from 'src/app/shared/tags/tag.model';
 import { AccountService } from '../accounts.service';
@@ -20,18 +19,15 @@ import { AddressDetailComponent } from './address-detail/address-detail.componen
   styleUrls: ['./manage-addresses.component.scss'],
 })
 export class ManageAddressesComponent implements OnInit, OnDestroy {
+  //Status địa chỉ: 0: Chờ duyệt 1: Được duyệt 2: Không được duyệt 3: Đã gỡ
   $destroy: Subject<boolean> = new Subject();
   title!: string;
   profile!: User | null;
-  currentUid!: string | null;
   myProfile!: User | null;
   addresses: Address[] = new Array<Address>();
   totalPages: number = 1;
   currentPage: number = 1;
   pageItemLimit: number = 5;
-  isHost: boolean = false;
-  myProfileSub = new Subscription();
-  getTagSub = new Subscription();
   previews: string[] = [];
   selectedFiles?: FileList;
   selectedFileNames: string[] = [];
@@ -40,19 +36,14 @@ export class ManageAddressesComponent implements OnInit, OnDestroy {
   message: string[] = [];
   imageInfos?: Observable<any>;
 
-  sourceTags: Set<Tags> = new Set();
-  selectedTags: Set<Tags> = new Set();
-
   isLoading: boolean = false;
   currentActiveStatus = {
-    status: 0, //All posts
+    status: 0, //Chờ duyệt
     data: this.addresses,
   };
 
   constructor(
     private accountService: AccountService,
-    private route: ActivatedRoute,
-    private postService: PostService,
     private paginationService: PaginationService,
     public dialog: MatDialog,
     private notifierService: NotifierService,
@@ -68,14 +59,14 @@ export class ManageAddressesComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         if (user) {
-          this.currentUid = user._id;
-          // this.currentUid = this.accountService.getCurrentUserId();
           this.currentActiveStatus.status = 0;
-          if (this.currentUid) {
-            this.myProfile = this.accountService.getProfile(this.currentUid);
-          }
+          this.myProfile = user;
           this.addressesService
-            .getAddresses(this.currentActiveStatus.status, 1, 5)
+            .getAddresses(
+              this.currentActiveStatus.status,
+              1,
+              this.pageItemLimit
+            )
             .subscribe(
               (res) => {
                 if (res.data) {
@@ -155,100 +146,43 @@ export class ManageAddressesComponent implements OnInit, OnDestroy {
 
   //Status = 0
   toWaitingAddresses() {
+    this.currentPage = 1;
     this.currentActiveStatus.status = 0;
     this.addresses = [];
     this.isLoading = true;
-    this.addressesService
-      .getAddresses(this.currentActiveStatus.status, 1, 5)
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            console.log(
-              '🚀 ~ ManageAddressesComponent ~ toWaitingAddresses ~ res.data:',
-              res.data
-            );
-
-            this.addresses = res.data;
-            this.paginationService.pagination = res.pagination;
-            this.totalPages = res.pagination.total;
-          } else {
-            this.addresses = [];
-          }
-          this.isLoading = false;
-        },
-        (errorMsg) => {
-          this.isLoading = false;
-        }
-      );
+    this.getAddressesByStatus(this.currentActiveStatus.status);
   }
 
   //Status = 2
   toUnsensoredAddresses() {
+    this.currentPage = 1;
     this.addresses = [];
     this.isLoading = true;
     this.currentActiveStatus.status = 2;
-    this.addressesService
-      .getAddresses(this.currentActiveStatus.status, 1, 5)
-      .pipe(takeUntil(this.$destroy))
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            console.log(
-              '🚀 ~ ManageAddressesComponent ~ toUnsensoredAddresses ~ res.data:',
-              res.data
-            );
-
-            this.addresses = res.data;
-            this.paginationService.pagination = res.pagination;
-            this.totalPages = res.pagination.total;
-          } else {
-            this.addresses = [];
-          }
-          this.isLoading = false;
-        },
-        (errorMsg) => {
-          this.isLoading = false;
-        }
-      );
+    this.getAddressesByStatus(this.currentActiveStatus.status);
   }
 
   //Status = 1
   toSensoredAddresses() {
+    this.currentPage = 1;
     this.currentActiveStatus.status = 1;
     this.addresses = [];
     this.isLoading = true;
-    this.addressesService
-      .getAddresses(this.currentActiveStatus.status, 1, 5)
-      .pipe(takeUntil(this.$destroy))
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            console.log(
-              '🚀 ~ ManageAddressesComponent ~ toSensoredAddresses ~ res.data:',
-              res.data
-            );
-
-            this.addresses = res.data;
-            this.paginationService.pagination = res.pagination;
-            this.totalPages = res.pagination.total;
-          } else {
-            this.addresses = [];
-          }
-          this.isLoading = false;
-        },
-        (errorMsg) => {
-          this.isLoading = false;
-        }
-      );
+    this.getAddressesByStatus(this.currentActiveStatus.status);
   }
 
   //Status = 3
   toUnsuedAddresses() {
+    this.currentPage = 1;
     this.currentActiveStatus.status = 3;
     this.isLoading = true;
     this.addresses = [];
     this.addressesService
-      .getAddresses(this.currentActiveStatus.status, 1, 5)
+      .getAddresses(
+        this.currentActiveStatus.status,
+        this.currentPage,
+        this.pageItemLimit
+      )
       .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
@@ -291,13 +225,38 @@ export class ManageAddressesComponent implements OnInit, OnDestroy {
       this.currentPage = this.totalPages;
     }
     this.addressesService
-      .getAddresses(0, 1, 5)
+      .getAddresses(
+        this.currentActiveStatus.status,
+        this.currentPage,
+        this.pageItemLimit
+      )
       .pipe(takeUntil(this.$destroy))
       .subscribe(
         (res) => {
           if (res.data) {
             console.log('🚀 ~ ManageAddressesComponent ~ res.data:', res.data);
             window.scrollTo(0, 0); // Scrolls the page to the top
+            this.addresses = res.data;
+            this.paginationService.pagination = res.pagination;
+            this.totalPages = res.pagination.total;
+          } else {
+            this.addresses = [];
+          }
+          this.isLoading = false;
+        },
+        (errorMsg) => {
+          this.isLoading = false;
+        }
+      );
+  }
+
+  getAddressesByStatus(status: number) {
+    this.addressesService
+      .getAddresses(status, this.currentPage, this.pageItemLimit)
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(
+        (res) => {
+          if (res.data) {
             this.addresses = res.data;
             this.paginationService.pagination = res.pagination;
             this.totalPages = res.pagination.total;
