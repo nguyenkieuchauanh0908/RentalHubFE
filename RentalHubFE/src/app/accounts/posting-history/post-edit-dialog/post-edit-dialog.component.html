@@ -5,8 +5,8 @@
     <mat-spinner diameter="30"></mat-spinner>
   </div>
   <mat-dialog-content>
-    <!-- New post edit modal -->
-    <div>
+    <!-- New data edit modal -->
+    <div *ngIf="data._status !== 2; else postDetail">
       <form [formGroup]="postEditForm" (ngSubmit)="onSubmitPost()">
         <!-- Title -->
         <mat-form-field class="w-full">
@@ -83,27 +83,6 @@
             Thông tin <strong>bắt buộc</strong>
           </mat-error>
         </mat-form-field>
-        <!-- Content  -->
-        <!-- <mat-form-field class="w-full h-96">
-          <mat-label>Nội dung chính</mat-label>
-          <input
-            [ngClass]="data._status === 4 ? 'cursor-not-allowed' : ''"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            matInput
-            aria-label="Nội dung chính"
-            placeholder="Viết mô tả chi tiết về phòng trọ ở đây..."
-            formControlName="contentInputControl"
-          />
-          <mat-error
-            *ngIf="
-              this.postEditForm.controls.contentInputControl.hasError(
-                'required'
-              )
-            "
-          >
-            Thông tin <strong>bắt buộc</strong>
-          </mat-error>
-        </mat-form-field> -->
 
         <!-- Content  -->
         <mat-label>Nội dung chính</mat-label>
@@ -113,9 +92,6 @@
           [toolbarSettings]="customToolbar"
           #postContent
         >
-          <!-- <ng-template #valueTemplate>
-            <p></p>
-          </ng-template> -->
         </ejs-richtexteditor>
         <mat-error *ngIf="!this.postHtmlContent">
           Thông tin <strong>bắt buộc</strong>
@@ -281,7 +257,7 @@
 
             <span
               (click)="createTag()"
-              class="relative left-1 bottom-1 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+              class="relative left-1 bottom-1 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover"
               ><mat-icon
                 matRipple
                 [matRippleUnbounded]="true"
@@ -296,7 +272,7 @@
           <!-- Your chosen tags -->
           <div class="flex flex-row flex-wrap">
             <div
-              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover"
               *ngFor="let tag of selectedTags"
             >
               <span class="tag" (click)="updateChosentags(tag)">
@@ -325,7 +301,7 @@
             <!-- Your chosen tags -->
             <div class="flex flex-row flex-wrap">
               <div
-                class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover:cursor-pointer"
+                class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover"
                 *ngFor="let tag of selectedTags"
               >
                 <span class="tag">
@@ -355,12 +331,12 @@
               <div
                 (click)="deleteImage(preview, index)"
                 *ngFor="let preview of previews; index as index"
-                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
+                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover h-36 w-full"
               >
                 <img
                   *ngIf="preview !== ''"
                   [src]="preview"
-                  class="hover:cursor-pointer object-fill max-h-28 w-full rounded-lg"
+                  class="hover object-fill max-h-28 w-full rounded-lg"
                 />
                 <div
                   class="flex flex-col items-center justify-center pt-5 pb-5 w-full h-full"
@@ -386,7 +362,7 @@
 
                 <input
                   (change)="updateFile($event, index)"
-                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                   id="image_file"
                   type="file"
                   #updateFiles
@@ -397,11 +373,11 @@
               <div
                 *ngIf="previews.length < 5"
                 (click)="addImage.click()"
-                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover:cursor-pointer h-36 w-full"
+                class="xs:basis-[48%] sm:basis-[29%] md:basis-[19%] h-100 border-solid border-2 border-indigo-300 rounded-lg p-3 mr-1 mb-1 relative hover h-36 w-full"
               >
                 <input
                   (change)="addNewImage($event)"
-                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  class="hidden w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                   id="addImage"
                   type="file"
                   formControlName="addFilesInputControl"
@@ -458,13 +434,171 @@
         </ng-template>
       </form>
     </div>
+    <!-- Private posts are not allowed to edit -->
+    <ng-template #postDetail>
+      <div
+        *ngIf="data"
+        class="xs:flex xs:flex-col xs:col-span-12 lg:grid lg:col-span-9 bg-white-background py-4 px-8 mt-8 mb-8 rounded-lg"
+      >
+        <div class="flex flex-col">
+          <!-- General Information -->
+          <div class="mb-8">
+            <!-- Title, time-->
+            <div class="row flex justify-between mb-0 flex-wrap">
+              <div class="flex flex-row justify-between flex-wrap">
+                <p class="text-lg font-medium mb-0 mr-1">
+                  {{ data._title }}
+                </p>
+                <p
+                  class="relative top-1 text-sm font-normal italic mb-0"
+                  style="margin-left: 6px"
+                >
+                  &#40;Ngày cập nhật gần nhất:
+                  {{ data._postingDateLocal }} &#41;
+                </p>
+              </div>
+            </div>
+            <!-- Price, Area -->
+            <div
+              class="row flex flex-row flex-wrap gap-4 items-center justify-between text-sm text-sub-text-color"
+            >
+              <p>
+                Giá:
+                <span class="text-text-price-color font-medium"
+                  >{{ data.roomPrice.toLocaleString() }}đ</span
+                >
+              </p>
+
+              <p>
+                Giá điện:
+                <span class="text-text-price-color font-medium"
+                  >{{ data.roomElectricPrice.toLocaleString() }}đ</span
+                >
+              </p>
+
+              <p>
+                Giá nước:
+                <span class="text-text-price-color font-medium"
+                  >{{ data.roomWaterPrice.toLocaleString() }}đ</span
+                >
+              </p>
+              <p>
+                Diện tích:
+                <span class="font-medium"
+                  >{{ data.roomArea }}m<sup>2</sup></span
+                >
+              </p>
+            </div>
+
+            <!-- Address -->
+            <div
+              class="row flex flex-row gap-4 items-center justify-between text-sm text-sub-text-color"
+            >
+              <p>
+                Địa chỉ phòng trọ:
+                <span class="font-medium">{{ data.roomAddress }}</span>
+              </p>
+            </div>
+
+            <!-- Tags -->
+            <div *ngIf="data._tags">
+              <p class="text-base font-medium">Thẻ bài viết</p>
+              <div class="flex flex-row flex-wrap">
+                <div
+                  class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
+                  *ngFor="let tag of data._tags"
+                >
+                  <span class="tag">
+                    {{ tag._tag }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dịch vụ -->
+            <div>
+              <p class="text-base font-medium">Dịch vụ đi kèm</p>
+              <div
+                class="flex flex-row flex-wrap"
+                *ngIf="data.roomServices.length > 0; else noServicesBlock"
+              >
+                <div
+                  class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
+                  *ngFor="let tag of data.roomServices"
+                >
+                  <span class="tag">
+                    {{ tag }}
+                  </span>
+                </div>
+              </div>
+              <ng-template #noServicesBlock>
+                <p>Không có dịch vụ đi kèm.</p>
+              </ng-template>
+            </div>
+
+            <!-- Tiện ích -->
+            <div>
+              <p class="text-base font-medium">Tiện ích đi kèm</p>
+              <div
+                class="flex flex-row flex-wrap"
+                *ngIf="data.roomUtilities.length > 0; else noUltilitiesBlock"
+              >
+                <div
+                  class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300"
+                  *ngFor="let tag of data.roomUtilities"
+                >
+                  <span class="tag">
+                    {{ tag }}
+                  </span>
+                </div>
+              </div>
+              <ng-template #noUltilitiesBlock>
+                <p>Không có tiện ích đi kèm.</p>
+              </ng-template>
+            </div>
+
+            <!-- Thông tin liên hệ -->
+            <div>
+              <p class="text-base font-medium">Thông tin liên hệ</p>
+              <p>
+                Chủ trọ:
+                <span>{{ data.authorFName }} {{ data.authorLName }}</span>
+              </p>
+              <p>
+                Số điện thoại: <span>{{ data.phoneNumber }}</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Image slider -->
+          <app-slider [sliderItems]="data._images"></app-slider>
+
+          <!-- Main content -->
+          <div
+            #contentToDisplay
+            class="mt-4"
+            [ngClass]="seeMore ? 'line-clamp-none' : 'line-clamp-4'"
+          ></div>
+          <span
+            *ngIf="!seeMore"
+            class="font-medium text-blue-500 cursor-pointer"
+            (click)="seeMoreContentClick()"
+          >
+            Xem thêm
+          </span>
+          <span
+            *ngIf="seeMore"
+            class="font-medium text-blue-500 cursor-pointer"
+            (click)="seeMoreContentClick()"
+          >
+            Ẩn bớt
+          </span>
+        </div>
+      </div>
+    </ng-template>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Hủy</button>
-    <!-- Bài viết bị báo cáo -->
-    <!-- <button *ngIf="data._status === 4" (click)="toMarkAsSeen()" mat-button>
-      Đánh dấu đã đọc
-    </button> -->
     <!-- Bài viết đang đăng -->
     <button
       *ngIf="data._status === 1 && data._status !== 4"
@@ -483,9 +617,20 @@
       Yêu cầu duyệt lại
     </button>
 
+    <!--Public lại bài viết đang private-->
+    <button
+      *ngIf="data._status === 2"
+      (click)="reopenPost()"
+      mat-button
+      class="bg-blue-700 hover:bg-blue-800"
+      style="color: white; background-color: #1a56db"
+    >
+      Công khai
+    </button>
+
     <!-- Lưu -->
     <button
-      *ngIf="data._status !== 4"
+      *ngIf="data._status !== 4 && data._status !== 2"
       (click)="onSubmitPost()"
       class="bg-blue-700 hover:bg-blue-800"
       style="color: white; background-color: #1a56db"

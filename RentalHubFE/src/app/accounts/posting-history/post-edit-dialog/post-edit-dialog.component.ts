@@ -40,11 +40,13 @@ import { RichTextEditorComponent } from '@syncfusion/ej2-angular-richtexteditor'
 export class PostEditDialogComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
+  @ViewChild('contentToDisplay') contentToDisplay: ElementRef | undefined;
   @ViewChild('postContent')
   textEditorForPostContent!: RichTextEditorComponent;
   @ViewChild('contentValue') contentValue!: ElementRef | undefined;
   postHtmlContent!: string;
   btnElement!: HTMLElement | null;
+  seeMore: boolean = false;
   public customToolbar: Object = {
     items: [
       'Bold',
@@ -134,7 +136,10 @@ export class PostEditDialogComponent
     this.$destroy.next(true);
     this.$destroy.unsubscribe();
   }
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    window.scrollTo(0, 0); // Scrolls the page to the top
+    setTimeout(() => this.attachingInnerHtmlContent(), 100);
+  }
 
   ngOnInit(): void {
     this.currentPost = this.data;
@@ -191,20 +196,21 @@ export class PostEditDialogComponent
     });
   }
 
-  toMarkAsSeen() {}
+  attachingInnerHtmlContent() {
+    if (this.contentToDisplay) {
+      this.contentToDisplay.nativeElement.innerHTML = this.data._content;
+    } else {
+      console.log('contentToDisplay is not ready yet');
+      setTimeout(() => this.attachingInnerHtmlContent(), 100);
+    }
+  }
+
+  reopenPost() {}
 
   onSubmitPost() {
     this.isLoading = true;
     console.log('on submiting post ...');
     console.log('Form data: ', this.postEditForm.value);
-    // console.log(
-    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedTags:',
-    //   this.selectedTags
-    // );
-    // console.log(
-    //   '🚀 ~ PostsEditComponent ~ onSubmitPost ~ this.selectedFiles:',
-    //   this.selectedFiles
-    // );
     this.notifierService.hideAll();
     if (this.selectedTags.length > 0 && this.updatedFiles) {
       console.log('🚀 ~ onSubmitPost ~ this.selectedTags:', this.selectedTags);
@@ -301,10 +307,6 @@ export class PostEditDialogComponent
     this.previews.splice(index, 1, '');
     if (!this.deletedImageIndexes.includes(index)) {
       this.deletedImageIndexes.push(index);
-      // console.log(
-      //   '🚀 ~ file: post-edit-dialog.component.ts:101 ~ PostEditDialogComponent ~ updateFile ~ this.deletedImageIndexes:',
-      //   this.deletedImageIndexes
-      // );
     }
   }
 
@@ -321,10 +323,6 @@ export class PostEditDialogComponent
       historyPosts!.forEach((post) => {
         if (post._id === this.currentPost._id) {
           post._tags = this.selectedTags;
-          // console.log(
-          //   '🚀 ~ file: post-edit-dialog.component.ts:191 ~ PostEditDialogComponent ~ this.historyPosts.forEach ~  post._tags:',
-          //   post._tags
-          // );
         }
       });
       this.postService.setCurrentChosenTags(this.selectedTags);
@@ -335,9 +333,6 @@ export class PostEditDialogComponent
     const dialogRef = this.dialog.open(AddTagDialogComponent, {
       width: '400px',
     });
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   console.log(`Dialog result: ${result}`);
-    // });
   }
 
   toHidePostDialog() {
@@ -384,5 +379,9 @@ export class PostEditDialogComponent
     dialogRef.afterClosed().subscribe(() => {
       sub.unsubscribe();
     });
+  }
+
+  seeMoreContentClick() {
+    this.seeMore = !this.seeMore;
   }
 }

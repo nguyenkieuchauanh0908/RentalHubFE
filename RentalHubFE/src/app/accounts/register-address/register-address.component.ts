@@ -274,30 +274,4 @@ export class RegisterAddressComponent {
       );
     }
   }
-
-  // selectFiles(event: any, type: string): void {
-  //   console.log('On selecting image...');
-  //   switch (type) {
-  //     case 'license':
-  //       this.previewBusinessLicene = '';
-  //       this.selectedBusinessLicenseFileNames = [];
-  //       this.selectedBusinessLicenses = event.target.files;
-  //       if (this.selectedBusinessLicenses) {
-  //         const numberOfFiles = this.selectedBusinessLicenses.length;
-  //         for (let i = 0; i < numberOfFiles; i++) {
-  //           const reader = new FileReader();
-  //           reader.onload = (e: any) => {
-  //             console.log(e.target.result);
-  //             this.previewBusinessLicene = e.target.result;
-  //           };
-  //           reader.readAsDataURL(this.selectedBusinessLicenses[i]);
-  //           this.selectedBusinessLicenseFileNames.push(
-  //             this.selectedBusinessLicenses[i].name
-  //           );
-  //         }
-  //       }
-  //       break;
-  //     default:
-  //   }
-  // }
 }

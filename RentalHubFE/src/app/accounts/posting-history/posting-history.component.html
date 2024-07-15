@@ -68,17 +68,6 @@
       class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700"
     >
       <ul class="flex flex-nowrap -mb-px">
-        <!-- <li class="mr-2">
-          <a
-            (click)="toAllPostHistory()"
-            [ngClass]="
-              currentActiveStatus.status === 4
-                ? 'inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500'
-                : 'inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'
-            "
-            >Tất cả</a
-          >
-        </li> -->
         <li class="cursor-pointer">
           <a
             (click)="toStackPostsHistory()"
@@ -215,10 +204,7 @@
             </div>
 
             <!-- Edit button -->
-            <div
-              *ngIf="post._status !== 3"
-              class="xs:hidden lg:grid lg:col-span-3 lg:p-8 lg:h-10"
-            >
+            <div class="xs:hidden lg:grid lg:col-span-3 lg:p-8 lg:h-10">
               <button
                 (click)="toEditPostDialog(post)"
                 class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

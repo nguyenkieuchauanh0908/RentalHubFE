@@ -224,30 +224,7 @@ export class ManageAddressesComponent implements OnInit, OnDestroy {
     } else if (toLastPage) {
       this.currentPage = this.totalPages;
     }
-    this.addressesService
-      .getAddresses(
-        this.currentActiveStatus.status,
-        this.currentPage,
-        this.pageItemLimit
-      )
-      .pipe(takeUntil(this.$destroy))
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            console.log('🚀 ~ ManageAddressesComponent ~ res.data:', res.data);
-            window.scrollTo(0, 0); // Scrolls the page to the top
-            this.addresses = res.data;
-            this.paginationService.pagination = res.pagination;
-            this.totalPages = res.pagination.total;
-          } else {
-            this.addresses = [];
-          }
-          this.isLoading = false;
-        },
-        (errorMsg) => {
-          this.isLoading = false;
-        }
-      );
+    this.getAddressesByStatus(this.currentActiveStatus.status);
   }
 
   getAddressesByStatus(status: number) {

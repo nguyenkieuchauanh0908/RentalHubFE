@@ -42,8 +42,6 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   isFavoured!: boolean;
   $destroy: Subject<boolean> = new Subject<boolean>();
   center: google.maps.LatLngLiteral | null = null;
-  // latitudeVariable!: number;
-  // longitudeVariable!: number;
 
   constructor(
     private postService: PostService,
