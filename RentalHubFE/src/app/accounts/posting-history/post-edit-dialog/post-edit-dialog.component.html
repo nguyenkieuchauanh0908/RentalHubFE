@@ -284,44 +284,6 @@
             viết</mat-error
           >
         </mat-form-field>
-        <!-- <div *ngIf="data._status !== 4; else tagsNoUpdate" class="my-6">
-          <label
-            for="base-input"
-            class="flex flex-row mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Gắn thẻ bài viết
-
-            <span
-              (click)="createTag()"
-              class="relative left-1 bottom-1 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover"
-              ><mat-icon
-                matRipple
-                [matRippleUnbounded]="true"
-                (click)="createTag()"
-                >add</mat-icon
-              ></span
-            >
-          </label>
-          <mat-error *ngIf="this.selectedTags.length === 0">
-            Vui lòng gắn <strong>ít nhất 1 thẻ</strong>
-          </mat-error>
-      
-          <div class="flex flex-row flex-wrap">
-            <div
-              class="flex flex-row h-6 bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 mb-2 rounded-full dark:bg-indigo-900 dark:text-indigo-300 hover"
-              *ngFor="let tag of selectedTags"
-            >
-              <span class="tag" (click)="updateChosentags(tag)">
-                {{ tag._tag }}
-              </span>
-              <span
-                (click)="updateChosentags(tag)"
-                *ngIf="selectedTags.includes(tag)"
-              >
-                <mat-icon>clear</mat-icon></span
-              >
-            </div>
-          </div>
-        </div> -->
 
         <ng-template #tagsNoUpdate>
           <div
@@ -665,7 +627,7 @@
 
     <!-- Lưu -->
     <button
-      *ngIf="data._status !== 4 && data._status !== 2"
+      *ngIf="data._status !== 4"
       (click)="onSubmitPost()"
       class="bg-blue-700 hover:bg-blue-800"
       style="color: white; background-color: #1a56db"

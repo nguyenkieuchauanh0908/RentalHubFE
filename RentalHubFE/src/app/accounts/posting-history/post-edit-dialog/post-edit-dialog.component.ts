@@ -280,7 +280,19 @@ export class PostEditDialogComponent
     }
   }
 
-  reopenPost() {}
+  reopenPost() {
+    window.scrollTo(0, 0); // Scrolls the page to the top
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: 'Bạn có chắc muốn công khai lại bài viết này không?',
+    });
+    const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
+      this.changePostStatus(true, 'Công khai bài viết thành công');
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
+  }
 
   onSubmitPost() {
     this.isLoading = true;
@@ -420,14 +432,7 @@ export class PostEditDialogComponent
       data: 'Bạn có chắc muốn gỡ bài viết này không?',
     });
     const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
-      this.postService
-        .updatePostStatus(this.data._id, false)
-        .subscribe((res) => {
-          if (res.data) {
-            this.notifierService.hideAll();
-            this.notifierService.notify('success', 'Gỡ bài viết thành công!');
-          }
-        });
+      this.changePostStatus(false, 'Bài viết đã được chuyển về riêng tư');
     });
     dialogRef.afterClosed().subscribe(() => {
       sub.unsubscribe();
@@ -461,5 +466,22 @@ export class PostEditDialogComponent
 
   seeMoreContentClick() {
     this.seeMore = !this.seeMore;
+  }
+
+  changePostStatus(active: boolean, message: string) {
+    this.postService.updatePostStatus(this.data._id, active).subscribe(
+      (res) => {
+        if (res.data) {
+          this.notifierService.hideAll();
+          this.notifierService.notify('success', message);
+        }
+      },
+      (err) => {
+        this.notifierService.notify(
+          'success',
+          'Đã có lỗi xảy ra, vui lòng thử lại sau'
+        );
+      }
+    );
   }
 }

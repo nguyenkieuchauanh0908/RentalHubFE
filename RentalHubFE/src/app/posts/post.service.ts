@@ -177,7 +177,6 @@ export class PostService {
     selectedTags: any,
     postId: string
   ) {
-    console.log(form.city);
     let body = new FormData();
     body.append('_title', form.titleInputControl);
     body.append('_desc', form.descInputControl);
