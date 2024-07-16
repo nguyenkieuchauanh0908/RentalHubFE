@@ -209,6 +209,14 @@ export class PostingHistoryComponent {
       width: '1000px',
       data: post,
     });
+    const sub = dialogRef.componentInstance.deleteFromCurrentLists.subscribe(
+      () => {
+        this.historyPosts.filter((post) => post._id !== post._id);
+      }
+    );
+    dialogRef.afterClosed().subscribe(() => {
+      sub.unsubscribe();
+    });
   }
 
   activatePost(postId: string) {

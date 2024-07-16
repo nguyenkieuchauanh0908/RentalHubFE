@@ -2,10 +2,12 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   inject,
   Inject,
   OnDestroy,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { PostService } from 'src/app/posts/post.service';
@@ -50,6 +52,7 @@ export class PostEditDialogComponent
   @ViewChild('postContent')
   textEditorForPostContent!: RichTextEditorComponent;
   @ViewChild('contentValue') contentValue!: ElementRef | undefined;
+  @Output() deleteFromCurrentLists: EventEmitter<boolean> = new EventEmitter();
   postHtmlContent!: string;
   btnElement!: HTMLElement | null;
   seeMore: boolean = false;
@@ -111,7 +114,7 @@ export class PostEditDialogComponent
     titleInputControl: [{ value: '', disabled: false }, Validators.required],
     descInputControl: [{ value: '', disabled: false }, Validators.required],
     contentInputControl: [{ value: '', disabled: false }, Validators.required],
-    addressInputControl: [{ value: '', disabled: true }, Validators.required],
+    addressInputControl: [{ value: '', disabled: false }, Validators.required],
     areaInputControl: [{ value: 0, disabled: false }, Validators.required],
     renting_priceInputControl: [
       { value: 0, disabled: false },
@@ -197,6 +200,9 @@ export class PostEditDialogComponent
         this.postEditForm.controls['servicesInputControl'].disable();
         this.postEditForm.controls['utilitiesInputControl'].disable();
       }
+      if (this.currentPost._status !== 3 && this.currentPost._status !== 0) {
+        this.postEditForm.controls['addressInputControl'].disable();
+      }
     }
 
     //List địa chỉ của user
@@ -217,8 +223,8 @@ export class PostEditDialogComponent
     this.filteredTags =
       this.postEditForm.controls.tagInputContro.valueChanges.pipe(
         startWith(''),
-        map((fruit: string | null) =>
-          fruit ? this._filter(fruit) : this.sourceTags.slice()
+        map((tag: string | null) =>
+          tag ? this._filter(tag) : this.sourceTags.slice()
         )
       );
   }
@@ -235,7 +241,7 @@ export class PostEditDialogComponent
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-    // Add our fruit
+    // Add our tag
     if (value) {
       this.postService.createTag(value).subscribe((res) => {
         if (res.data) {
@@ -257,12 +263,12 @@ export class PostEditDialogComponent
     this.postEditForm.controls.tagInputContro.setValue(null);
   }
 
-  remove(fruit: any): void {
-    const index = this.chosenTags.indexOf(fruit);
-    console.log('🚀 ~ PostsEditComponent ~ remove ~ fruit:', fruit, index);
+  remove(tag: any): void {
+    const index = this.chosenTags.indexOf(tag);
+    console.log('🚀 ~ PostsEditComponent ~ remove ~ tag:', tag, index);
     if (index >= 0) {
       this.chosenTags.splice(index, 1);
-      this.announcer.announce(`Removed ${fruit}`);
+      this.announcer.announce(`Removed ${tag}`);
     }
   }
 
@@ -303,7 +309,6 @@ export class PostEditDialogComponent
       this.chosenTags.length > 0 &&
       (this.updatedFiles || this.deletedImageIndexes || this.data._images)
     ) {
-      console.log('🚀 ~ onSubmitPost ~ this.chosenTags:', this.chosenTags);
       this.postService
         .updatePost(
           this.postEditForm.value,
@@ -400,31 +405,6 @@ export class PostEditDialogComponent
     }
   }
 
-  updateChosentags(tag: any) {
-    if (this.chosenTags.includes(tag)) {
-      const updatedTags = this.chosenTags.filter(
-        (currentTag) => currentTag !== tag
-      );
-      this.chosenTags = updatedTags;
-    } else {
-      this.chosenTags.push(tag);
-    }
-    this.postService.getCurrentPostingHistory.subscribe((historyPosts) => {
-      historyPosts!.forEach((post) => {
-        if (post._id === this.currentPost._id) {
-          post._tags = this.chosenTags;
-        }
-      });
-      this.postService.setCurrentChosenTags(this.chosenTags);
-    });
-  }
-
-  createTag() {
-    const dialogRef = this.dialog.open(AddTagDialogComponent, {
-      width: '400px',
-    });
-  }
-
   toHidePostDialog() {
     window.scrollTo(0, 0); // Scrolls the page to the top
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -439,25 +419,47 @@ export class PostEditDialogComponent
     });
   }
 
-  toOpenPostDialog() {
+  resensorRequest() {
     window.scrollTo(0, 0); // Scrolls the page to the top
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
-      data: 'Bạn có chắc muốn mở lại bài viết? Bài viết sẽ nằm trong mục Chờ duyệt!',
+      data: 'Bạn có chắc muốn duyệt lại?',
     });
     const sub = dialogRef.componentInstance.confirmYes.subscribe(() => {
-      this.postService
-        .updatePostStatus(this.data._id, true)
-        .subscribe((res) => {
-          if (res.data) {
-            this.notifierService.hideAll();
-            this.notifierService.notify(
-              'success',
-              'Mở lại bài viết thành công!'
-            );
-          }
-        });
+      if (
+        this.chosenTags.length > 0 &&
+        (this.updatedFiles || this.deletedImageIndexes || this.data._images)
+      ) {
+        this.postService
+          .updatePost(
+            this.postEditForm.value,
+            this.updatedFiles,
+            this.deletedImageIndexes,
+            this.chosenTags,
+            this.data._id
+          )
+          .pipe(takeUntil(this.$destroy))
+          .subscribe(
+            (res) => {
+              if (res.data) {
+                this.notifierService.notify(
+                  'success',
+                  'Yêu cầu duyệt lại thành công!'
+                );
+                this.deleteFromCurrentLists.next(true);
+                this.isLoading = false;
+              }
+            },
+            (errMsg) => {
+              this.isLoading = false;
+              this.notifierService.notify('error', errMsg);
+            }
+          );
+      } else {
+        this.isLoading = false;
+        this.notifierService.notify('warning', 'Vui lòng điền đủ các trường!');
+      }
     });
     dialogRef.afterClosed().subscribe(() => {
       sub.unsubscribe();
@@ -474,6 +476,7 @@ export class PostEditDialogComponent
         if (res.data) {
           this.notifierService.hideAll();
           this.notifierService.notify('success', message);
+          this.deleteFromCurrentLists.next(true);
         }
       },
       (err) => {

@@ -225,6 +225,61 @@ export class PostService {
       );
   }
 
+  resensorRequeset(
+    form: any,
+    images: FileList,
+    deletedImageIndexes: number[],
+    selectedTags: any,
+    postId: string
+  ) {
+    let body = new FormData();
+    body.append('_title', form.titleInputControl);
+    body.append('_desc', form.descInputControl);
+    body.append('_content', form.contentInputControl);
+    body.append('_street', form.streetInputControl);
+    body.append('_district', form.districtInputControl);
+    body.append('_area', form.areaInputControl);
+    body.append('_price', form.renting_priceInputControl);
+    body.append('_electricPrice', form.electricInputControl);
+    body.append('_waterPrice', form.water_priceInputControl);
+    body.append('_services', form.servicesInputControl);
+    body.append('_utilities', form.utilitiesInputControl);
+    body.append('_city', form.cityInputControl);
+    if (form.city) {
+      body.append('_city', form.city);
+    }
+    if (images) {
+      const numberOfImages = images.length;
+      for (let i = 0; i < numberOfImages; i++) {
+        const reader = new FileReader();
+        reader.readAsDataURL(images[i]);
+        body.append('_images', images[i]);
+      }
+    }
+
+    if (selectedTags) {
+      for (let tag of selectedTags) {
+        body.append('_tags', tag._id);
+      }
+    }
+
+    body.append('_deleteImages', deletedImageIndexes.toString());
+
+    return this.http
+      .patch<resDataDTO>(
+        environment.baseUrl + 'posts/update-post/' + postId,
+        body
+      )
+      .pipe(
+        catchError(handleError),
+        tap((res) => {
+          if (res.data) {
+            console.log('Updated post successfully...', res.data);
+          }
+        })
+      );
+  }
+
   getPostsHistory(status: number, page: number, limit: number) {
     console.log('Geting posts history...');
     let queryParams = new HttpParams()
