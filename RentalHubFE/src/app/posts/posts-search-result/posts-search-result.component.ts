@@ -48,6 +48,9 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService
   ) {}
   ngOnInit() {
+    if (!this.totalPages || this.totalPages === 0) {
+      this.totalPages = 1;
+    }
     window.scrollTo(0, 0); // Scrolls the page to the top
     this.resetFilter();
     this.currentPage = 1;
@@ -68,10 +71,6 @@ export class PostsSearchResultComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((keyword: string) => {
         this.currentKeyword = keyword;
-        console.log(
-          '🚀 ~ PostsSearchResultComponent ~ this.postService.searchKeywordChanged.subscribe ~ this.currentKeyword:',
-          this.currentKeyword
-        );
         this.paginationService.paginationChanged
           .pipe(takeUntil(this.$destroy))
           .subscribe((pagination) => {
