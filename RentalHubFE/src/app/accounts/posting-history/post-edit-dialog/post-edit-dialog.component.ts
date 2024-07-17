@@ -432,7 +432,7 @@ export class PostEditDialogComponent
         (this.updatedFiles || this.deletedImageIndexes || this.data._images)
       ) {
         this.postService
-          .updatePost(
+          .resensorRequeset(
             this.postEditForm.value,
             this.updatedFiles,
             this.deletedImageIndexes,

@@ -267,7 +267,7 @@ export class PostService {
 
     return this.http
       .patch<resDataDTO>(
-        environment.baseUrl + 'posts/update-post/' + postId,
+        environment.baseUrl + 'posts/update-post-again/' + postId,
         body
       )
       .pipe(
