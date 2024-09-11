@@ -1,6 +1,6 @@
 # Introduction
 - This repo is one of three websites included in my graduation thesis (Basically, it's a platform where people go to search for rental apartments. There are three main roles: Users/Hosts who are looking for rental flats or rental homeowners who want to let apartment seekers know of their places. The management roles are inspector and admin with the main functions to sensor posts from hosts).
-- The other repo for the user website can be found here <a href='https://github.com/nguyenkieuchauanh0908/FE_RentalHubAdmind'>Admin</a>, <a href='https://github.com/nguyenkieuchauanh0908/FE_RentalHubInspector'>Inspectors</a>
+- The other repo for the user website can be found here <a href='https://github.com/nguyenkieuchauanh0908/FE_RentalHubAdmin'>Admin</a>, <a href='https://github.com/nguyenkieuchauanh0908/FE_RentalHubInspector'>Inspectors</a>
 - Before cloning and running this repo, make sure to clone and run the <a href='https://github.com/nguyenkieuchauanh0908/RentalHubBE'>backend server</a>
 - You can also find the demo video <a href='https://youtu.be/-Bspym1C5Fw'>here</a>
 # Technology
