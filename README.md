@@ -107,8 +107,8 @@
 
     <img src='images/nested-comment.png'>
 
-15. Payment Package
-    <img src='images/payment-packages.png'>
+15. Payment Packages
+    <img src='images/payment_packages.png'>
 
 16. Payment
     <img src='images/vnpay.png'>
