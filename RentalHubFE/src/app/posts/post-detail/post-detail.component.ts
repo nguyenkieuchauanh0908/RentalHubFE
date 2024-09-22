@@ -58,14 +58,14 @@ export class PostDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.center = null;
-    this.postService.getCurrentFavoritesId
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((favourites) => {
-        this.favoredPosts = favourites;
-      });
-    if (this.post && this.favoredPosts) {
-      this.isFavoured = this.favoredPosts.some((pid) => pid === this.post._id);
-    }
+    // this.postService.getCurrentFavoritesId
+    //   .pipe(takeUntil(this.$destroy))
+    //   .subscribe((favourites) => {
+    //     this.favoredPosts = favourites;
+    //   });
+    // if (this.post && this.favoredPosts) {
+    //   this.isFavoured = this.favoredPosts.some((pid) => pid === this.post._id);
+    // }
     this.id = '';
     this.relatedPosts = [];
     this.isLoading = true;
